@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEOMAT — Premium EVA-Automatten nach Maß</title>
+  <meta name="description" content="NEOMAT — EVA-Automatten der neuen Generation. Konfigurator, volle Visualisierung, Lieferung in ganz Deutschland.">
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/animations.css">
+
+  <style>
+  /* ============ HERO ============ */
+  .hero-v3 {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: #0D0D0D;
+  }
+  .hero-v3__media {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+  .hero-v3__bg {
+    position: absolute; inset: 0; z-index: 0;
+    background: url('https://picsum.photos/1600/900?random=70') center/cover no-repeat;
+    filter: grayscale(0.3);
+  }
+  .hero-v3__overlay {
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(90deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.4) 100%);
+  }
+  .hero-v3__content {
+    position: relative; z-index: 2;
+    max-width: 640px;
+    color: #fff;
+    padding-block: 120px;
+  }
+  .hero-v3__eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-display); font-weight: 600;
+    font-size: var(--fs-sm); letter-spacing: 3px; text-transform: uppercase;
+    color: var(--color-primary-red-bright); margin-bottom: 18px;
+  }
+  .hero-v3__eyebrow::before { content: ''; width: 40px; height: 2px; background: var(--gradient-red); }
+  .hero-v3 h1 { color: #fff; margin-bottom: 20px; }
+  .hero-v3 p { color: rgba(255,255,255,0.82); font-size: 1.15rem; max-width: 520px; margin-bottom: 32px; }
+  .hero-v3__btns { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn-outline-white {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 14px 32px; border: 2px solid rgba(255,255,255,0.7); color: #fff;
+    font-family: var(--font-display); font-weight: 700; font-size: var(--fs-sm);
+    letter-spacing: 2px; text-transform: uppercase; border-radius: 0;
+    clip-path: var(--clip-bevel); transition: all var(--t-base) var(--ease-out);
+  }
+  .btn-outline-white:hover { background: #fff; color: #1A1A1A; transform: translateY(-2px); }
+
+  /* ============ WARUM NEOMAT ============ */
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr 1fr;
+    gap: 36px;
+    align-items: center;
+    margin-bottom: 44px;
+  }
+  .why-col { display: flex; flex-direction: column; gap: 36px; }
+  .why-item { display: flex; gap: 18px; align-items: flex-start; }
+  .why-item__icon {
+    flex-shrink: 0; width: 46px; height: 46px;
+    display: grid; place-items: center;
+    color: var(--color-primary-red);
+  }
+  .why-item__icon svg { width: 30px; height: 30px; }
+  .why-item h3 { font-size: 1.15rem; margin-bottom: 8px; }
+  .why-item p { font-size: var(--fs-sm); color: var(--color-text-secondary); line-height: 1.55; }
+  .why-col--l .why-item { flex-direction: row-reverse; text-align: right; }
+  .why-center { display: grid; place-items: center; }
+  .why-center img {
+    width: 100%; border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+  }
+  .why-cta { text-align: center; }
+
+  /* ============ WIE WIR ARBEITEN ============ */
+  .hww { background: var(--color-bg-dark); color: #fff; }
+  .hww h2 { color: #fff; }
+  .hww__steps {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+    position: relative; margin-top: 12px;
+  }
+  .hww__step { text-align: center; padding: 0 18px; position: relative; }
+  .hww__icon {
+    width: 84px; height: 84px; border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.25);
+    display: grid; place-items: center; margin: 0 auto 22px;
+    color: #fff; position: relative; z-index: 2;
+  }
+  .hww__icon svg { width: 38px; height: 38px; }
+  /* пунктирный соединитель */
+  .hww__step:not(:last-child)::after {
+    content: '';
+    position: absolute; top: 42px; left: calc(50% + 52px); right: calc(-50% + 52px);
+    border-top: 2px dotted rgba(255,255,255,0.3);
+    z-index: 1;
+  }
+  .hww__step h3 { color: #fff; font-size: 1.05rem; margin-bottom: 10px; }
+  .hww__step p { color: rgba(255,255,255,0.6); font-size: var(--fs-sm); }
+
+  /* ============ KATEGORIEN (home) ============ */
+  .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .cat-card {
+    background: var(--color-bg-glass);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--color-bg-glass-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    transition: all var(--t-base) var(--ease-out);
+    display: flex; flex-direction: column;
+  }
+  .cat-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--color-primary-red);
+    box-shadow: 0 8px 30px rgba(var(--rgb-primary-red), 0.2);
+  }
+  .cat-card img { width: 100%; height: 220px; object-fit: cover; }
+  .cat-card__body { padding: 22px 24px; }
+  .cat-card h3 { font-size: 1.25rem; margin-bottom: 8px; }
+  .cat-card__link { color: var(--color-primary-red); font-family: var(--font-display); font-weight: 600; font-size: var(--fs-sm); }
+
+  /* ============ BEFORE / AFTER ============ */
+  .ba-wrap { max-width: 900px; margin: 0 auto; }
+  .ba-container {
+    position: relative; width: 100%; aspect-ratio: 16/9;
+    border-radius: var(--radius-lg); overflow: hidden;
+    cursor: ew-resize; user-select: none; box-shadow: var(--shadow-soft);
+  }
+  .ba-before, .ba-after { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .ba-before img, .ba-after img { width: 100%; height: 100%; object-fit: cover; }
+  .ba-after { clip-path: inset(0 0 0 50%); }
+  .ba-divider {
+    position: absolute; top: 0; left: 50%; width: 4px; height: 100%;
+    background: #fff; z-index: 10; transform: translateX(-50%);
+  }
+  .ba-handle {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 46px; height: 46px; border-radius: 50%;
+    background: var(--color-primary-red); color: #fff;
+    display: grid; place-items: center; font-size: 18px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.35); cursor: ew-resize;
+  }
+  .ba-label {
+    position: absolute; bottom: 16px; background: rgba(0,0,0,0.6); color: #fff;
+    padding: 5px 14px; border-radius: 20px; font-size: 13px; font-family: var(--font-display); font-weight: 600;
+  }
+  .ba-before .ba-label { left: 16px; }
+  .ba-after .ba-label { right: 16px; }
+
+  /* ============ GARANTIE / ZAHLUNG ============ */
+  .dark-sec { background: var(--color-bg-dark); color: #fff; }
+  .dark-sec h2 { color: #fff; }
+  .ico-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .ico-item { text-align: center; padding: 20px; }
+  .ico-item__icon { width: 64px; height: 64px; margin: 0 auto 18px; display: grid; place-items: center; }
+  .ico-item__icon svg { width: 48px; height: 48px; }
+  .dark-sec .ico-item__icon { color: #fff; }
+  .ico-item h3 { margin-bottom: 8px; }
+  .dark-sec .ico-item h3 { color: #fff; }
+  .ico-item p { font-size: var(--fs-sm); color: var(--color-text-secondary); }
+  .dark-sec .ico-item p { color: rgba(255,255,255,0.6); }
+  .zahlung .ico-item__icon { color: var(--color-primary-red); }
+  .badge-original {
+    display: inline-grid; place-items: center; width: 56px; height: 56px; border-radius: 50%;
+    border: 2px solid currentColor; font-family: var(--font-display); font-weight: 700;
+    font-size: 0.5rem; letter-spacing: 1px; transform: rotate(-12deg);
+  }
+
+  /* ============ BERATUNG ============ */
+  .beratung-v3 { position: relative; background: url('https://picsum.photos/1600/700?random=71') center/cover; }
+  .beratung-v3__overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.66); }
+  .beratung-v3__content { position: relative; z-index: 1; text-align: center; color: #fff; }
+  .beratung-v3 h2 { color: #fff; }
+  .beratung-v3 p { color: rgba(255,255,255,0.8); margin-bottom: 30px; }
+  .beratung-form { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .beratung-form input {
+    padding: 15px 22px; border-radius: 50px; border: none;
+    background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+    color: #fff; min-width: 210px; font-family: inherit;
+  }
+  .beratung-form input::placeholder { color: rgba(255,255,255,0.7); }
+  .beratung-form input:focus { outline: 2px solid var(--color-primary-red-bright); }
+  .beratung-form .btn-primary { border-radius: 50px; clip-path: none; }
+
+  /* ============ KONTAKT ============ */
+  .kontakt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+  .kontakt-info p { margin-bottom: 10px; color: var(--color-text-secondary); }
+  .kontakt-info b { font-family: var(--font-display); color: var(--color-text-primary); }
+  .kontakt-info a { color: var(--color-primary-red); font-family: var(--font-display); font-weight: 700; display: block; margin: 2px 0; }
+  .kontakt-form { display: flex; flex-direction: column; gap: 14px; }
+  .kontakt-form input {
+    padding: 15px 22px; border-radius: 50px; border: 1px solid var(--color-border);
+    background: #fff; font-family: inherit; color: var(--color-text-primary);
+  }
+  .kontakt-form input:focus { outline: none; border-color: var(--color-primary-red); box-shadow: 0 0 0 3px rgba(var(--rgb-primary-red),0.15); }
+  .kontakt-form .btn-primary { border-radius: 50px; clip-path: none; align-self: flex-start; }
+  .kontakt-form small { color: var(--color-text-muted); font-size: var(--fs-xs); }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 1024px) {
+    .why-grid { grid-template-columns: 1fr; gap: 28px; }
+    .why-col--l .why-item { flex-direction: row; text-align: left; }
+    .why-center { order: -1; max-width: 480px; margin: 0 auto; }
+    .hww__steps { grid-template-columns: repeat(2, 1fr); gap: 40px 0; }
+    .hww__step:not(:last-child)::after { display: none; }
+    .cat-grid { grid-template-columns: 1fr; }
+    .ico-grid { grid-template-columns: 1fr; gap: 32px; }
+    .kontakt-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .hww__steps { grid-template-columns: 1fr; }
+    .beratung-form input { width: 100%; min-width: 0; }
+  }
+  </style>
+</head>
+
+<body>
+
+  <!-- INFO BAR -->
+  <div class="info-bar">
+    <span>✅ <span data-de="Bei Bestellungen ab 100 € — kostenloser Versand in ganz Deutschland" data-en="Orders from €100 — free shipping across Germany">Bei Bestellungen ab 100 € — kostenloser Versand in ganz Deutschland</span></span>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo" aria-label="NEOMAT — Startseite">
+        <img class="logo__img" src="assets/logo/neomat_nm_transparent.png" alt="NEOMAT">
+      </a>
+      <nav class="nav" aria-label="Hauptnavigation">
+        <a href="katalog.html" data-de="Katalog" data-en="Catalogue">Katalog</a>
+        <a href="#vorteile" data-de="Vorteile" data-en="Benefits">Vorteile</a>
+        <a href="#arbeiten" data-de="Unsere Arbeiten" data-en="Our Work">Unsere Arbeiten</a>
+        <a href="#kontakt" data-de="Kontakt" data-en="Contact">Kontakt</a>
+        <a href="faq.html" data-de="FAQ" data-en="FAQ">FAQ</a>
+      </nav>
+      <div class="header__actions">
+        <div class="lang-switch" role="group" aria-label="Sprache">
+          <button id="langDe" class="active" onclick="switchLang('de')">DE</button>
+          <button id="langEn" onclick="switchLang('en')">EN</button>
+        </div>
+        <a href="warenkorb.html" class="icon-btn" aria-label="Warenkorb">🛒<span class="cart-badge" id="cartBadge">0</span></a>
+        <button class="icon-btn" id="authBtn" aria-label="Konto" onclick="accountAction()">👤</button>
+        <a href="tel:+49301234567" class="header__phone">+49 30 1234567</a>
+        <button class="burger" id="burger" aria-label="Menü öffnen" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="katalog.html" data-de="Katalog" data-en="Catalogue" onclick="toggleMenu()">Katalog</a>
+    <a href="#vorteile" data-de="Vorteile" data-en="Benefits" onclick="toggleMenu()">Vorteile</a>
+    <a href="#arbeiten" data-de="Unsere Arbeiten" data-en="Our Work" onclick="toggleMenu()">Unsere Arbeiten</a>
+    <a href="#kontakt" data-de="Kontakt" data-en="Contact" onclick="toggleMenu()">Kontakt</a>
+    <a href="faq.html" data-de="FAQ" data-en="FAQ" onclick="toggleMenu()">FAQ</a>
+  </div>
+
+  <main>
+
+    <!-- ===================== 1. HERO ===================== -->
+    <section class="hero-v3">
+      <div class="hero-v3__bg"></div>
+      <video class="hero-v3__media" autoplay muted loop playsinline poster="https://picsum.photos/1600/900?random=70">
+        <source src="assets/video/hero.mp4" type="video/mp4">
+      </video>
+      <div class="hero-v3__overlay"></div>
+      <div class="container">
+        <div class="hero-v3__content fade-in-up">
+          <span class="hero-v3__eyebrow" data-de="Premium Auto Fußmatten" data-en="Premium Car Mats">Premium Auto Fußmatten</span>
+          <h1><span data-de="EVA-Automatten der neuen Generation" data-en="EVA Car Mats of a New Generation">EVA-Automatten der neuen Generation</span></h1>
+          <p><span data-de="Vollständige Visualisierung der Matten, Befestigungen und Farbvarianten für Ihr Fahrzeugmodell." data-en="Full visualisation of mats, fixings and colour options for your vehicle model.">Vollständige Visualisierung der Matten, Befestigungen und Farbvarianten für Ihr Fahrzeugmodell.</span></p>
+          <div class="hero-v3__btns">
+            <a href="katalog.html" class="btn btn-primary" data-de="Zum Katalog" data-en="To catalogue">Zum Katalog</a>
+            <a href="#beratung" class="btn-outline-white" data-de="Beratung benötigt?" data-en="Need advice?">Beratung benötigt?</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 2. WARUM NEOMAT ===================== -->
+    <section class="section" id="vorteile">
+      <div class="container">
+        <div class="section-head fade-in-up">
+          <span class="section-eyebrow" data-de="Vorteile" data-en="Benefits">Vorteile</span>
+          <h2 data-de="Warum sollten Sie NEOMAT-Matten wählen?" data-en="Why choose NEOMAT mats?">Warum sollten Sie NEOMAT-Matten wählen?</h2>
+        </div>
+
+        <div class="why-grid fade-in-up">
+          <!-- Левая колонка -->
+          <div class="why-col why-col--l">
+            <div class="why-item">
+              <div>
+                <h3><span data-de="Visualisierung" data-en="Visualisation">Visualisierung</span></h3>
+                <p><span data-de="Konfigurator für vollständige Anpassung von Matten, Befestigungen und Farben." data-en="Configurator for full customisation of mats, fixings and colours.">Konfigurator für vollständige Anpassung von Matten, Befestigungen und Farben.</span></p>
+              </div>
+              <span class="why-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+            </div>
+            <div class="why-item">
+              <div>
+                <h3><span data-de="Ganzjährig" data-en="All-season">Ganzjährig</span></h3>
+                <p><span data-de="Für den ganzjährigen Einsatz geeignet, verformt sich nicht bei ±50 °C." data-en="Suitable for year-round use, does not deform at ±50 °C.">Für den ganzjährigen Einsatz geeignet, verformt sich nicht bei ±50 °C.</span></p>
+              </div>
+              <span class="why-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 18a4 4 0 010-8 5 5 0 019.6-1.5A3.5 3.5 0 0117 18z"/></svg></span>
+            </div>
+            <div class="why-item">
+              <div>
+                <h3><span data-de="Sauberkeit im Innenraum" data-en="Clean interior">Sauberkeit im Innenraum</span></h3>
+                <p><span data-de="Dank spezieller Materialstruktur bleiben Feuchtigkeit und Schmutz lokalisiert." data-en="Thanks to the special material structure, moisture and dirt stay contained.">Dank spezieller Materialstruktur bleiben Feuchtigkeit und Schmutz lokalisiert.</span></p>
+              </div>
+              <span class="why-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3l3-1 3 1 3 5-3 5h-6l-3-5z"/><path d="M6 13l3 5-3 3-3-3z" opacity=".5"/></svg></span>
+            </div>
+          </div>
+
+          <!-- Центр -->
+          <div class="why-center">
+            <img src="https://picsum.photos/640/720?random=72" alt="NEOMAT EVA Matten Set">
+          </div>
+
+          <!-- Правая колонка -->
+          <div class="why-col why-col--r">
+            <div class="why-item">
+              <span class="why-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5L19 19M19 5l-2.5 2.5M7.5 16.5L5 19"/></svg></span>
+              <div>
+                <h3><span data-de="Zuverlässige Fixierung" data-en="Reliable fixing">Zuverlässige Fixierung</span></h3>
+                <p><span data-de="Original-Clips und Klettsystem für sichere Befestigung." data-en="Original clips and hook-and-loop system for a secure hold.">Original-Clips und Klettsystem für sichere Befestigung.</span></p>
+              </div>
+            </div>
+            <div class="why-item">
+              <span class="why-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.5 15.5M14 4l6 6M8.5 8.5L20 20"/></svg></span>
+              <div>
+                <h3><span data-de="Maximale Abdeckung" data-en="Maximum coverage">Maximale Abdeckung</span></h3>
+                <p><span data-de="Laserpräzision nach Vorlagen für maximale Abdeckung des Innenraums." data-en="Laser precision to templates for maximum interior coverage.">Laserpräzision nach Vorlagen für maximale Abdeckung des Innenraums.</span></p>
+              </div>
+            </div>
+            <div class="why-item">
+              <span class="why-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h12v16H4z"/><path d="M16 8h4v12h-4"/><path d="M7 8h6M7 12h6M7 16h4"/></svg></span>
+              <div>
+                <h3><span data-de="Leicht zu reinigen" data-en="Easy to clean">Leicht zu reinigen</span></h3>
+                <p><span data-de="Leicht, einfach zu entnehmen und mit Wasserstrahl zu reinigen." data-en="Lightweight, easy to remove and clean with a water jet.">Leicht, einfach zu entnehmen und mit Wasserstrahl zu reinigen.</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="why-cta fade-in-up">
+          <a href="konfigurator.html" class="btn btn-primary" data-de="Mattenset auswählen" data-en="Choose a mat set">Mattenset auswählen</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 3. WIE WIR ARBEITEN ===================== -->
+    <section class="section hww" id="arbeiten">
+      <div class="container">
+        <div class="section-head fade-in-up">
+          <span class="section-eyebrow" data-de="Ablauf" data-en="Process">Ablauf</span>
+          <h2 data-de="Wie wir arbeiten?" data-en="How we work?">Wie wir arbeiten?</h2>
+        </div>
+        <div class="hww__steps fade-in-up">
+          <div class="hww__step">
+            <div class="hww__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/><path d="M15 17l2 2 3-3" stroke-width="2"/></svg></div>
+            <h3><span data-de="Set wählen oder Formular ausfüllen" data-en="Choose a set or fill the form">Set wählen oder Formular ausfüllen</span></h3>
+            <p><span data-de="Geben Sie Marke, Modell, Baujahr oder VIN an." data-en="Enter make, model, year or VIN.">Geben Sie Marke, Modell, Baujahr oder VIN an.</span></p>
+          </div>
+          <div class="hww__step">
+            <div class="hww__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 13v-1a8 8 0 0116 0v1"/><rect x="3" y="13" width="4" height="6" rx="1"/><rect x="17" y="13" width="4" height="6" rx="1"/><path d="M19 19v1a3 3 0 01-3 3h-3"/></svg></div>
+            <h3><span data-de="Wir kontaktieren Sie in 30 Minuten" data-en="We contact you within 30 minutes">Wir kontaktieren Sie in 30 Minuten</span></h3>
+            <p><span data-de="Klärung von Konfiguration, Clips und Zahlungsart." data-en="Clarifying configuration, clips and payment.">Klärung von Konfiguration, Clips und Zahlungsart.</span></p>
+          </div>
+          <div class="hww__step">
+            <div class="hww__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 21V9l6 3V9l6 3V9l6 3v9z"/><path d="M3 21h18"/></svg></div>
+            <h3><span data-de="Bestellung geht in Produktion" data-en="Order goes into production">Bestellung geht in Produktion</span></h3>
+            <p><span data-de="Produktionsdauer: 5–7 Werktage." data-en="Production time: 5–7 working days.">Produktionsdauer: 5–7 Werktage.</span></p>
+          </div>
+          <div class="hww__step">
+            <div class="hww__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h11v9H3z"/><path d="M14 9h4l3 3v3h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></div>
+            <h3><span data-de="Fertige Matten werden versendet" data-en="Finished mats are shipped">Fertige Matten werden versendet</span></h3>
+            <p><span data-de="Lieferung nach Deutschland und Europa." data-en="Delivery to Germany and Europe.">Lieferung nach Deutschland und Europa.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 4. KATEGORIEN ===================== -->
+    <section class="section section--alt">
+      <div class="container">
+        <div class="section-head fade-in-up">
+          <span class="section-eyebrow" data-de="Sortiment" data-en="Range">Sortiment</span>
+          <h2 data-de="Unsere Produkte" data-en="Our products">Unsere Produkte</h2>
+        </div>
+        <div class="cat-grid fade-in-up">
+          <a href="katalog.html?cat=mats" class="cat-card">
+            <img src="https://picsum.photos/500/300?random=73" alt="EVA-Automatten">
+            <div class="cat-card__body">
+              <h3><span data-de="EVA-Automatten" data-en="EVA Car Mats">EVA-Automatten</span></h3>
+              <span class="cat-card__link" data-de="Konfigurator →" data-en="Configurator →">Konfigurator →</span>
+            </div>
+          </a>
+          <a href="taschen-eva.html" class="cat-card">
+            <img src="https://picsum.photos/500/300?random=74" alt="Taschen EVA">
+            <div class="cat-card__body">
+              <h3><span data-de="Taschen aus EVA-Material" data-en="EVA Material Bags">Taschen aus EVA-Material</span></h3>
+              <span class="cat-card__link" data-de="Katalog ansehen →" data-en="View catalogue →">Katalog ansehen →</span>
+            </div>
+          </a>
+          <a href="kissen.html" class="cat-card">
+            <img src="https://picsum.photos/500/300?random=75" alt="Kopfstützenkissen">
+            <div class="cat-card__body">
+              <h3><span data-de="Kopfstützenkissen" data-en="Headrest Cushions">Kopfstützenkissen</span></h3>
+              <span class="cat-card__link" data-de="Katalog ansehen →" data-en="View catalogue →">Katalog ansehen →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 5. BEFORE / AFTER ===================== -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head fade-in-up">
+          <span class="section-eyebrow" data-de="Vergleich" data-en="Comparison">Vergleich</span>
+          <h2 data-de="Vorher & Nachher der NEOMAT-Installation" data-en="Before & after NEOMAT installation">Vorher & Nachher der NEOMAT-Installation</h2>
+          <p data-de="Ziehen Sie den Trenner, um den Unterschied zu sehen." data-en="Drag the divider to see the difference.">Ziehen Sie den Trenner, um den Unterschied zu sehen.</p>
+        </div>
+        <div class="ba-wrap fade-in-up">
+          <div class="ba-container" id="baSlider">
+            <div class="ba-before">
+              <img src="https://picsum.photos/900/506?random=76&grayscale" alt="Ohne Matte">
+              <span class="ba-label" data-de="Vorher" data-en="Before">Vorher</span>
+            </div>
+            <div class="ba-after">
+              <img src="https://picsum.photos/900/506?random=77" alt="Mit EVA-Matte">
+              <span class="ba-label" data-de="Nachher" data-en="After">Nachher</span>
+            </div>
+            <div class="ba-divider" id="baDivider"><div class="ba-handle">⟺</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 6. GARANTIE ===================== -->
+    <section class="section dark-sec">
+      <div class="container">
+        <div class="section-head fade-in-up">
+          <span class="section-eyebrow" data-de="Sicherheit" data-en="Assurance">Sicherheit</span>
+          <h2 data-de="Wir geben Garantie auf unsere Produkte" data-en="We guarantee our products">Wir geben Garantie auf unsere Produkte</h2>
+        </div>
+        <div class="ico-grid fade-in-up">
+          <div class="ico-item">
+            <div class="ico-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg></div>
+            <h3><span data-de="Material" data-en="Material">Material</span></h3>
+            <p><span data-de="Garantierte Lebensdauer 1 Jahr." data-en="Guaranteed lifespan of 1 year.">Garantierte Lebensdauer 1 Jahr.</span></p>
+          </div>
+          <div class="ico-item">
+            <div class="ico-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9a8 8 0 0114-4l2 2"/><path d="M20 5v4h-4"/><path d="M20 15a8 8 0 01-14 4l-2-2"/><path d="M4 19v-4h4"/></svg></div>
+            <h3><span data-de="Umtausch" data-en="Exchange">Umtausch</span></h3>
+            <p><span data-de="Innerhalb von 14 Tagen bei Nichtübereinstimmung." data-en="Within 14 days in case of mismatch.">Innerhalb von 14 Tagen bei Nichtübereinstimmung.</span></p>
+          </div>
+          <div class="ico-item">
+            <div class="ico-item__icon"><span class="badge-original">ORIGINAL</span></div>
+            <h3><span data-de="Originalität" data-en="Originality">Originalität</span></h3>
+            <p><span data-de="Alle unsere Produkte sind zertifiziert." data-en="All our products are certified.">Alle unsere Produkte sind zertifiziert.</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 7. GALERIE ===================== -->
+    <section class="section section--alt">
+      <div class="container">
+        <div class="section-head fade-in-up">
+          <span class="section-eyebrow" data-de="Galerie" data-en="Gallery">Galerie</span>
+          <h2 data-de="Unsere Arbeiten" data-en="Our Work">Unsere Arbeiten</h2>
+        </div>
+        <div class="slider fade-in-up">
+          <div class="slider__viewport">
+            <div class="slider__track" id="sliderTrack">
+              <div class="slide"><img src="https://picsum.photos/980/480?random=81" alt="Arbeit 1"><div class="slide__overlay"><span>Audi A7 · EVA Set</span></div></div>
+              <div class="slide"><img src="https://picsum.photos/980/480?random=82" alt="Arbeit 2"><div class="slide__overlay"><span>BMW 5er · Premium</span></div></div>
+              <div class="slide"><img src="https://picsum.photos/980/480?random=83" alt="Arbeit 3"><div class="slide__overlay"><span>Mercedes C · Vollset</span></div></div>
+              <div class="slide"><img src="https://picsum.photos/980/480?random=84" alt="Arbeit 4"><div class="slide__overlay"><span>VW Golf · Raute</span></div></div>
+              <div class="slide"><img src="https://picsum.photos/980/480?random=85" alt="Arbeit 5"><div class="slide__overlay"><span>Toyota Camry · EVA</span></div></div>
+              <div class="slide"><img src="https://picsum.photos/980/480?random=86" alt="Arbeit 6"><div class="slide__overlay"><span>Hyundai Tucson · Set</span></div></div>
+            </div>
+          </div>
+          <button class="slider__btn slider__btn--prev" onclick="moveSlider(-1)" aria-label="Zurück">‹</button>
+          <button class="slider__btn slider__btn--next" onclick="moveSlider(1)" aria-label="Weiter">›</button>
+          <div class="slider__dots" id="sliderDots"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 8. ZAHLUNG & LIEFERUNG ===================== -->
+    <section class="section zahlung">
+      <div class="container">
+        <div class="section-head fade-in-up">
+          <span class="section-eyebrow" data-de="Service" data-en="Service">Service</span>
+          <h2 data-de="Zahlung & Lieferung" data-en="Payment & Delivery">Zahlung & Lieferung</h2>
+        </div>
+        <div class="ico-grid fade-in-up">
+          <div class="ico-item">
+            <div class="ico-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 9h20M6 15h4"/></svg></div>
+            <h3><span data-de="Online" data-en="Online">Online</span></h3>
+            <p><span data-de="Zahlung per Visa oder Mastercard." data-en="Payment by Visa or Mastercard.">Zahlung per Visa oder Mastercard.</span></p>
+          </div>
+          <div class="ico-item">
+            <div class="ico-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <h3><span data-de="Nachnahme" data-en="Cash on delivery">Nachnahme</span></h3>
+            <p><span data-de="Zahlung bei Erhalt der Bestellung." data-en="Payment upon receipt of the order.">Zahlung bei Erhalt der Bestellung.</span></p>
+          </div>
+          <div class="ico-item">
+            <div class="ico-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9l1-4h14l1 4M4 9h16v2a3 3 0 01-6 0 3 3 0 01-6 0 3 3 0 01-4 0z" /><path d="M5 11v8h14v-8"/></svg></div>
+            <h3><span data-de="Selbstabholung" data-en="Pickup">Selbstabholung</span></h3>
+            <p><span data-de="Bar oder bargeldlos (bei vorhandener Ausgabestelle)." data-en="Cash or card (where a pickup point exists).">Bar oder bargeldlos (bei vorhandener Ausgabestelle).</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 9. BERATUNG ===================== -->
+    <section class="section beratung-v3" id="beratung">
+      <div class="beratung-v3__overlay"></div>
+      <div class="container">
+        <div class="beratung-v3__content fade-in-up">
+          <h2 data-de="Beratung benötigt?" data-en="Need advice?">Beratung benötigt?</h2>
+          <p data-de="Füllen Sie das Formular aus — unser Manager meldet sich umgehend." data-en="Fill out the form — our manager will get in touch shortly.">Füllen Sie das Formular aus — unser Manager meldet sich umgehend.</p>
+          <form class="beratung-form" onsubmit="return submitConsult(event)">
+            <input type="text" placeholder="Name" required>
+            <input type="email" placeholder="E-Mail" required>
+            <input type="tel" placeholder="+49 (000) 000-0000">
+            <input type="text" placeholder="Marke, Modell, Baujahr">
+            <button type="submit" class="btn btn-primary" data-de="Absenden" data-en="Send">Absenden</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 10. FAQ ===================== -->
+    <section class="section section--alt" id="faq">
+      <div class="container">
+        <div class="section-head fade-in-up">
+          <span class="section-eyebrow" data-de="Hilfe" data-en="Help">Hilfe</span>
+          <h2 data-de="Häufig gestellte Fragen" data-en="Frequently Asked Questions">Häufig gestellte Fragen</h2>
+        </div>
+        <div class="faq fade-in-up" id="faqList"><!-- рендерит main.js --></div>
+      </div>
+    </section>
+
+    <!-- ===================== 11. KONTAKT ===================== -->
+    <section class="section" id="kontakt">
+      <div class="container">
+        <div class="section-head fade-in-up" style="text-align:left; margin-inline:0; max-width:none;">
+          <span class="section-eyebrow" data-de="Kontakt" data-en="Contact">Kontakt</span>
+          <h2 data-de="Kontakt" data-en="Contact">Kontakt</h2>
+        </div>
+        <div class="kontakt-grid fade-in-up">
+          <div class="kontakt-info">
+            <p><b>Deutschland, Berlin</b></p>
+            <p data-de="Musterstraße 42, 10115 Berlin" data-en="Musterstraße 42, 10115 Berlin">Musterstraße 42, 10115 Berlin</p>
+            <p><b data-de="Öffnungszeiten:" data-en="Opening hours:">Öffnungszeiten:</b></p>
+            <p data-de="Mo–Fr: 9:00–18:00 Uhr" data-en="Mon–Fri: 9:00–18:00">Mo–Fr: 9:00–18:00 Uhr</p>
+            <a href="tel:+49301234567">+49 30 1234567</a>
+            <a href="mailto:info@neomat.de">info@neomat.de</a>
+            <p style="margin-top:14px;"><strong data-de="Aufträge werden rund um die Uhr angenommen." data-en="Orders are accepted around the clock.">Aufträge werden rund um die Uhr angenommen.</strong></p>
+          </div>
+          <form class="kontakt-form" onsubmit="return submitConsult(event)">
+            <input type="text" placeholder="Name" required>
+            <input type="email" placeholder="E-Mail" required>
+            <input type="tel" placeholder="+49 (000) 000-0000">
+            <input type="text" placeholder="Fahrzeugmarke, Modell oder VIN">
+            <button class="btn btn-primary" type="submit" data-de="Absenden" data-en="Send">Absenden</button>
+            <small data-de="Ich stimme der Verarbeitung meiner personenbezogenen Daten zu." data-en="I agree to the processing of my personal data.">Ich stimme der Verarbeitung meiner personenbezogenen Daten zu.</small>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__col footer__brand">
+          <a href="index.html" class="logo logo--footer" aria-label="NEOMAT">
+            <img class="logo__img logo__img--full" src="assets/logo/neomat_full_transparent.png" alt="NEOMAT — Premium Auto Fußmatten">
+          </a>
+          <p data-de="EVA-Automatten nach Maß für Ihr Fahrzeug. Hergestellt für Deutschland und Europa."
+             data-en="Custom EVA car mats for your vehicle. Made for Germany and Europe.">EVA-Automatten nach Maß für Ihr Fahrzeug. Hergestellt für Deutschland und Europa.</p>
+          <div class="footer__socials"><a href="#" aria-label="Instagram">📷</a><a href="#" aria-label="TikTok">🎵</a><a href="#" aria-label="WhatsApp">💬</a></div>
+        </div>
+        <div class="footer__col">
+          <h4 data-de="Navigation" data-en="Navigation">Navigation</h4>
+          <ul>
+            <li><a href="katalog.html" data-de="Katalog" data-en="Catalogue">Katalog</a></li>
+            <li><a href="konfigurator.html" data-de="Konfigurator" data-en="Configurator">Konfigurator</a></li>
+            <li><a href="#arbeiten" data-de="Unsere Arbeiten" data-en="Our Work">Unsere Arbeiten</a></li>
+            <li><a href="faq.html" data-de="FAQ" data-en="FAQ">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4 data-de="Kontakt" data-en="Contact">Kontakt</h4>
+          <ul>
+            <li>📞 <a href="tel:+49301234567">+49 30 1234567</a></li>
+            <li>✉️ <a href="mailto:info@neomat.de">info@neomat.de</a></li>
+            <li>⏰ <span data-de="Mo–Fr: 9:00–18:00 Uhr" data-en="Mon–Fri: 9:00–18:00">Mo–Fr: 9:00–18:00 Uhr</span></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4 data-de="Soziale Netzwerke" data-en="Social media">Soziale Netzwerke</h4>
+          <ul>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">TikTok</a></li>
+            <li><a href="#">WhatsApp</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">© 2024 NEOMAT GmbH — <span data-de="Alle Rechte vorbehalten." data-en="All rights reserved.">Alle Rechte vorbehalten.</span></div>
+    </div>
+  </footer>
+
+  <!-- POPUP: AUTH -->
+  <div class="popup-overlay" id="authPopup">
+    <div class="popup">
+      <button class="popup-close" onclick="closeAuth()" aria-label="Schließen">✕</button>
+      <div class="popup-tabs">
+        <button class="tab active" id="tabLogin" data-de="Anmelden" data-en="Login" onclick="switchAuthTab('login')">Anmelden</button>
+        <button class="tab" id="tabRegister" data-de="Registrieren" data-en="Register" onclick="switchAuthTab('register')">Registrieren</button>
+      </div>
+      <form onsubmit="return handleAuth(event)">
+        <div class="field" id="nameField" style="display:none">
+          <label data-de="Name" data-en="Name">Name</label>
+          <input class="input" id="authName" type="text" placeholder="Max Mustermann">
+        </div>
+        <div class="field">
+          <label data-de="E-Mail" data-en="Email">E-Mail</label>
+          <input class="input" id="authEmail" type="email" required placeholder="info@beispiel.de">
+        </div>
+        <div class="field">
+          <label data-de="Passwort" data-en="Password">Passwort</label>
+          <input class="input" id="authPass" type="password" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="authSubmit" data-de="Anmelden" data-en="Login">Anmelden</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- POPUP: 10% RABATT -->
+  <div class="popup-discount" id="discountPopup">
+    <div class="discount-card">
+      <button class="popup-close" onclick="closeDiscount()" aria-label="Schließen">✕</button>
+      <div class="discount-badge">-10%</div>
+      <h3 data-de="Willkommen bei NEOMAT!" data-en="Welcome to NEOMAT!">Willkommen bei NEOMAT!</h3>
+      <p data-de="Bei Ihrer ersten Bestellung erhalten Sie 10 % Rabatt." data-en="Get 10% off your first order.">Bei Ihrer ersten Bestellung erhalten Sie 10 % Rabatt.</p>
+      <a href="katalog.html" class="btn btn-primary" data-de="Jetzt einkaufen" data-en="Shop Now">Jetzt einkaufen</a>
+    </div>
+  </div>
+
+  <script src="js/slider.js"></script>
+  <script src="js/before-after.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

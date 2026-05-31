@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEOMAT — Konfigurator</title>
+  <meta name="description" content="NEOMAT Konfigurator — gestalten Sie Ihre EVA-Automatten: Material, Textur, Farbe, Set und Zubehör.">
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/animations.css">
+
+  <!-- Стили, специфичные для конфигуратора -->
+  <style>
+  /* Breadcrumb */
+  .breadcrumb {
+    padding-block: 22px 0;
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+  }
+  .breadcrumb a:hover { color: var(--color-primary-red-bright); }
+  .breadcrumb #bcDynamic { color: var(--color-chrome-mid); }
+
+  /* Заголовок шага */
+  .step-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+  .step-title__num {
+    width: 34px; height: 34px;
+    display: grid; place-items: center;
+    border-radius: 50%;
+    background: var(--gradient-red);
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+  .step-title h2 { font-size: 1.5rem; }
+
+  /* ШАГ 1 — бренды */
+  .brand-search { max-width: 360px; margin-bottom: 20px; }
+  .brand-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 12px;
+  }
+  .brand-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 8px;
+    background: var(--color-bg-darker);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: all var(--t-base) var(--ease-out);
+  }
+  .brand-tile:hover { border-color: var(--color-chrome-mid); transform: translateY(-3px); }
+  .brand-tile.active { border-color: var(--color-primary-red); box-shadow: var(--shadow-card); }
+  .brand-tile__logo {
+    width: 44px; height: 44px;
+    display: grid; place-items: center;
+    border-radius: 50%;
+    background: var(--gradient-chrome);
+    color: var(--color-bg-darker);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 1.3rem;
+  }
+  .brand-tile__name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--fs-sm);
+    color: var(--color-chrome-light);
+  }
+
+  /* ШАГ 2 — модели */
+  #step2 { display: none; margin-top: 40px; }
+  .model-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .model-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 18px 20px;
+    text-align: left;
+    background: var(--color-bg-darker);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid transparent;
+    border-radius: var(--radius-md);
+    transition: all var(--t-base) var(--ease-out);
+  }
+  .model-card:hover { border-left-color: var(--color-chrome-mid); transform: translateX(3px); }
+  .model-card.active { border-color: var(--color-primary-red); border-left-color: var(--color-primary-red); }
+  .model-card__name { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+  .model-card__years { font-size: var(--fs-sm); color: var(--color-text-muted); }
+
+  /* КОНФИГУРАТОР — две колонки */
+  .configurator {
+    display: none;
+    grid-template-columns: 40% 60%;
+    gap: 36px;
+    margin-top: 48px;
+    align-items: start;
+  }
+
+  /* Левая колонка — превью (sticky) */
+  .preview-col { position: sticky; top: calc(var(--header-height) + 16px); }
+  .preview-stage {
+    background: var(--gradient-hero);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    display: grid;
+    place-items: center;
+    min-height: 480px;
+    position: relative;
+    overflow: hidden;
+  }
+  .preview-stage::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 40%, rgba(var(--rgb-primary-red), 0.12), transparent 60%);
+  }
+  .mat-shape {
+    position: relative;
+    width: 78%;
+    max-width: 300px;
+    aspect-ratio: 4 / 5;
+    border: 4px solid var(--color-primary-red);
+    border-radius: 16px 56px 16px 56px;
+    box-shadow: var(--shadow-elev), inset 0 0 50px rgba(0, 0, 0, 0.55);
+    transition: background var(--t-base), border-color var(--t-base);
+  }
+  .mat-shape__edge {
+    position: absolute;
+    inset: 12px;
+    border: 2px solid var(--color-accent-gold);
+    border-radius: 10px 44px 10px 44px;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .preview-meta {
+    position: absolute;
+    bottom: 16px; left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 2px;
+    font-size: var(--fs-sm);
+    color: var(--color-chrome-mid);
+  }
+
+  /* Правая колонка — блоки конфигурации */
+  .config-col { display: flex; flex-direction: column; gap: 18px; }
+  .block {
+    background: var(--color-bg-darker);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 22px 24px;
+  }
+  .block__label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    color: var(--color-text-primary);
+    margin-bottom: 16px;
+  }
+  .block__label .num {
+    font-size: var(--fs-xs);
+    color: var(--color-primary-red-bright);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 1px 7px;
+  }
+
+  .vehicle-art {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--color-chrome-light);
+    letter-spacing: 0.5px;
+  }
+
+  /* Сетка дропдаунов */
+  .dropdowns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* Кнопочные опции (option-btn) */
+  .options { display: flex; flex-wrap: wrap; gap: 10px; }
+  .option-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--color-bg-dark);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--fs-sm);
+    color: var(--color-text-secondary);
+    transition: all var(--t-fast);
+  }
+  .option-btn:hover { border-color: var(--color-chrome-mid); color: var(--color-text-primary); }
+  .option-btn.active {
+    border-color: var(--color-primary-red);
+    background: rgba(var(--rgb-primary-red), 0.15);
+    color: #fff;
+  }
+  .info-i {
+    width: 18px; height: 18px;
+    display: inline-grid; place-items: center;
+    border-radius: 50%;
+    border: 1px solid var(--color-chrome-dark);
+    font-size: 0.65rem;
+    font-style: normal;
+    color: var(--color-chrome-mid);
+  }
+  .info-i:hover { background: var(--color-primary-red); color: #fff; border-color: var(--color-primary-red); }
+
+  /* Текстура — превью-плитки */
+  .texture-opts { display: flex; gap: 12px; }
+  .texture-opt {
+    flex: 1;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    transition: all var(--t-fast);
+  }
+  .texture-opt.active { border-color: var(--color-primary-red); box-shadow: var(--shadow-card); }
+  .texture-opt__swatch { height: 60px; }
+  .texture-opt__swatch--raute {
+    background: repeating-linear-gradient(45deg, rgba(0,0,0,0.3) 0 2px, transparent 2px 14px),
+                repeating-linear-gradient(-45deg, rgba(0,0,0,0.3) 0 2px, transparent 2px 14px), #1f1f1f;
+  }
+  .texture-opt__swatch--wabe {
+    background: repeating-linear-gradient(60deg, rgba(0,0,0,0.3) 0 1px, transparent 1px 16px),
+                repeating-linear-gradient(-60deg, rgba(0,0,0,0.3) 0 1px, transparent 1px 16px),
+                repeating-linear-gradient(0deg, rgba(0,0,0,0.3) 0 1px, transparent 1px 16px), #1f1f1f;
+  }
+  .texture-opt__swatch--tropfen {
+    background: radial-gradient(circle, rgba(0,0,0,0.4) 3px, transparent 4px) 0 0 / 18px 18px, #1f1f1f;
+  }
+  .texture-opt__name {
+    display: block;
+    text-align: center;
+    padding: 8px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--fs-xs);
+    color: var(--color-text-secondary);
+  }
+  .texture-opt.active .texture-opt__name { color: #fff; }
+
+  /* Цветовые кружки */
+  .swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+  .swatch {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 2px solid var(--color-border);
+    cursor: pointer;
+    transition: all var(--t-fast);
+    position: relative;
+  }
+  .swatch:hover { transform: scale(1.12); }
+  .swatch.active {
+    border-color: var(--color-accent-gold);
+    box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.3);
+  }
+  .swatch.active::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: grid; place-items: center;
+    color: #fff;
+    font-size: 0.8rem;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+  }
+
+  /* Набор (set) — радиогруппа сеткой */
+  .set-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .set-opt {
+    padding: 12px 14px;
+    text-align: left;
+    background: var(--color-bg-dark);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--fs-sm);
+    color: var(--color-text-secondary);
+    transition: all var(--t-fast);
+  }
+  .set-opt:hover { border-color: var(--color-chrome-mid); color: var(--color-text-primary); }
+  .set-opt.active {
+    border-color: var(--color-primary-red);
+    background: rgba(var(--rgb-primary-red), 0.15);
+    color: #fff;
+  }
+  .set-opt--wide { grid-column: 1 / -1; }
+
+  /* Таблица доставки */
+  .delivery-table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+  .delivery-table th, .delivery-table td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .delivery-table th {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: var(--fs-xs);
+    color: var(--color-chrome-mid);
+  }
+  .delivery-table tr[data-set].active {
+    background: rgba(var(--rgb-primary-red), 0.12);
+    color: #fff;
+  }
+
+  /* Блок итога */
+  .summary { border-top: 3px solid var(--color-primary-red); }
+  .summary__rows { margin-bottom: 18px; }
+  .summary__row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    color: var(--color-text-secondary);
+    font-size: var(--fs-sm);
+  }
+  .summary__total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+    margin-bottom: 20px;
+  }
+  .summary__total span { font-family: var(--font-display); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--color-chrome-mid); }
+  .summary__total strong {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 2.2rem;
+    color: var(--color-text-primary);
+  }
+  .summary__actions { display: flex; flex-direction: column; gap: 10px; }
+  .summary__hint { font-size: var(--fs-xs); color: var(--color-text-muted); text-align: center; margin-top: 4px; }
+
+  /* Адаптив конфигуратора */
+  @media (max-width: 1024px) {
+    .brand-grid { grid-template-columns: repeat(4, 1fr); }
+    .model-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .configurator { grid-template-columns: 1fr; }
+    .preview-col { position: static; }
+    .brand-grid { grid-template-columns: repeat(3, 1fr); }
+    .model-grid { grid-template-columns: 1fr; }
+    .dropdowns { grid-template-columns: 1fr; }
+    .set-grid { grid-template-columns: 1fr; }
+    .delivery-table { display: block; overflow-x: auto; white-space: nowrap; }
+  }
+  
+  /* Отключённая опция (ECOSKIN — скоро) */
+  .option-btn.is-disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  .option-btn.is-disabled .soon {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--color-primary-red-bright);
+  }
+</style>
+</head>
+
+<body>
+
+  <!-- INFO BAR -->
+  <div class="info-bar">
+    <span>✅ <span data-de="Kostenloser Versand ab 100 € in ganz Deutschland" data-en="Free shipping from €100 across Germany">Kostenloser Versand ab 100 € in ganz Deutschland</span></span>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo" aria-label="NEOMAT — Startseite">
+        <img class="logo__img" src="assets/logo/neomat_nm_transparent.png" alt="NEOMAT">
+      </a>
+      <nav class="nav" aria-label="Hauptnavigation">
+        <a href="katalog.html" data-de="Katalog" data-en="Catalogue">Katalog</a>
+        <a href="index.html#vorteile" data-de="Vorteile" data-en="Benefits">Vorteile</a>
+        <a href="index.html#arbeiten" data-de="Unsere Arbeiten" data-en="Our Work">Unsere Arbeiten</a>
+        <a href="kontakt.html" data-de="Kontakt" data-en="Contact">Kontakt</a>
+        <a href="faq.html" data-de="FAQ" data-en="FAQ">FAQ</a>
+      </nav>
+      <div class="header__actions">
+        <div class="lang-switch" role="group" aria-label="Sprache">
+          <button id="langDe" class="active" onclick="switchLang('de')">DE</button>
+          <button id="langEn" onclick="switchLang('en')">EN</button>
+        </div>
+        <a href="warenkorb.html" class="icon-btn" aria-label="Warenkorb">🛒<span class="cart-badge" id="cartBadge">0</span></a>
+        <button class="icon-btn" id="authBtn" aria-label="Konto" onclick="accountAction()">👤</button>
+        <a href="tel:+49301234567" class="header__phone">+49 30 1234567</a>
+        <button class="burger" id="burger" aria-label="Menü öffnen" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="katalog.html" data-de="Katalog" data-en="Catalogue" onclick="toggleMenu()">Katalog</a>
+    <a href="index.html#vorteile" data-de="Vorteile" data-en="Benefits" onclick="toggleMenu()">Vorteile</a>
+    <a href="index.html#arbeiten" data-de="Unsere Arbeiten" data-en="Our Work" onclick="toggleMenu()">Unsere Arbeiten</a>
+    <a href="kontakt.html" data-de="Kontakt" data-en="Contact" onclick="toggleMenu()">Kontakt</a>
+    <a href="faq.html" data-de="FAQ" data-en="FAQ" onclick="toggleMenu()">FAQ</a>
+  </div>
+
+  <main>
+    <div class="container">
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="index.html" data-de="Startseite" data-en="Home">Startseite</a>
+        <span> › </span>
+        <a href="katalog.html" data-de="Kategorien" data-en="Categories">Kategorien</a>
+        <span> › </span>
+        <span data-de="Konfigurator" data-en="Configurator">Konfigurator</span>
+        <span id="bcDynamic"></span>
+      </nav>
+    </div>
+
+    <section class="section" style="padding-top: 28px;">
+      <div class="container">
+
+        <!-- ШАГ 1 — БРЕНД -->
+        <div id="step1" class="fade-in-up">
+          <div class="step-title">
+            <span class="step-title__num">1</span>
+            <h2 data-de="Wählen Sie Ihre Marke" data-en="Choose your make">Wählen Sie Ihre Marke</h2>
+          </div>
+          <input class="input brand-search" type="text" id="brandSearch" placeholder="Marke suchen…">
+          <div class="brand-grid" id="brandGrid"></div>
+        </div>
+
+        <!-- ШАГ 2 — МОДЕЛЬ -->
+        <div id="step2">
+          <div class="step-title">
+            <span class="step-title__num">2</span>
+            <h2 data-de="Wählen Sie Ihr Modell" data-en="Choose your model">Wählen Sie Ihr Modell</h2>
+          </div>
+          <div class="model-grid" id="modelGrid"></div>
+        </div>
+
+        <!-- ШАГ 3 — КОНФИГУРАТОР -->
+        <div class="configurator" id="configurator">
+
+          <!-- ЛЕВО: превью -->
+          <div class="preview-col">
+            <div class="preview-stage">
+              <div class="mat-shape" id="matShape">
+                <div class="mat-shape__edge" id="matEdge"></div>
+              </div>
+              <span class="preview-meta" id="previewMeta">EVA · Raute</span>
+            </div>
+          </div>
+
+          <!-- ПРАВО: 12 блоков -->
+          <div class="config-col">
+
+            <!-- Блок 1 -->
+            <div class="block">
+              <div class="block__label"><span class="num">01</span> <span data-de="Fahrzeuginformationen" data-en="Vehicle information">Fahrzeuginformationen</span></div>
+              <div class="vehicle-art" id="vehicleTitle">—</div>
+            </div>
+
+            <!-- Блок 2 -->
+            <div class="block">
+              <div class="block__label"><span class="num">02</span> <span data-de="Ausstattung präzisieren" data-en="Refine specification">Ausstattung präzisieren</span></div>
+              <div class="dropdowns">
+                <select class="input">
+                  <option data-de="Baujahr" data-en="Year">Baujahr</option>
+                  <option>2024</option><option>2023</option><option>2022</option><option>2021</option><option>2020</option>
+                </select>
+                <select class="input">
+                  <option data-de="Getriebe" data-en="Transmission">Getriebe</option>
+                  <option data-de="Automatik" data-en="Automatic">Automatik</option>
+                  <option data-de="Manuell" data-en="Manual">Manuell</option>
+                </select>
+                <select class="input">
+                  <option data-de="Antrieb" data-en="Drive">Antrieb</option>
+                  <option>FWD</option><option>RWD</option><option>AWD / quattro</option>
+                </select>
+                <select class="input">
+                  <option data-de="Motor" data-en="Engine">Motor</option>
+                  <option>2.0 TDI</option><option>2.0 TFSI</option><option>3.0 V6</option>
+                </select>
+                <select class="input" style="grid-column:1/-1;">
+                  <option data-de="Ausstattungsname" data-en="Trim name">Ausstattungsname</option>
+                  <option>Basis</option><option>Sport</option><option>S-Line / M-Paket</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Блок 3 — материал -->
+            <div class="block">
+              <div class="block__label"><span class="num">03</span> <span data-de="Materialtyp" data-en="Material type">Materialtyp</span></div>
+              <div class="options">
+                <button class="option-btn active" data-group="material" data-value="eva" onclick="pick('material','eva','material')">
+                  EVA <i class="info-i" onclick="event.stopPropagation(); openInfo('EVA','EVA','Leichtes, geruchsneutrales und wasserfestes Material. Klassische Wabenstruktur.','Lightweight, odour-neutral and water-resistant material with classic honeycomb structure.')">i</i>
+                </button>
+                <button class="option-btn is-disabled" data-group="material" data-value="ecoskin" disabled title="Demnächst verfügbar">
+                  ECOSKIN
+                  <span class="soon" data-de="Demnächst verfügbar" data-en="Coming soon">Demnächst verfügbar</span>
+                  <i class="info-i" onclick="event.stopPropagation(); openInfo('ECOSKIN','ECOSKIN','Premium-Kunstleder-Optik — bald verfügbar.','Premium eco-leather look — coming soon.')">i</i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Блок 4 — текстура -->
+            <div class="block">
+              <div class="block__label"><span class="num">04</span> <span data-de="Textur" data-en="Texture">Textur</span></div>
+              <div class="texture-opts">
+                <button class="texture-opt active" data-group="textur" data-value="raute" onclick="pick('textur','raute','textur')">
+                  <span class="texture-opt__swatch texture-opt__swatch--raute"></span>
+                  <span class="texture-opt__name">Raute</span>
+                </button>
+                <button class="texture-opt" data-group="textur" data-value="wabe" onclick="pick('textur','wabe','textur')">
+                  <span class="texture-opt__swatch texture-opt__swatch--wabe"></span>
+                  <span class="texture-opt__name">Wabe</span>
+                </button>
+                <button class="texture-opt" data-group="textur" data-value="tropfen" onclick="pick('textur','tropfen','textur')">
+                  <span class="texture-opt__swatch texture-opt__swatch--tropfen"></span>
+                  <span class="texture-opt__name">Tropfen</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Блок 5 — цвет материала (зависит от фактуры) -->
+            <div class="block">
+              <div class="block__label"><span class="num">05</span> <span data-de="Materialfarbe" data-en="Material colour">Materialfarbe</span></div>
+              <div class="swatches" id="materialColors"><!-- рендерится JS (renderColors) --></div>
+            </div>
+
+            <!-- Блок 6 — цвет канта -->
+            <div class="block">
+              <div class="block__label"><span class="num">06</span> <span data-de="Kantfarbe" data-en="Edge colour">Kantfarbe</span></div>
+              <div class="swatches">
+                <span class="swatch active" style="background:#8B1A1A" onclick="pickColor('kantfarbe','#8B1A1A',this)"></span>
+                <span class="swatch" style="background:#C0392B" onclick="pickColor('kantfarbe','#C0392B',this)"></span>
+                <span class="swatch" style="background:#15151a" onclick="pickColor('kantfarbe','#15151a',this)"></span>
+                <span class="swatch" style="background:#8a8a92" onclick="pickColor('kantfarbe','#8a8a92',this)"></span>
+                <span class="swatch" style="background:#c9a84c" onclick="pickColor('kantfarbe','#c9a84c',this)"></span>
+                <span class="swatch" style="background:#c9b48f" onclick="pickColor('kantfarbe','#c9b48f',this)"></span>
+                <span class="swatch" style="background:#1e3a5f" onclick="pickColor('kantfarbe','#1e3a5f',this)"></span>
+                <span class="swatch" style="background:#2f5a3a" onclick="pickColor('kantfarbe','#2f5a3a',this)"></span>
+                <span class="swatch" style="background:#f0f0f0" onclick="pickColor('kantfarbe','#f0f0f0',this)"></span>
+                <span class="swatch" style="background:#5a1414" onclick="pickColor('kantfarbe','#5a1414',this)"></span>
+                <span class="swatch" style="background:#4a4a52" onclick="pickColor('kantfarbe','#4a4a52',this)"></span>
+                <span class="swatch" style="background:#6b4a2f" onclick="pickColor('kantfarbe','#6b4a2f',this)"></span>
+              </div>
+            </div>
+
+            <!-- Блок 7 — набор -->
+            <div class="block">
+              <div class="block__label"><span class="num">07</span> <span data-de="Set zusammenstellen" data-en="Build your set">Set zusammenstellen</span></div>
+              <div class="set-grid">
+                <button class="set-opt" data-group="set" data-value="vorne-rechts" onclick="pick('set','vorne-rechts','set')" data-de="Vorderer rechts" data-en="Front right">Vorderer rechts</button>
+                <button class="set-opt" data-group="set" data-value="vorne-links" onclick="pick('set','vorne-links','set')" data-de="Vorderer links" data-en="Front left">Vorderer links</button>
+                <button class="set-opt" data-group="set" data-value="vorne-paar" onclick="pick('set','vorne-paar','set')" data-de="Vorderes Paar" data-en="Front pair">Vorderes Paar</button>
+                <button class="set-opt" data-group="set" data-value="hinten-rechts" onclick="pick('set','hinten-rechts','set')" data-de="Hinterer rechts" data-en="Rear right">Hinterer rechts</button>
+                <button class="set-opt" data-group="set" data-value="hinten-links" onclick="pick('set','hinten-links','set')" data-de="Hinterer links" data-en="Rear left">Hinterer links</button>
+                <button class="set-opt" data-group="set" data-value="hinten-paar" onclick="pick('set','hinten-paar','set')" data-de="Hinteres Paar" data-en="Rear pair">Hinteres Paar</button>
+                <button class="set-opt set-opt--wide active" data-group="set" data-value="voll" onclick="pick('set','voll','set')" data-de="Vollständiges Set (Innenraum)" data-en="Full set (interior)">Vollständiges Set (Innenraum)</button>
+                <button class="set-opt set-opt--wide" data-group="set" data-value="premium" onclick="pick('set','premium','set')" data-de="Premium-Set (Innenraum + Kofferraum)" data-en="Premium set (interior + trunk)">Premium-Set (Innenraum + Kofferraum)</button>
+              </div>
+            </div>
+
+            <!-- Блок 8 — клипсы -->
+            <div class="block">
+              <div class="block__label"><span class="num">08</span> <span data-de="Zubehör" data-en="Accessories">Zubehör</span></div>
+              <div class="options">
+                <button class="option-btn active" data-group="clips" data-value="mit" onclick="pick('clips','mit','clips')">
+                  <span data-de="Mit Clips" data-en="With clips">Mit Clips</span>
+                  <i class="info-i" onclick="event.stopPropagation(); openInfo('Mit Clips','With clips','Original-Befestigungsclips für sicheren Halt der Matten.','Original fixing clips for a secure hold of the mats.')">i</i>
+                </button>
+                <button class="option-btn" data-group="clips" data-value="ohne" onclick="pick('clips','ohne','clips')">
+                  <span data-de="Ohne Clips" data-en="Without clips">Ohne Clips</span>
+                  <i class="info-i" onclick="event.stopPropagation(); openInfo('Ohne Clips','Without clips','Ohne zusätzliche Clips — Befestigung über das Klettsystem.','Without extra clips — fixed via the hook-and-loop system.')">i</i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Блок 9 — лапа -->
+            <div class="block">
+              <div class="block__label"><span class="num">09</span> <span data-de="Halterung" data-en="Mounting">Halterung</span></div>
+              <div class="options">
+                <button class="option-btn active" data-group="halterung" data-value="ohne" onclick="pick('halterung','ohne','halterung')" data-de="Ohne Halterung" data-en="Without mount">Ohne Halterung</button>
+                <button class="option-btn" data-group="halterung" data-value="3d" onclick="pick('halterung','3d','halterung')" data-de="3D-Halterung (+15 €)" data-en="3D mount (+€15)">3D-Halterung (+15 €)</button>
+              </div>
+            </div>
+
+            <!-- Блок 10 — подпятник -->
+            <div class="block">
+              <div class="block__label"><span class="num">10</span> <span data-de="Fersenpolster" data-en="Heel pad">Fersenpolster</span></div>
+              <div class="options">
+                <button class="option-btn active" data-group="fersenpolster" data-value="ohne" onclick="pick('fersenpolster','ohne','fersenpolster')" data-de="Ohne" data-en="None">Ohne</button>
+                <button class="option-btn" data-group="fersenpolster" data-value="metall" onclick="pick('fersenpolster','metall','fersenpolster')" data-de="Metall (+20 €)" data-en="Metal (+€20)">Metall (+20 €)</button>
+                <button class="option-btn" data-group="fersenpolster" data-value="gummi" onclick="pick('fersenpolster','gummi','fersenpolster')" data-de="Gummi (+15 €)" data-en="Rubber (+€15)">Gummi (+15 €)</button>
+              </div>
+            </div>
+
+            <!-- Блок 11 — доставка -->
+            <div class="block">
+              <div class="block__label"><span class="num">11</span> <span data-de="Lieferung" data-en="Delivery">Lieferung</span></div>
+              <table class="delivery-table" id="deliveryTable">
+                <thead>
+                  <tr>
+                    <th data-de="Set" data-en="Set">Set</th>
+                    <th data-de="Kosten" data-en="Cost">Kosten</th>
+                    <th data-de="Dauer" data-en="Time">Dauer</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr data-set="einzeln"><td data-de="Einzelmatte" data-en="Single mat">Einzelmatte</td><td>4,99 €</td><td>3–5 <span data-de="Tage" data-en="days">Tage</span></td></tr>
+                  <tr data-set="paar"><td data-de="Paar" data-en="Pair">Paar</td><td>6,99 €</td><td>3–5 <span data-de="Tage" data-en="days">Tage</span></td></tr>
+                  <tr data-set="voll" class="active"><td data-de="Vollständiges Set" data-en="Full set">Vollständiges Set</td><td>9,99 €</td><td>5–7 <span data-de="Tage" data-en="days">Tage</span></td></tr>
+                  <tr data-set="premium"><td data-de="Premium-Set" data-en="Premium set">Premium-Set</td><td>12,99 €</td><td>5–7 <span data-de="Tage" data-en="days">Tage</span></td></tr>
+                </tbody>
+              </table>
+              <p class="summary__hint" style="text-align:left; margin-top:10px;" data-de="Ab 100 € Bestellwert ist der Versand kostenlos."
+                 data-en="Free shipping for orders from €100.">Ab 100 € Bestellwert ist der Versand kostenlos.</p>
+            </div>
+
+            <!-- Блок 12 — итог -->
+            <div class="block summary">
+              <div class="block__label"><span class="num">12</span> <span data-de="Zusammenfassung" data-en="Summary">Zusammenfassung</span></div>
+              <div class="summary__rows">
+                <div class="summary__row">
+                  <span data-de="Versandkosten" data-en="Shipping">Versandkosten</span>
+                  <span id="deliveryCost">9,99 €</span>
+                </div>
+              </div>
+              <div class="summary__total">
+                <span data-de="Gesamt" data-en="Total">Gesamt</span>
+                <strong id="totalPrice">159 €</strong>
+              </div>
+              <div class="summary__actions">
+                <button class="btn btn-primary btn-block" onclick="configToCart()" data-de="In den Warenkorb" data-en="Add to cart">In den Warenkorb</button>
+                <button class="btn btn-secondary btn-block requires-auth" onclick="payNow()" data-de="Jetzt bezahlen" data-en="Pay now">Jetzt bezahlen</button>
+                <button class="btn btn-secondary btn-block requires-auth" onclick="contactManager()" data-de="Manager kontaktieren" data-en="Contact manager">Manager kontaktieren</button>
+                <p class="summary__hint" data-de="Bezahlen & Manager-Kontakt nur nach Anmeldung."
+                   data-en="Pay & manager contact available after login only.">Bezahlen & Manager-Kontakt nur nach Anmeldung.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__col footer__brand">
+          <a href="index.html" class="logo logo--footer" aria-label="NEOMAT">
+            <img class="logo__img logo__img--full" src="assets/logo/neomat_full_transparent.png" alt="NEOMAT — Premium Auto Fußmatten">
+          </a>
+          <p data-de="EVA-Automatten nach Maß für Ihr Fahrzeug. Hergestellt für Deutschland und Europa."
+             data-en="Custom EVA car mats for your vehicle. Made for Germany and Europe.">EVA-Automatten nach Maß für Ihr Fahrzeug. Hergestellt für Deutschland und Europa.</p>
+          <div class="footer__socials"><a href="#" aria-label="Instagram">📷</a><a href="#" aria-label="Facebook">📘</a><a href="#" aria-label="YouTube">▶️</a></div>
+        </div>
+        <div class="footer__col">
+          <h4 data-de="Navigation" data-en="Navigation">Navigation</h4>
+          <ul>
+            <li><a href="katalog.html" data-de="Katalog" data-en="Catalogue">Katalog</a></li>
+            <li><a href="konfigurator.html" data-de="Konfigurator" data-en="Configurator">Konfigurator</a></li>
+            <li><a href="index.html#arbeiten" data-de="Unsere Arbeiten" data-en="Our Work">Unsere Arbeiten</a></li>
+            <li><a href="faq.html" data-de="FAQ" data-en="FAQ">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4 data-de="Rechtliches" data-en="Legal">Rechtliches</h4>
+          <ul>
+            <li><a href="#" data-de="Impressum" data-en="Imprint">Impressum</a></li>
+            <li><a href="#" data-de="Datenschutz" data-en="Privacy">Datenschutz</a></li>
+            <li><a href="#" data-de="AGB" data-en="Terms">AGB</a></li>
+            <li><a href="#" data-de="Widerruf" data-en="Returns">Widerruf</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4 data-de="Kontakt" data-en="Contact">Kontakt</h4>
+          <ul>
+            <li>📍 Musterstraße 42, 10115 Berlin</li>
+            <li>📞 <a href="tel:+49301234567">+49 30 1234567</a></li>
+            <li>✉️ <a href="mailto:info@neomat.de">info@neomat.de</a></li>
+            <li>⏰ <span data-de="Mo–Fr: 9:00–18:00 Uhr" data-en="Mon–Fri: 9:00–18:00">Mo–Fr: 9:00–18:00 Uhr</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">© 2024 NEOMAT GmbH — <span data-de="Alle Rechte vorbehalten." data-en="All rights reserved.">Alle Rechte vorbehalten.</span></div>
+    </div>
+  </footer>
+
+  <!-- POPUP: AUTH -->
+  <div class="popup-overlay" id="authPopup">
+    <div class="popup">
+      <button class="popup-close" onclick="closeAuth()" aria-label="Schließen">✕</button>
+      <div class="popup-tabs">
+        <button class="tab active" id="tabLogin" data-de="Anmelden" data-en="Login" onclick="switchAuthTab('login')">Anmelden</button>
+        <button class="tab" id="tabRegister" data-de="Registrieren" data-en="Register" onclick="switchAuthTab('register')">Registrieren</button>
+      </div>
+      <form onsubmit="return handleAuth(event)">
+        <div class="field" id="nameField" style="display:none">
+          <label data-de="Name" data-en="Name">Name</label>
+          <input class="input" id="authName" type="text" placeholder="Max Mustermann">
+        </div>
+        <div class="field">
+          <label data-de="E-Mail" data-en="Email">E-Mail</label>
+          <input class="input" id="authEmail" type="email" required placeholder="info@beispiel.de">
+        </div>
+        <div class="field">
+          <label data-de="Passwort" data-en="Password">Passwort</label>
+          <input class="input" id="authPass" type="password" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="authSubmit" data-de="Anmelden" data-en="Login">Anmelden</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- POPUP: 10% RABATT -->
+  <div class="popup-discount" id="discountPopup">
+    <div class="discount-card">
+      <button class="popup-close" onclick="closeDiscount()" aria-label="Schließen">✕</button>
+      <div class="discount-badge">-10%</div>
+      <h3 data-de="Willkommen bei NEOMAT!" data-en="Welcome to NEOMAT!">Willkommen bei NEOMAT!</h3>
+      <p data-de="Bei Ihrer ersten Bestellung erhalten Sie 10 % Rabatt." data-en="Get 10% off your first order.">Bei Ihrer ersten Bestellung erhalten Sie 10 % Rabatt.</p>
+      <a href="katalog.html" class="btn btn-primary" data-de="Jetzt einkaufen" data-en="Shop Now">Jetzt einkaufen</a>
+    </div>
+  </div>
+
+  <script src="js/slider.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/konfigurator.js"></script>
+</body>
+</html>
