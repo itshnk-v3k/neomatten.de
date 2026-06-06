@@ -230,6 +230,9 @@
     .beratung-form input { width: 100%; min-width: 0; }
   }
   </style>
+  <!-- Feather Icons -->
+  <link rel="stylesheet" href="css/feather.css">
+  <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 </head>
 
 <body>
@@ -237,6 +240,16 @@
   <!-- INFO BAR -->
   <div class="info-bar">
     <span>✅ <span data-de="Bei Bestellungen ab 100 € — kostenloser Versand in ganz Deutschland" data-en="Orders from €100 — free shipping across Germany">Bei Bestellungen ab 100 € — kostenloser Versand in ganz Deutschland</span></span>
+  </div>
+  <!-- Живой счётчик заказов -->
+  <div class="live-counter">
+    <span class="counter-icon">🔄</span>
+    <span data-de="Heute in Produktion:" data-en="In production today:">Heute in Produktion:</span>
+    <strong id="ordersCount">6</strong>
+    <span data-de="Bestellungen" data-en="orders">Bestellungen</span>
+    <span class="divider">|</span>
+    <span data-de="Lieferung ab:" data-en="Delivery from:">Lieferung ab:</span>
+    <strong id="deliveryDate"></strong>
   </div>
 
   <!-- HEADER -->
@@ -250,6 +263,7 @@
         <a href="#vorteile" data-de="Vorteile" data-en="Benefits">Vorteile</a>
         <a href="#arbeiten" data-de="Unsere Arbeiten" data-en="Our Work">Unsere Arbeiten</a>
         <a href="#kontakt" data-de="Kontakt" data-en="Contact">Kontakt</a>
+        <a href="eva-material.html" data-de="EVA-Material" data-en="EVA Material">EVA-Material</a>
         <a href="faq.html" data-de="FAQ" data-en="FAQ">FAQ</a>
       </nav>
       <div class="header__actions">
@@ -311,21 +325,21 @@
                 <h3><span data-de="Visualisierung" data-en="Visualisation">Visualisierung</span></h3>
                 <p><span data-de="Konfigurator für vollständige Anpassung von Matten, Befestigungen und Farben." data-en="Configurator for full customisation of mats, fixings and colours.">Konfigurator für vollständige Anpassung von Matten, Befestigungen und Farben.</span></p>
               </div>
-              <span class="why-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+              <span class="why-item__icon"><i data-feather="grid"></i></span>
             </div>
             <div class="why-item">
               <div>
                 <h3><span data-de="Ganzjährig" data-en="All-season">Ganzjährig</span></h3>
                 <p><span data-de="Für den ganzjährigen Einsatz geeignet, verformt sich nicht bei ±50 °C." data-en="Suitable for year-round use, does not deform at ±50 °C.">Für den ganzjährigen Einsatz geeignet, verformt sich nicht bei ±50 °C.</span></p>
               </div>
-              <span class="why-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 18a4 4 0 010-8 5 5 0 019.6-1.5A3.5 3.5 0 0117 18z"/></svg></span>
+              <span class="why-item__icon"><i data-feather="thermometer"></i></span>
             </div>
             <div class="why-item">
               <div>
                 <h3><span data-de="Sauberkeit im Innenraum" data-en="Clean interior">Sauberkeit im Innenraum</span></h3>
                 <p><span data-de="Dank spezieller Materialstruktur bleiben Feuchtigkeit und Schmutz lokalisiert." data-en="Thanks to the special material structure, moisture and dirt stay contained.">Dank spezieller Materialstruktur bleiben Feuchtigkeit und Schmutz lokalisiert.</span></p>
               </div>
-              <span class="why-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3l3-1 3 1 3 5-3 5h-6l-3-5z"/><path d="M6 13l3 5-3 3-3-3z" opacity=".5"/></svg></span>
+              <span class="why-item__icon"><i data-feather="droplet"></i></span>
             </div>
           </div>
 
@@ -337,21 +351,21 @@
           <!-- Правая колонка -->
           <div class="why-col why-col--r">
             <div class="why-item">
-              <span class="why-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l2.5 2.5M16.5 16.5L19 19M19 5l-2.5 2.5M7.5 16.5L5 19"/></svg></span>
+              <span class="why-item__icon"><i data-feather="anchor"></i></span>
               <div>
                 <h3><span data-de="Zuverlässige Fixierung" data-en="Reliable fixing">Zuverlässige Fixierung</span></h3>
                 <p><span data-de="Original-Clips und Klettsystem für sichere Befestigung." data-en="Original clips and hook-and-loop system for a secure hold.">Original-Clips und Klettsystem für sichere Befestigung.</span></p>
               </div>
             </div>
             <div class="why-item">
-              <span class="why-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.5 15.5M14 4l6 6M8.5 8.5L20 20"/></svg></span>
+              <span class="why-item__icon"><i data-feather="scissors"></i></span>
               <div>
                 <h3><span data-de="Maximale Abdeckung" data-en="Maximum coverage">Maximale Abdeckung</span></h3>
                 <p><span data-de="Laserpräzision nach Vorlagen für maximale Abdeckung des Innenraums." data-en="Laser precision to templates for maximum interior coverage.">Laserpräzision nach Vorlagen für maximale Abdeckung des Innenraums.</span></p>
               </div>
             </div>
             <div class="why-item">
-              <span class="why-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h12v16H4z"/><path d="M16 8h4v12h-4"/><path d="M7 8h6M7 12h6M7 16h4"/></svg></span>
+              <span class="why-item__icon"><i data-feather="zap"></i></span>
               <div>
                 <h3><span data-de="Leicht zu reinigen" data-en="Easy to clean">Leicht zu reinigen</span></h3>
                 <p><span data-de="Leicht, einfach zu entnehmen und mit Wasserstrahl zu reinigen." data-en="Lightweight, easy to remove and clean with a water jet.">Leicht, einfach zu entnehmen und mit Wasserstrahl zu reinigen.</span></p>
@@ -375,22 +389,22 @@
         </div>
         <div class="hww__steps fade-in-up">
           <div class="hww__step">
-            <div class="hww__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/><path d="M15 17l2 2 3-3" stroke-width="2"/></svg></div>
+            <div class="hww__icon"><i data-feather="clipboard"></i></div>
             <h3><span data-de="Set wählen oder Formular ausfüllen" data-en="Choose a set or fill the form">Set wählen oder Formular ausfüllen</span></h3>
             <p><span data-de="Geben Sie Marke, Modell, Baujahr oder VIN an." data-en="Enter make, model, year or VIN.">Geben Sie Marke, Modell, Baujahr oder VIN an.</span></p>
           </div>
           <div class="hww__step">
-            <div class="hww__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 13v-1a8 8 0 0116 0v1"/><rect x="3" y="13" width="4" height="6" rx="1"/><rect x="17" y="13" width="4" height="6" rx="1"/><path d="M19 19v1a3 3 0 01-3 3h-3"/></svg></div>
+            <div class="hww__icon"><i data-feather="phone"></i></div>
             <h3><span data-de="Wir kontaktieren Sie in 30 Minuten" data-en="We contact you within 30 minutes">Wir kontaktieren Sie in 30 Minuten</span></h3>
             <p><span data-de="Klärung von Konfiguration, Clips und Zahlungsart." data-en="Clarifying configuration, clips and payment.">Klärung von Konfiguration, Clips und Zahlungsart.</span></p>
           </div>
           <div class="hww__step">
-            <div class="hww__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 21V9l6 3V9l6 3V9l6 3v9z"/><path d="M3 21h18"/></svg></div>
+            <div class="hww__icon"><i data-feather="tool"></i></div>
             <h3><span data-de="Bestellung geht in Produktion" data-en="Order goes into production">Bestellung geht in Produktion</span></h3>
             <p><span data-de="Produktionsdauer: 5–7 Werktage." data-en="Production time: 5–7 working days.">Produktionsdauer: 5–7 Werktage.</span></p>
           </div>
           <div class="hww__step">
-            <div class="hww__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h11v9H3z"/><path d="M14 9h4l3 3v3h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></div>
+            <div class="hww__icon"><i data-feather="truck"></i></div>
             <h3><span data-de="Fertige Matten werden versendet" data-en="Finished mats are shipped">Fertige Matten werden versendet</span></h3>
             <p><span data-de="Lieferung nach Deutschland und Europa." data-en="Delivery to Germany and Europe.">Lieferung nach Deutschland und Europa.</span></p>
           </div>
@@ -464,17 +478,17 @@
         </div>
         <div class="ico-grid fade-in-up">
           <div class="ico-item">
-            <div class="ico-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg></div>
+            <div class="ico-item__icon"><i data-feather="shield"></i></div>
             <h3><span data-de="Material" data-en="Material">Material</span></h3>
             <p><span data-de="Garantierte Lebensdauer 1 Jahr." data-en="Guaranteed lifespan of 1 year.">Garantierte Lebensdauer 1 Jahr.</span></p>
           </div>
           <div class="ico-item">
-            <div class="ico-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9a8 8 0 0114-4l2 2"/><path d="M20 5v4h-4"/><path d="M20 15a8 8 0 01-14 4l-2-2"/><path d="M4 19v-4h4"/></svg></div>
+            <div class="ico-item__icon"><i data-feather="refresh-cw"></i></div>
             <h3><span data-de="Umtausch" data-en="Exchange">Umtausch</span></h3>
-            <p><span data-de="Innerhalb von 14 Tagen bei Nichtübereinstimmung." data-en="Within 14 days in case of mismatch.">Innerhalb von 14 Tagen bei Nichtübereinstimmung.</span></p>
+            <p><span data-de="Unsere Matten werden individuell für Ihr Fahrzeug angefertigt. Bei Problemen kontaktieren Sie uns direkt per WhatsApp oder Telegram — mit Foto und Beschreibung. Wir finden gemeinsam eine Lösung." data-en="Our mats are made individually for your vehicle. If there are any issues, contact us directly via WhatsApp or Telegram with a photo and description — we will find a solution together.">Unsere Matten werden individuell für Ihr Fahrzeug angefertigt. Bei Problemen kontaktieren Sie uns direkt per WhatsApp oder Telegram — mit Foto und Beschreibung. Wir finden gemeinsam eine Lösung.</span></p>
           </div>
           <div class="ico-item">
-            <div class="ico-item__icon"><span class="badge-original">ORIGINAL</span></div>
+            <div class="ico-item__icon"><i data-feather="award"></i></div>
             <h3><span data-de="Originalität" data-en="Originality">Originalität</span></h3>
             <p><span data-de="Alle unsere Produkte sind zertifiziert." data-en="All our products are certified.">Alle unsere Produkte sind zertifiziert.</span></p>
           </div>
@@ -507,6 +521,27 @@
       </div>
     </section>
 
+    <!-- ===================== ОТЗЫВЫ ===================== -->
+    <section class="section section--alt" id="reviews">
+      <div class="container">
+        <div class="section-head fade-in-up">
+          <span class="section-eyebrow" data-de="Kundenstimmen" data-en="Customer voices">Kundenstimmen</span>
+          <h2 data-de="Kundenbewertungen" data-en="Customer reviews">Kundenbewertungen</h2>
+        </div>
+        <div class="reviews-summary fade-in-up">
+          <div class="reviews-score">4.9</div>
+          <div>
+            <div class="reviews-stars-big">★★★★★</div>
+            <div class="reviews-count" data-de="847 Bewertungen" data-en="847 reviews">847 Bewertungen</div>
+          </div>
+        </div>
+        <div class="reviews-grid fade-in-up" id="reviewsGrid"><!-- рендерит JS --></div>
+        <div class="fade-in-up" style="text-align:center;">
+          <button class="btn btn-primary" onclick="showAddReviewPopup()" data-de="Bewertung hinzufügen" data-en="Add a review">Bewertung hinzufügen</button>
+        </div>
+      </div>
+    </section>
+
     <!-- ===================== 8. ZAHLUNG & LIEFERUNG ===================== -->
     <section class="section zahlung">
       <div class="container">
@@ -516,17 +551,17 @@
         </div>
         <div class="ico-grid fade-in-up">
           <div class="ico-item">
-            <div class="ico-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 9h20M6 15h4"/></svg></div>
+            <div class="ico-item__icon"><i data-feather="credit-card"></i></div>
             <h3><span data-de="Online" data-en="Online">Online</span></h3>
             <p><span data-de="Zahlung per Visa oder Mastercard." data-en="Payment by Visa or Mastercard.">Zahlung per Visa oder Mastercard.</span></p>
           </div>
           <div class="ico-item">
-            <div class="ico-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/></svg></div>
+            <div class="ico-item__icon"><i data-feather="package"></i></div>
             <h3><span data-de="Nachnahme" data-en="Cash on delivery">Nachnahme</span></h3>
             <p><span data-de="Zahlung bei Erhalt der Bestellung." data-en="Payment upon receipt of the order.">Zahlung bei Erhalt der Bestellung.</span></p>
           </div>
           <div class="ico-item">
-            <div class="ico-item__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9l1-4h14l1 4M4 9h16v2a3 3 0 01-6 0 3 3 0 01-6 0 3 3 0 01-4 0z" /><path d="M5 11v8h14v-8"/></svg></div>
+            <div class="ico-item__icon"><i data-feather="shopping-bag"></i></div>
             <h3><span data-de="Selbstabholung" data-en="Pickup">Selbstabholung</span></h3>
             <p><span data-de="Bar oder bargeldlos (bei vorhandener Ausgabestelle)." data-en="Cash or card (where a pickup point exists).">Bar oder bargeldlos (bei vorhandener Ausgabestelle).</span></p>
           </div>
@@ -612,7 +647,8 @@
             <li><a href="katalog.html" data-de="Katalog" data-en="Catalogue">Katalog</a></li>
             <li><a href="konfigurator.html" data-de="Konfigurator" data-en="Configurator">Konfigurator</a></li>
             <li><a href="#arbeiten" data-de="Unsere Arbeiten" data-en="Our Work">Unsere Arbeiten</a></li>
-            <li><a href="faq.html" data-de="FAQ" data-en="FAQ">FAQ</a></li>
+            <li><a href="eva-material.html" data-de="EVA-Material" data-en="EVA Material">EVA-Material</a>
+        <a href="faq.html" data-de="FAQ" data-en="FAQ">FAQ</a></li>
           </ul>
         </div>
         <div class="footer__col">
@@ -632,7 +668,24 @@
           </ul>
         </div>
       </div>
-      <div class="footer__bottom">© 2024 NEOMAT GmbH — <span data-de="Alle Rechte vorbehalten." data-en="All rights reserved.">Alle Rechte vorbehalten.</span></div>
+        <div class="footer__col">
+          <h4 data-de="Zahlungsmethoden" data-en="Payment methods">Zahlungsmethoden</h4>
+          <ul>
+            <li data-de="💳 Visa / Mastercard" data-en="💳 Visa / Mastercard">💳 Visa / Mastercard</li>
+            <li data-de="📦 Nachnahme" data-en="📦 Cash on delivery">📦 Nachnahme</li>
+            <li data-de="🏦 Banküberweisung" data-en="🏦 Bank transfer">🏦 Banküberweisung</li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4 data-de="Öffnungszeiten" data-en="Opening hours">Öffnungszeiten</h4>
+          <ul>
+            <li data-de="Mo–Fr: 07:00 – 18:00" data-en="Mon–Fri: 07:00 – 18:00">Mo–Fr: 07:00 – 18:00</li>
+            <li data-de="Sa: 08:00 – 15:00" data-en="Sat: 08:00 – 15:00">Sa: 08:00 – 15:00</li>
+            <li><strong data-de="Bestellungen: 24/7" data-en="Orders: 24/7">Bestellungen: 24/7</strong></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">© 2024 NEOMAT — <span data-de="Alle Rechte vorbehalten." data-en="All rights reserved.">Alle Rechte vorbehalten.</span></div>
     </div>
   </footer>
 
@@ -673,10 +726,33 @@
     </div>
   </div>
 
+  <!-- POPUP: ДОБАВИТЬ ОТЗЫВ -->
+  <div class="popup-overlay" id="reviewPopup">
+    <div class="popup" style="max-width:500px;">
+      <button class="popup-close" onclick="document.getElementById('reviewPopup').classList.remove('open')" aria-label="Schließen">✕</button>
+      <h3 data-de="Ihre Bewertung" data-en="Your review">Ihre Bewertung</h3>
+      <div class="star-rating" id="starRating">
+        <span data-val="1">★</span><span data-val="2">★</span>
+        <span data-val="3">★</span><span data-val="4">★</span>
+        <span data-val="5">★</span>
+      </div>
+      <div class="field"><input class="input" type="text" id="reviewName" placeholder="Ihr Name" required></div>
+      <div class="field"><textarea class="input" id="reviewText" rows="3" placeholder="Ihre Erfahrung mit NEOMAT..." style="resize:vertical; min-height:80px;"></textarea></div>
+      <div class="field">
+        <label style="font-size:var(--fs-xs); color:var(--color-text-muted); display:block; margin-bottom:6px;" data-de="Foto (optional)" data-en="Photo (optional)">Foto (optional)</label>
+        <input type="file" accept="image/*" id="reviewPhoto" onchange="previewReviewPhoto(this)">
+        <img id="reviewPhotoPreview" class="review-preview-photo">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="submitReview()" data-de="Absenden" data-en="Submit">Absenden</button>
+    </div>
+  </div>
+
   <script src="js/slider.js"></script>
   <script src="js/before-after.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/reviews.js"></script>
+  <script>feather.replace({ 'stroke-width': 1.6 });</script>
 </body>
 </html>

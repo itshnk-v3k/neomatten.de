@@ -21,6 +21,9 @@
   .kontakt-map { margin-top: 8px; height: 220px; border-radius: var(--radius-md); border: 1px solid var(--color-border); background: linear-gradient(135deg, #ececec 0%, #f7f7f7 100%); display: grid; place-items: center; color: var(--color-text-muted); font-family: var(--font-display); font-weight: 600; letter-spacing: 1px; }
   @media (max-width: 860px) { .kontakt-grid { grid-template-columns: 1fr; } }
   </style>
+  <!-- Feather Icons -->
+  <link rel="stylesheet" href="css/feather.css">
+  <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 </head>
 <body>
   <div class="info-bar">
@@ -36,6 +39,7 @@
         <a href="index.html#vorteile" data-de="Vorteile" data-en="Benefits">Vorteile</a>
         <a href="index.html#arbeiten" data-de="Unsere Arbeiten" data-en="Our Work">Unsere Arbeiten</a>
         <a href="kontakt.html" data-de="Kontakt" data-en="Contact">Kontakt</a>
+        <a href="eva-material.html" data-de="EVA-Material" data-en="EVA Material">EVA-Material</a>
         <a href="faq.html" data-de="FAQ" data-en="FAQ">FAQ</a>
       </nav>
       <div class="header__actions">
@@ -112,7 +116,8 @@
             <li><a href="katalog.html" data-de="Katalog" data-en="Catalogue">Katalog</a></li>
             <li><a href="konfigurator.html" data-de="Konfigurator" data-en="Configurator">Konfigurator</a></li>
             <li><a href="index.html#arbeiten" data-de="Unsere Arbeiten" data-en="Our Work">Unsere Arbeiten</a></li>
-            <li><a href="faq.html" data-de="FAQ" data-en="FAQ">FAQ</a></li>
+            <li><a href="eva-material.html" data-de="EVA-Material" data-en="EVA Material">EVA-Material</a>
+        <a href="faq.html" data-de="FAQ" data-en="FAQ">FAQ</a></li>
           </ul>
         </div>
         <div class="footer__col">
@@ -134,7 +139,24 @@
           </ul>
         </div>
       </div>
-      <div class="footer__bottom">© 2024 NEOMAT GmbH — <span data-de="Alle Rechte vorbehalten." data-en="All rights reserved.">Alle Rechte vorbehalten.</span></div>
+        <div class="footer__col">
+          <h4 data-de="Zahlungsmethoden" data-en="Payment methods">Zahlungsmethoden</h4>
+          <ul>
+            <li data-de="💳 Visa / Mastercard" data-en="💳 Visa / Mastercard">💳 Visa / Mastercard</li>
+            <li data-de="📦 Nachnahme" data-en="📦 Cash on delivery">📦 Nachnahme</li>
+            <li data-de="🏦 Banküberweisung" data-en="🏦 Bank transfer">🏦 Banküberweisung</li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4 data-de="Öffnungszeiten" data-en="Opening hours">Öffnungszeiten</h4>
+          <ul>
+            <li data-de="Mo–Fr: 07:00 – 18:00" data-en="Mon–Fri: 07:00 – 18:00">Mo–Fr: 07:00 – 18:00</li>
+            <li data-de="Sa: 08:00 – 15:00" data-en="Sat: 08:00 – 15:00">Sa: 08:00 – 15:00</li>
+            <li><strong data-de="Bestellungen: 24/7" data-en="Orders: 24/7">Bestellungen: 24/7</strong></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">© 2024 NEOMAT — <span data-de="Alle Rechte vorbehalten." data-en="All rights reserved.">Alle Rechte vorbehalten.</span></div>
     </div>
   </footer>
   <div class="popup-overlay" id="authPopup">
@@ -165,5 +187,6 @@
   <script src="js/cart.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/main.js"></script>
+  <script>feather.replace({ 'stroke-width': 1.6 });</script>
 </body>
 </html>

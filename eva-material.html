@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEOMAT — EVA-Material & ISO-Zertifizierung</title>
+  <meta name="description" content="Was ist EVA-Material? Qualität, ISO-Zertifizierung und warum NEOMAT ausschließlich zertifiziertes Premiummaterial verwendet.">
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/feather.css">
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+
+  <style>
+  .eva-hero {
+    background: linear-gradient(135deg, #1A1A1A 0%, #2A1A1A 100%);
+    color: white; padding: 80px 0;
+  }
+  .eva-hero h1 { color: white; margin-bottom: 16px; }
+  .eva-hero p  { color: rgba(255,255,255,0.75); font-size: 1.15rem; max-width: 680px; }
+
+  .advantages-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .advantage-card {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 32px 24px; background: #fff;
+    border: 1px solid var(--color-border); border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft); transition: all var(--t-base) var(--ease-out);
+  }
+  .advantage-card:hover { border-color: var(--color-primary-red); box-shadow: var(--shadow-card); transform: translateY(-4px); }
+  .advantage-card .feather { width: 42px; height: 42px; stroke: var(--color-primary-red); stroke-width: 1.4; margin-bottom: 16px; }
+  .advantage-card h3 { margin-bottom: 8px; }
+  .advantage-card p { font-size: var(--fs-sm); color: var(--color-text-secondary); }
+
+  .iso-block {
+    background: linear-gradient(135deg, #1A1A1A, #2A2A2A);
+    color: white; border-radius: var(--radius-lg); padding: 48px;
+    display: flex; gap: 48px; align-items: center; margin-bottom: 0;
+  }
+  .iso-badge {
+    flex-shrink: 0; width: 120px; height: 120px; border-radius: 50%;
+    border: 3px solid var(--color-primary-red); display: grid; place-items: center; text-align: center;
+    font-family: var(--font-display); font-weight: 700;
+  }
+  .iso-badge .iso-title { font-size: 0.65rem; letter-spacing: 1px; color: #ccc; }
+  .iso-badge .iso-num   { font-size: 1.1rem; color: white; }
+  .iso-badge .iso-year  { font-size: 0.65rem; color: var(--color-primary-red-bright); }
+  .iso-content h2 { color: white; margin-bottom: 12px; }
+  .iso-content p  { color: rgba(255,255,255,0.75); margin-bottom: 20px; }
+  .iso-content .cert-num { color: var(--color-primary-red-bright); font-weight: 600; font-size: var(--fs-sm); margin-bottom: 20px; display: block; }
+
+  .quality-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+  .quality-list li { display: flex; align-items: flex-start; gap: 16px; }
+  .quality-list li::before { content: ''; flex-shrink: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--color-primary-red); margin-top: 6px; }
+  .quality-list li b { display: block; margin-bottom: 2px; font-family: var(--font-display); }
+
+  @media (max-width: 1024px) { .advantages-grid { grid-template-columns: repeat(2, 1fr); } .iso-block { flex-direction: column; text-align: center; } }
+  @media (max-width: 600px)  { .advantages-grid { grid-template-columns: 1fr; } .iso-badge { margin: 0 auto; } }
+  </style>
+</head>
+<body>
+
+  <div class="info-bar">
+    <span>✅ <span data-de="Kostenloser Versand ab 100 € in ganz Deutschland" data-en="Free shipping from €100 across Germany">Kostenloser Versand ab 100 € in ganz Deutschland</span></span>
+  </div>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo" aria-label="NEOMAT — Startseite">
+        <img class="logo__img" src="assets/logo/neomat_nm_transparent.png" alt="NEOMAT">
+      </a>
+      <nav class="nav" aria-label="Hauptnavigation">
+        <a href="katalog.html" data-de="Katalog" data-en="Catalogue">Katalog</a>
+        <a href="eva-material.html" style="color:var(--color-primary-red-bright);" data-de="EVA-Material" data-en="EVA Material">EVA-Material</a>
+        <a href="index.html#kontakt" data-de="Kontakt" data-en="Contact">Kontakt</a>
+        <a href="faq.html" data-de="FAQ" data-en="FAQ">FAQ</a>
+      </nav>
+      <div class="header__actions">
+        <div class="lang-switch" role="group" aria-label="Sprache">
+          <button id="langDe" class="active" onclick="switchLang('de')">DE</button>
+          <button id="langEn" onclick="switchLang('en')">EN</button>
+        </div>
+        <a href="warenkorb.html" class="icon-btn" aria-label="Warenkorb">🛒<span class="cart-badge" id="cartBadge">0</span></a>
+        <button class="icon-btn" id="authBtn" onclick="accountAction()">👤</button>
+        <button class="burger" id="burger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="katalog.html" data-de="Katalog" data-en="Catalogue" onclick="toggleMenu()">Katalog</a>
+    <a href="eva-material.html" onclick="toggleMenu()">EVA-Material</a>
+    <a href="index.html#kontakt" data-de="Kontakt" data-en="Contact" onclick="toggleMenu()">Kontakt</a>
+    <a href="faq.html" onclick="toggleMenu()">FAQ</a>
+  </div>
+
+  <main>
+    <!-- Hero -->
+    <section class="eva-hero">
+      <div class="container">
+        <div class="section-head" style="text-align:left; margin-inline:0; max-width:none;">
+          <span class="section-eyebrow" style="color:var(--color-primary-red-bright);" data-de="Material" data-en="Material">Material</span>
+        </div>
+        <h1 data-de="Was ist EVA-Material?" data-en="What is EVA material?">Was ist EVA-Material?</h1>
+        <p data-de="Wir fertigen NEOMAT-Matten ausschließlich aus zertifiziertem Premiummaterial. Unser direkter Werkslieferant arbeitet nach dem internationalen Qualitätsmanagementsystem ISO 9001:2015." data-en="We manufacture NEOMAT mats exclusively from certified premium material. Our direct factory supplier operates under the ISO 9001:2015 international quality management system.">Wir fertigen NEOMAT-Matten ausschließlich aus zertifiziertem Premiummaterial. Unser direkter Werkslieferant arbeitet nach dem internationalen Qualitätsmanagementsystem ISO 9001:2015.</p>
+      </div>
+    </section>
+
+    <!-- Преимущества -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head fade-in-up">
+          <h2 data-de="6 Gründe für EVA" data-en="6 reasons for EVA">6 Gründe für EVA</h2>
+        </div>
+        <div class="advantages-grid fade-in-up">
+          <div class="advantage-card"><i data-feather="thermometer"></i><h3 data-de="±50 °C" data-en="±50 °C">±50 °C</h3><p data-de="Formstabil von −50 °C bis +50 °C — sommer- und wintertauglich." data-en="Stable from −50 °C to +50 °C — suitable for summer and winter.">Formstabil von −50 °C bis +50 °C — sommer- und wintertauglich.</p></div>
+          <div class="advantage-card"><i data-feather="droplet"></i><h3 data-de="100% wasserdicht" data-en="100% waterproof">100% wasserdicht</h3><p data-de="EVA-Struktur hält Wasser, Schmutz und Schlamm auf der Matte." data-en="EVA structure holds water, dirt and mud on the mat.">EVA-Struktur hält Wasser, Schmutz und Schlamm auf der Matte.</p></div>
+          <div class="advantage-card"><i data-feather="heart"></i><h3 data-de="Hypoallergen" data-en="Hypoallergenic">Hypoallergen</h3><p data-de="Kein Geruch, keine Allergene — sicher für Kinder und Haustiere." data-en="No odour, no allergens — safe for children and pets.">Kein Geruch, keine Allergene — sicher für Kinder und Haustiere.</p></div>
+          <div class="advantage-card"><i data-feather="zap"></i><h3 data-de="Leicht zu reinigen" data-en="Easy to clean">Leicht zu reinigen</h3><p data-de="Einfach herausnehmen und mit Wasserstrahl abspülen." data-en="Simply remove and rinse with a water jet.">Einfach herausnehmen und mit Wasserstrahl abspülen.</p></div>
+          <div class="advantage-card"><i data-feather="shield"></i><h3 data-de="Langlebig" data-en="Durable">Langlebig</h3><p data-de="Für extreme Betriebsbedingungen entwickelt — hält viele Jahre." data-en="Designed for extreme operating conditions — lasts many years.">Für extreme Betriebsbedingungen entwickelt — hält viele Jahre.</p></div>
+          <div class="advantage-card"><i data-feather="award"></i><h3 data-de="ISO-zertifiziert" data-en="ISO certified">ISO-zertifiziert</h3><p data-de="Unser Lieferant ist nach ISO 9001:2015 zertifiziert." data-en="Our supplier is ISO 9001:2015 certified.">Unser Lieferant ist nach ISO 9001:2015 zertifiziert.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ISO блок -->
+    <section class="section section--alt">
+      <div class="container">
+        <div class="iso-block fade-in-up">
+          <div class="iso-badge">
+            <div>
+              <div class="iso-title">ISO</div>
+              <div class="iso-num">9001:2015</div>
+              <div class="iso-year">zertifiziert</div>
+            </div>
+          </div>
+          <div class="iso-content">
+            <h2 data-de="Qualität nach ISO 9001:2015" data-en="Quality per ISO 9001:2015">Qualität nach ISO 9001:2015</h2>
+            <span class="cert-num">Zertifikat № UA.OD.QM.0960-24</span>
+            <p data-de="Warum wählen Autofahrer Matten von NEOMAT? Auf dem Markt gibt es viele günstige EVA-Alternativen, die schnell verschleißen oder bei Hitze toxischen Geruch entwickeln. Wir gehen einen anderen Weg." data-en="Why do drivers choose NEOMAT mats? There are many cheap EVA alternatives on the market that wear out quickly or develop a toxic smell in heat. We take a different approach.">Warum wählen Autofahrer Matten von NEOMAT? Auf dem Markt gibt es viele günstige EVA-Alternativen, die schnell verschleißen oder bei Hitze toxischen Geruch entwickeln. Wir gehen einen anderen Weg.</p>
+            <ul class="quality-list">
+              <li><div><b data-de="Direktlieferung ab Werk" data-en="Direct delivery from the factory">Direktlieferung ab Werk</b><span data-de="Wir kaufen Rohstoffe direkt beim führenden zertifizierten Hersteller." data-en="We source raw materials directly from the leading certified manufacturer.">Wir kaufen Rohstoffe direkt beim führenden zertifizierten Hersteller.</span></div></li>
+              <li><div><b data-de="Weltstandard Qualität" data-en="World-class quality">Weltstandard Qualität</b><span data-de="ISO 9001:2015 bedeutet automatisierte Qualitätskontrolle — null Ausschuss." data-en="ISO 9001:2015 means automated quality control — zero defects.">ISO 9001:2015 bedeutet automatisierte Qualitätskontrolle — null Ausschuss.</span></div></li>
+              <li><div><b data-de="Sicherheit & Langlebigkeit" data-en="Safety & durability">Sicherheit & Langlebigkeit</b><span data-de="100% hypoallergen, entwickelt für extreme Betriebsbedingungen." data-en="100% hypoallergenic, designed for extreme operating conditions.">100% hypoallergen, entwickelt für extreme Betriebsbedingungen.</span></div></li>
+            </ul>
+            <a href="assets/docs/iso-certificate.pdf" target="_blank" class="btn btn-primary" style="display:inline-flex; margin-top:8px;" data-de="📄 Zertifikat ansehen / herunterladen" data-en="📄 View / download certificate">📄 Zertifikat ansehen / herunterladen</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section" style="text-align:center;">
+      <div class="container">
+        <h2 data-de="Überzeugt? Jetzt konfigurieren." data-en="Convinced? Configure now.">Überzeugt? Jetzt konfigurieren.</h2>
+        <p style="color:var(--color-text-secondary); max-width:500px; margin:16px auto 28px;" data-de="Wählen Sie Ihr Fahrzeug und erstellen Sie Ihre individuelle EVA-Matte." data-en="Choose your vehicle and create your custom EVA mat.">Wählen Sie Ihr Fahrzeug und erstellen Sie Ihre individuelle EVA-Matte.</p>
+        <a href="konfigurator.html" class="btn btn-primary" data-de="Zum Konfigurator →" data-en="Go to configurator →">Zum Konfigurator →</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__col footer__brand">
+          <a href="index.html" class="logo logo--footer"><img class="logo__img logo__img--full" src="assets/logo/neomat_full_transparent.png" alt="NEOMAT"></a>
+          <p data-de="Premium EVA-Automatten nach Maß." data-en="Custom premium EVA car mats.">Premium EVA-Automatten nach Maß.</p>
+        </div>
+        <div class="footer__col"><h4>Navigation</h4><ul>
+          <li><a href="katalog.html">Katalog</a></li>
+          <li><a href="eva-material.html">EVA-Material</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="index.html#kontakt">Kontakt</a></li>
+        </ul></div>
+        <div class="footer__col"><h4>Kontakt</h4><ul>
+          <li>📞 <a href="tel:+49301234567">+49 30 1234567</a></li>
+          <li>✉️ <a href="mailto:info@neomat.de">info@neomat.de</a></li>
+        </ul></div>
+      </div>
+      <div class="footer__bottom">© 2024 NEOMAT — <span data-de="Alle Rechte vorbehalten." data-en="All rights reserved.">Alle Rechte vorbehalten.</span></div>
+    </div>
+  </footer>
+
+  <div class="popup-overlay" id="authPopup">
+    <div class="popup">
+      <button class="popup-close" onclick="closeAuth()">✕</button>
+      <div class="popup-tabs"><button class="tab active" id="tabLogin" onclick="switchAuthTab('login')">Anmelden</button><button class="tab" id="tabRegister" onclick="switchAuthTab('register')">Registrieren</button></div>
+      <form onsubmit="return handleAuth(event)">
+        <div class="field" id="nameField" style="display:none"><label>Name</label><input class="input" id="authName" type="text"></div>
+        <div class="field"><label>E-Mail</label><input class="input" id="authEmail" type="email" required></div>
+        <div class="field"><label>Passwort</label><input class="input" id="authPass" type="password" required></div>
+        <button type="submit" class="btn btn-primary btn-block" id="authSubmit">Anmelden</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/cart.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+  <script>feather.replace({ 'stroke-width': 1.6 });</script>
+</body>
+</html>

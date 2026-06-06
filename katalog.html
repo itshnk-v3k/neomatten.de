@@ -61,7 +61,21 @@
     .brands-grid { grid-template-columns: repeat(2, 1fr); }
     .models-grid { grid-template-columns: repeat(2, 1fr); }
   }
-  </style>
+  
+  .cat-card-big.coming-soon {
+    opacity: 0.75; cursor: default; position: relative; pointer-events: none;
+  }
+  .cat-card-big.coming-soon:hover { transform: none; border-color: var(--color-border); box-shadow: var(--shadow-soft); }
+  .coming-soon-badge {
+    position: absolute; top: 14px; right: 14px; z-index: 2;
+    background: var(--color-primary-red); color: white;
+    padding: 5px 12px; border-radius: 20px;
+    font-size: var(--fs-xs); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+  }
+</style>
+  <!-- Feather Icons -->
+  <link rel="stylesheet" href="css/feather.css">
+  <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 </head>
 
 <body>
@@ -80,6 +94,7 @@
         <a href="index.html#vorteile" data-de="Vorteile" data-en="Benefits">Vorteile</a>
         <a href="index.html#arbeiten" data-de="Unsere Arbeiten" data-en="Our Work">Unsere Arbeiten</a>
         <a href="index.html#kontakt" data-de="Kontakt" data-en="Contact">Kontakt</a>
+        <a href="eva-material.html" data-de="EVA-Material" data-en="EVA Material">EVA-Material</a>
         <a href="faq.html" data-de="FAQ" data-en="FAQ">FAQ</a>
       </nav>
       <div class="header__actions">
@@ -130,6 +145,11 @@
               <img src="https://picsum.photos/500/320?random=75" alt="Kopfstützenkissen">
               <h3><span data-de="Kopfstützenkissen" data-en="Headrest Cushions">Kopfstützenkissen</span></h3>
             </a>
+            <div class="cat-card-big coming-soon">
+              <span class="coming-soon-badge" data-de="Demnächst verfügbar" data-en="Coming soon">Demnächst verfügbar</span>
+              <img src="https://picsum.photos/500/320?random=79" alt="Premium Velours Matten">
+              <h3><span data-de="Premium Velours-Automatten" data-en="Premium Velours Car Mats">Premium Velours-Automatten</span></h3>
+            </div>
           </div>
         </div>
 
@@ -189,7 +209,8 @@
             <li><a href="katalog.html" data-de="Katalog" data-en="Catalogue">Katalog</a></li>
             <li><a href="konfigurator.html" data-de="Konfigurator" data-en="Configurator">Konfigurator</a></li>
             <li><a href="index.html#arbeiten" data-de="Unsere Arbeiten" data-en="Our Work">Unsere Arbeiten</a></li>
-            <li><a href="faq.html" data-de="FAQ" data-en="FAQ">FAQ</a></li>
+            <li><a href="eva-material.html" data-de="EVA-Material" data-en="EVA Material">EVA-Material</a>
+        <a href="faq.html" data-de="FAQ" data-en="FAQ">FAQ</a></li>
           </ul>
         </div>
         <div class="footer__col">
@@ -205,7 +226,24 @@
           <ul><li><a href="#">Instagram</a></li><li><a href="#">TikTok</a></li><li><a href="#">WhatsApp</a></li></ul>
         </div>
       </div>
-      <div class="footer__bottom">© 2024 NEOMAT GmbH — <span data-de="Alle Rechte vorbehalten." data-en="All rights reserved.">Alle Rechte vorbehalten.</span></div>
+        <div class="footer__col">
+          <h4 data-de="Zahlungsmethoden" data-en="Payment methods">Zahlungsmethoden</h4>
+          <ul>
+            <li data-de="💳 Visa / Mastercard" data-en="💳 Visa / Mastercard">💳 Visa / Mastercard</li>
+            <li data-de="📦 Nachnahme" data-en="📦 Cash on delivery">📦 Nachnahme</li>
+            <li data-de="🏦 Banküberweisung" data-en="🏦 Bank transfer">🏦 Banküberweisung</li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4 data-de="Öffnungszeiten" data-en="Opening hours">Öffnungszeiten</h4>
+          <ul>
+            <li data-de="Mo–Fr: 07:00 – 18:00" data-en="Mon–Fri: 07:00 – 18:00">Mo–Fr: 07:00 – 18:00</li>
+            <li data-de="Sa: 08:00 – 15:00" data-en="Sat: 08:00 – 15:00">Sa: 08:00 – 15:00</li>
+            <li><strong data-de="Bestellungen: 24/7" data-en="Orders: 24/7">Bestellungen: 24/7</strong></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">© 2024 NEOMAT — <span data-de="Alle Rechte vorbehalten." data-en="All rights reserved.">Alle Rechte vorbehalten.</span></div>
     </div>
   </footer>
 
@@ -239,5 +277,6 @@
   <script src="js/auth.js"></script>
   <script src="js/catalog.js"></script>
   <script src="js/main.js"></script>
+  <script>feather.replace({ 'stroke-width': 1.6 });</script>
 </body>
 </html>
