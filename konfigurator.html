@@ -46,43 +46,7 @@
   /* ШАГ 1 — бренды */
   .brand-search { max-width: 100%; margin-bottom: 16px; }
   /* Вертикальный список брендов */
-  .brands-list {
-    max-height: 580px;
-    overflow-y: auto;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    scrollbar-width: thin;
-    scrollbar-color: var(--color-primary-red) #f0f0f0;
-  }
-  .brands-list::-webkit-scrollbar { width: 6px; }
-  .brands-list::-webkit-scrollbar-track { background: #f0f0f0; }
-  .brands-list::-webkit-scrollbar-thumb { background: var(--color-primary-red); border-radius: 3px; }
-  .brand-row {
-    display: flex; align-items: center; gap: 20px;
-    padding: 14px 24px;
-    border-bottom: 1px solid #f0f0f0;
-    background: #fff;
-    transition: all 0.2s;
-    border-left: 4px solid transparent;
-  }
-  .brand-row:last-child { border-bottom: none; }
-  .brand-row:hover {
-    background: var(--color-red-hover);
-    border-left-color: var(--color-primary-red);
-  }
-  .brand-row.active {
-    background: var(--color-red-hover);
-    border-left-color: var(--color-primary-red);
-  }
-  .brand-row__logo {
-    width: 54px; height: 38px;
-    display: grid; place-items: center;
-    font-family: var(--font-display); font-weight: 800; font-size: 1.1rem;
-    background: var(--gradient-chrome); border-radius: 50%;
-    width: 42px; height: 42px; flex-shrink: 0; color: #1A1A1A;
-  }
-  .brand-row__name { flex: 1; font-family: var(--font-display); font-weight: 600; font-size: 1rem; }
-  .brand-row__arrow { color: var(--color-primary-red); font-size: 1.2rem; }
+  /* brands-list и brand-row стили — в css/v5-fixes.css */
 
   /* ШАГ 2 — модели */
   #step2 { display: none; margin-top: 40px; }
@@ -484,26 +448,20 @@
   <!-- Feather Icons -->
   <link rel="stylesheet" href="css/feather.css">
   <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+  <link rel="stylesheet" href="css/v5-fixes.css">
 </head>
 
 <body>
-
-  <!-- INFO BAR -->
-  <div class="info-bar">
-    <span>✅ <span data-de="Kostenloser Versand ab 100 € in ganz Deutschland" data-en="Free shipping from €100 across Germany">Kostenloser Versand ab 100 € in ganz Deutschland</span></span>
+<!-- HEADER -->
+  <!-- ANNOUNCE BAR (автослайдер) -->
+  <div class="announce-bar">
+    <div class="announce-slider" id="announceSlider">
+      <div class="announce-slide active" data-de="✅ Kostenloser Versand ab 100 € in ganz Deutschland" data-en="✅ Free shipping from €100 across Germany">✅ Kostenloser Versand ab 100 € in ganz Deutschland</div>
+      <div class="announce-slide" data-de="🚗 Individuelle EVA-Matten — präzise gefertigt für Ihr Fahrzeug" data-en="🚗 Custom EVA mats — precision made for your vehicle">🚗 Individuelle EVA-Matten — präzise gefertigt für Ihr Fahrzeug</div>
+      <div class="announce-slide" data-de="⭐ 4.9 / 5 — über 847 zufriedene Kunden" data-en="⭐ 4.9 / 5 — over 847 satisfied customers">⭐ 4.9 / 5 — über 847 zufriedene Kunden</div>
+      <div class="announce-slide" data-de="🏭 Produktion: 2–3 Tage · Lieferung: 2–4 Tage nach Deutschland" data-en="🏭 Production: 2–3 days · Delivery: 2–4 days to Germany">🏭 Produktion: 2–3 Tage · Lieferung: 2–4 Tage nach Deutschland</div>
+    </div>
   </div>
-  <!-- Живой счётчик заказов -->
-  <div class="live-counter">
-    <span class="counter-icon">🔄</span>
-    <span data-de="Heute in Produktion:" data-en="In production today:">Heute in Produktion:</span>
-    <strong id="ordersCount">6</strong>
-    <span data-de="Bestellungen" data-en="orders">Bestellungen</span>
-    <span class="divider">|</span>
-    <span data-de="Lieferung ab:" data-en="Delivery from:">Lieferung ab:</span>
-    <strong id="deliveryDate"></strong>
-  </div>
-
-  <!-- HEADER -->
   <header class="header">
     <div class="container header__inner">
       <a href="index.html" class="logo" aria-label="NEOMAT — Startseite">
@@ -608,27 +566,49 @@
             <div class="block">
               <div class="block__label"><span class="num">02</span> <span data-de="Ausstattung präzisieren" data-en="Refine specification">Ausstattung präzisieren</span></div>
               <div class="dropdowns">
-                <select class="input">
-                  <option data-de="Baujahr" data-en="Year">Baujahr</option>
-                  <option>2024</option><option>2023</option><option>2022</option><option>2021</option><option>2020</option>
-                </select>
-                <select class="input">
-                  <option data-de="Getriebe" data-en="Transmission">Getriebe</option>
-                  <option data-de="Automatik" data-en="Automatic">Automatik</option>
-                  <option data-de="Manuell" data-en="Manual">Manuell</option>
-                </select>
-                <select class="input">
-                  <option data-de="Antrieb" data-en="Drive">Antrieb</option>
-                  <option>FWD</option><option>RWD</option><option>AWD / quattro</option>
-                </select>
-                <select class="input">
-                  <option data-de="Motor" data-en="Engine">Motor</option>
-                  <option>2.0 TDI</option><option>2.0 TFSI</option><option>3.0 V6</option>
-                </select>
-                <select class="input" style="grid-column:1/-1;">
-                  <option data-de="Ausstattungsname" data-en="Trim name">Ausstattungsname</option>
-                  <option>Basis</option><option>Sport</option><option>S-Line / M-Paket</option>
-                </select>
+                <div class="custom-select" data-name="year">
+                  <div class="custom-select-trigger"><span data-de="Baujahr" data-en="Year">Baujahr</span><i data-feather="chevron-down"></i></div>
+                  <div class="custom-select-options">
+                    <div class="custom-option" data-value="2024">2024</div>
+                    <div class="custom-option" data-value="2023">2023</div>
+                    <div class="custom-option" data-value="2022">2022</div>
+                    <div class="custom-option" data-value="2021">2021</div>
+                    <div class="custom-option" data-value="2020">2020</div>
+                    <div class="custom-option" data-value="2019">2019</div>
+                    <div class="custom-option" data-value="2018">2018</div>
+                  </div>
+                </div>
+                <div class="custom-select" data-name="transmission">
+                  <div class="custom-select-trigger"><span data-de="Getriebe" data-en="Transmission">Getriebe</span><i data-feather="chevron-down"></i></div>
+                  <div class="custom-select-options">
+                    <div class="custom-option" data-de="Automatik" data-en="Automatic" data-value="auto">Automatik</div>
+                    <div class="custom-option" data-de="Manuell" data-en="Manual" data-value="manual">Manuell</div>
+                  </div>
+                </div>
+                <div class="custom-select" data-name="drive">
+                  <div class="custom-select-trigger"><span data-de="Antrieb" data-en="Drive">Antrieb</span><i data-feather="chevron-down"></i></div>
+                  <div class="custom-select-options">
+                    <div class="custom-option" data-value="fwd">FWD</div>
+                    <div class="custom-option" data-value="rwd">RWD</div>
+                    <div class="custom-option" data-value="awd">AWD / quattro</div>
+                  </div>
+                </div>
+                <div class="custom-select" data-name="engine">
+                  <div class="custom-select-trigger"><span data-de="Motor" data-en="Engine">Motor</span><i data-feather="chevron-down"></i></div>
+                  <div class="custom-select-options">
+                    <div class="custom-option" data-value="2.0tdi">2.0 TDI</div>
+                    <div class="custom-option" data-value="2.0tfsi">2.0 TFSI</div>
+                    <div class="custom-option" data-value="3.0v6">3.0 V6</div>
+                  </div>
+                </div>
+                <div class="custom-select" data-name="trim" style="grid-column:1/-1;">
+                  <div class="custom-select-trigger"><span data-de="Ausstattungsname" data-en="Trim name">Ausstattungsname</span><i data-feather="chevron-down"></i></div>
+                  <div class="custom-select-options">
+                    <div class="custom-option" data-value="base">Basis</div>
+                    <div class="custom-option" data-value="sport">Sport</div>
+                    <div class="custom-option" data-value="sline">S-Line / M-Paket</div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -725,32 +705,43 @@
             <div class="block">
               <div class="block__label"><span class="num">07</span> <span data-de="Set zusammenstellen" data-en="Build your set">Set zusammenstellen</span></div>
               <div class="set-configurator-wrap">
-                <!-- Схема салона (SVG вид сверху) -->
-                <div class="car-schema">
-                  <svg viewBox="0 0 260 200" class="car-top-view" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Кузов авто (упрощённый контур) -->
-                    <rect x="20" y="10" width="220" height="180" rx="30" fill="#f0f0f0" stroke="#ccc" stroke-width="1.5"/>
-                    <!-- Передняя панель -->
-                    <rect x="30" y="10" width="200" height="25" rx="10" fill="#ddd"/>
-                    <!-- Задняя панель -->
-                    <rect x="30" y="165" width="200" height="25" rx="10" fill="#ddd"/>
-                    <!-- Зона FL: Fahrer (левая передняя) -->
-                    <rect id="zone-fl" x="35" y="42" width="88" height="68" rx="7"
+                <!-- Реалистичная схема авто сверху с багажником -->
+                <div class="car-schema-wrap">
+                  <svg viewBox="0 0 220 340" class="car-top-svg" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Кузов авто -->
+                    <path d="M45,55 Q45,18 110,12 Q175,18 175,55 L178,270 Q178,305 110,310 Q42,305 42,270 Z"
+                          fill="#F0F0F0" stroke="#C8C8C8" stroke-width="1.5"/>
+                    <!-- Лобовое стекло -->
+                    <path d="M62,58 Q110,50 158,58 L153,100 Q110,96 67,100 Z"
+                          fill="#C8DFF0" stroke="#A0A0A0" stroke-width="1" opacity="0.8"/>
+                    <!-- Заднее стекло -->
+                    <path d="M67,235 Q110,230 153,235 L158,265 Q110,273 62,265 Z"
+                          fill="#C8DFF0" stroke="#A0A0A0" stroke-width="1" opacity="0.8"/>
+                    <!-- Колёса -->
+                    <ellipse cx="44" cy="125" rx="11" ry="18" fill="#888" opacity="0.4"/>
+                    <ellipse cx="176" cy="125" rx="11" ry="18" fill="#888" opacity="0.4"/>
+                    <ellipse cx="44" cy="210" rx="11" ry="18" fill="#888" opacity="0.4"/>
+                    <ellipse cx="176" cy="210" rx="11" ry="18" fill="#888" opacity="0.4"/>
+                    <!-- FL — Fahrer (водитель) -->
+                    <rect id="zone-fl" x="56" y="104" width="52" height="58" rx="5"
                           fill="#E8E8E8" stroke="#C0C0C0" stroke-width="1.5" class="mat-zone" data-zone="fl"/>
-                    <!-- Зона FR: Beifahrer (правая передняя) -->
-                    <rect id="zone-fr" x="137" y="42" width="88" height="68" rx="7"
+                    <text x="82" y="136" text-anchor="middle" font-size="7" class="zone-label" id="lbl-fl">Fahrer</text>
+                    <!-- FR — Beifahrer (пассажир) -->
+                    <rect id="zone-fr" x="112" y="104" width="52" height="58" rx="5"
                           fill="#E8E8E8" stroke="#C0C0C0" stroke-width="1.5" class="mat-zone" data-zone="fr"/>
-                    <!-- Зона RL: Hinten links (левая задняя) -->
-                    <rect id="zone-rl" x="35" y="118" width="88" height="52" rx="7"
+                    <text x="138" y="136" text-anchor="middle" font-size="7" class="zone-label" id="lbl-fr">Beifahrer</text>
+                    <!-- RL — Hinten links -->
+                    <rect id="zone-rl" x="56" y="170" width="52" height="50" rx="5"
                           fill="#E8E8E8" stroke="#C0C0C0" stroke-width="1.5" class="mat-zone" data-zone="rl"/>
-                    <!-- Зона RR: Hinten rechts (правая задняя) -->
-                    <rect id="zone-rr" x="137" y="118" width="88" height="52" rx="7"
+                    <text x="82" y="198" text-anchor="middle" font-size="7" class="zone-label" id="lbl-rl">Hinten L</text>
+                    <!-- RR — Hinten rechts -->
+                    <rect id="zone-rr" x="112" y="170" width="52" height="50" rx="5"
                           fill="#E8E8E8" stroke="#C0C0C0" stroke-width="1.5" class="mat-zone" data-zone="rr"/>
-                    <!-- Подписи -->
-                    <text x="79" y="80" text-anchor="middle" font-size="9" class="schema-label">Fahrer</text>
-                    <text x="181" y="80" text-anchor="middle" font-size="9" class="schema-label">Beifahrer</text>
-                    <text x="79" y="148" text-anchor="middle" font-size="9" class="schema-label">Hinten L</text>
-                    <text x="181" y="148" text-anchor="middle" font-size="9" class="schema-label">Hinten R</text>
+                    <text x="138" y="198" text-anchor="middle" font-size="7" class="zone-label" id="lbl-rr">Hinten R</text>
+                    <!-- TRUNK — Kofferraum -->
+                    <rect id="zone-trunk" x="74" y="230" width="72" height="40" rx="5"
+                          fill="#E8E8E8" stroke="#C0C0C0" stroke-width="1.5" class="mat-zone" data-zone="trunk"/>
+                    <text x="110" y="253" text-anchor="middle" font-size="7" class="zone-label" id="lbl-trunk">Kofferraum</text>
                   </svg>
                 </div>
                 <!-- Список комплектов (новые названия) -->
@@ -900,20 +891,17 @@
         </div>
       </div>
         <div class="footer__col">
-          <h4 data-de="Zahlungsmethoden" data-en="Payment methods">Zahlungsmethoden</h4>
-          <ul>
-            <li data-de="💳 Visa / Mastercard" data-en="💳 Visa / Mastercard">💳 Visa / Mastercard</li>
-            <li data-de="📦 Nachnahme" data-en="📦 Cash on delivery">📦 Nachnahme</li>
-            <li data-de="🏦 Banküberweisung" data-en="🏦 Bank transfer">🏦 Banküberweisung</li>
-          </ul>
-        </div>
-        <div class="footer__col">
-          <h4 data-de="Öffnungszeiten" data-en="Opening hours">Öffnungszeiten</h4>
-          <ul>
-            <li data-de="Mo–Fr: 07:00 – 18:00" data-en="Mon–Fri: 07:00 – 18:00">Mo–Fr: 07:00 – 18:00</li>
-            <li data-de="Sa: 08:00 – 15:00" data-en="Sat: 08:00 – 15:00">Sa: 08:00 – 15:00</li>
-            <li><strong data-de="Bestellungen: 24/7" data-en="Orders: 24/7">Bestellungen: 24/7</strong></li>
-          </ul>
+          <h4 data-de="Zahlungsmethoden" data-en="Payment Methods">Zahlungsmethoden</h4>
+          <div class="payment-badges">
+            <div class="payment-badge"><i data-feather="credit-card"></i><span>Visa / MC</span></div>
+            <div class="payment-badge"><i data-feather="package"></i><span data-de="Nachnahme" data-en="Cash on delivery">Nachnahme</span></div>
+            <div class="payment-badge"><i data-feather="home"></i><span data-de="Überweisung" data-en="Transfer">Überweisung</span></div>
+          </div>
+          <div style="margin-top:16px;">
+            <h4 data-de="Öffnungszeiten" data-en="Opening Hours">Öffnungszeiten</h4>
+            <p style="font-size:13px;color:#B0B0B0;margin-top:6px;" data-de="Mo–Fr: 07:00–18:00 | Sa: 08:00–15:00" data-en="Mon–Fri: 07:00–18:00 | Sat: 08:00–15:00">Mo–Fr: 07:00–18:00 | Sa: 08:00–15:00</p>
+            <p style="font-size:13px;color:var(--color-primary-red-bright);margin-top:4px;font-weight:700;" data-de="Bestellungen: 24/7" data-en="Orders: 24/7">Bestellungen: 24/7</p>
+          </div>
         </div>
       </div>
       <div class="footer__bottom">© 2024 NEOMAT — <span data-de="Alle Rechte vorbehalten." data-en="All rights reserved.">Alle Rechte vorbehalten.</span></div>
@@ -962,6 +950,13 @@
   <script src="js/auth.js"></script>
   <script src="js/main.js"></script>
   <script src="js/konfigurator.js"></script>
-  <script>feather.replace({ 'stroke-width': 1.6 });</script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof feather !== 'undefined') {
+        feather.replace({ 'stroke-width': 1.6, 'width': 24, 'height': 24 });
+      }
+    });
+  </script>
 </body>
 </html>

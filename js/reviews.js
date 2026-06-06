@@ -19,16 +19,19 @@ function loadReviews() {
   catch (e) { return DEFAULT_REVIEWS; }
 }
 
+let reviewsSlideIdx = 0;
+
 function renderReviews() {
-  const grid = document.getElementById('reviewsGrid');
-  if (!grid) return;
+  const track = document.getElementById('reviewsTrack');
+  if (!track) return;
+  const dotsWrap = document.getElementById('reviewsDots');
   const en = (typeof isEnglish === 'function') && isEnglish();
   const reviews = loadReviews();
   if (!reviews.length) {
-    grid.innerHTML = `<p style="color:var(--color-text-muted); grid-column:1/-1">${en ? 'No reviews yet.' : 'Noch keine Bewertungen.'}</p>`;
+    track.innerHTML = `<div class="review-card"><p style="color:#888">${en ? 'No reviews yet.' : 'Noch keine Bewertungen.'}</p></div>`;
     return;
   }
-  grid.innerHTML = reviews.slice(0, 6).map(r => {
+  track.innerHTML = reviews.slice(0, 6).map(r => {
     const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
     return `
       <div class="review-card">
@@ -41,6 +44,47 @@ function renderReviews() {
         ${r.photo ? `<img class="review-card__photo" src="${r.photo}" alt="Foto">` : ''}
       </div>`;
   }).join('');
+  reviewsSlideIdx = 0;
+  if (dotsWrap) buildReviewsDots(reviews.length);
+}
+
+function buildReviewsDots(total) {
+  const dots = document.getElementById('reviewsDots');
+  if (!dots) return;
+  const visible = window.innerWidth > 1024 ? 3 : window.innerWidth > 768 ? 2 : 1;
+  const count = Math.max(1, total - visible + 1);
+  dots.innerHTML = Array.from({length: count}, (_, i) =>
+    `<span class="reviews-dot ${i === 0 ? 'active' : ''}" onclick="reviewsGoTo(${i})"></span>`
+  ).join('');
+}
+
+function reviewsSlide(dir) {
+  const track = document.getElementById('reviewsTrack');
+  if (!track) return;
+  const cards = track.querySelectorAll('.review-card');
+  if (!cards.length) return;
+  const visible = window.innerWidth > 1024 ? 3 : window.innerWidth > 768 ? 2 : 1;
+  const max = Math.max(0, cards.length - visible);
+  reviewsSlideIdx = Math.max(0, Math.min(reviewsSlideIdx + dir, max));
+  const cardW = cards[0].getBoundingClientRect().width + 20;
+  track.style.transform = `translateX(-${reviewsSlideIdx * cardW}px)`;
+  updateReviewsDots();
+}
+
+function reviewsGoTo(idx) {
+  reviewsSlideIdx = idx;
+  const track = document.getElementById('reviewsTrack');
+  if (!track) return;
+  const cards = track.querySelectorAll('.review-card');
+  if (!cards.length) return;
+  const cardW = cards[0].getBoundingClientRect().width + 20;
+  track.style.transform = `translateX(-${reviewsSlideIdx * cardW}px)`;
+  updateReviewsDots();
+}
+
+function updateReviewsDots() {
+  document.querySelectorAll('.reviews-dot').forEach((d, i) =>
+    d.classList.toggle('active', i === reviewsSlideIdx));
 }
 
 /* Попап добавления */

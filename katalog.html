@@ -29,14 +29,12 @@
   .cat-card-big h3 { padding: 20px 22px; font-size: 1.25rem; }
 
   /* Поиск брендов */
-  .brand-search { max-width: 380px; margin: 0 auto 28px; }
+  .brand-search { max-width: 100%; margin-bottom: 16px; }
 
-  /* Сетка брендов (референс скрин 9) */
-  .brands-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--color-border); border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
-  .brand-card { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 30px 16px; background: #fff; transition: all 0.2s ease; }
-  .brand-card:hover { background: var(--color-red-hover); box-shadow: inset 0 0 0 2px var(--color-primary-red); }
-  .brand-card__logo { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; background: var(--gradient-chrome); color: #1A1A1A; font-family: var(--font-display); font-weight: 800; font-size: 1.2rem; }
-  .brand-card__name { font-size: 13px; color: var(--color-text-secondary); font-family: var(--font-display); font-weight: 600; text-align: center; }
+  /* Вертикальный список брендов (v5) */
+  .brands-list { max-height: 620px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); scrollbar-width: thin; scrollbar-color: var(--color-primary-red) #f0f0f0; }
+  .brands-list::-webkit-scrollbar { width: 6px; }
+  .brands-list::-webkit-scrollbar-thumb { background: var(--color-primary-red); border-radius: 3px; }
 
   /* Фильтры моделей */
   .model-filters { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
@@ -55,10 +53,10 @@
 
   @media (max-width: 1024px) {
     .cat-cards-big { grid-template-columns: 1fr; }
-    .brands-grid, .models-grid { grid-template-columns: repeat(3, 1fr); }
+    .models-grid { grid-template-columns: repeat(3, 1fr); }
   }
   @media (max-width: 600px) {
-    .brands-grid { grid-template-columns: repeat(2, 1fr); }
+
     .models-grid { grid-template-columns: repeat(2, 1fr); }
   }
   
@@ -76,6 +74,7 @@
   <!-- Feather Icons -->
   <link rel="stylesheet" href="css/feather.css">
   <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+  <link rel="stylesheet" href="css/v5-fixes.css">
 </head>
 
 <body>
@@ -84,6 +83,15 @@
     <span>✅ <span data-de="Kostenloser Versand ab 100 € in ganz Deutschland" data-en="Free shipping from €100 across Germany">Kostenloser Versand ab 100 € in ganz Deutschland</span></span>
   </div>
 
+  <!-- ANNOUNCE BAR (автослайдер) -->
+  <div class="announce-bar">
+    <div class="announce-slider" id="announceSlider">
+      <div class="announce-slide active" data-de="✅ Kostenloser Versand ab 100 € in ganz Deutschland" data-en="✅ Free shipping from €100 across Germany">✅ Kostenloser Versand ab 100 € in ganz Deutschland</div>
+      <div class="announce-slide" data-de="🚗 Individuelle EVA-Matten — präzise gefertigt für Ihr Fahrzeug" data-en="🚗 Custom EVA mats — precision made for your vehicle">🚗 Individuelle EVA-Matten — präzise gefertigt für Ihr Fahrzeug</div>
+      <div class="announce-slide" data-de="⭐ 4.9 / 5 — über 847 zufriedene Kunden" data-en="⭐ 4.9 / 5 — over 847 satisfied customers">⭐ 4.9 / 5 — über 847 zufriedene Kunden</div>
+      <div class="announce-slide" data-de="🏭 Produktion: 2–3 Tage · Lieferung: 2–4 Tage nach Deutschland" data-en="🏭 Production: 2–3 days · Delivery: 2–4 days to Germany">🏭 Produktion: 2–3 Tage · Lieferung: 2–4 Tage nach Deutschland</div>
+    </div>
+  </div>
   <header class="header">
     <div class="container header__inner">
       <a href="index.html" class="logo" aria-label="NEOMAT — Startseite">
@@ -165,7 +173,7 @@
             <h2 data-de="Wählen Sie Ihre Fahrzeugmarke" data-en="Choose your vehicle make">Wählen Sie Ihre Fahrzeugmarke</h2>
           </div>
           <input class="input brand-search" type="text" placeholder="Marke suchen…" oninput="filterBrands(this.value)">
-          <div class="brands-grid fade-in-up" id="brandsGrid"></div>
+          <div class="brands-list fade-in-up" id="brandsGrid"></div>
         </div>
 
         <!-- ============ ВИД 3: МОДЕЛИ ============ -->
@@ -227,20 +235,17 @@
         </div>
       </div>
         <div class="footer__col">
-          <h4 data-de="Zahlungsmethoden" data-en="Payment methods">Zahlungsmethoden</h4>
-          <ul>
-            <li data-de="💳 Visa / Mastercard" data-en="💳 Visa / Mastercard">💳 Visa / Mastercard</li>
-            <li data-de="📦 Nachnahme" data-en="📦 Cash on delivery">📦 Nachnahme</li>
-            <li data-de="🏦 Banküberweisung" data-en="🏦 Bank transfer">🏦 Banküberweisung</li>
-          </ul>
-        </div>
-        <div class="footer__col">
-          <h4 data-de="Öffnungszeiten" data-en="Opening hours">Öffnungszeiten</h4>
-          <ul>
-            <li data-de="Mo–Fr: 07:00 – 18:00" data-en="Mon–Fri: 07:00 – 18:00">Mo–Fr: 07:00 – 18:00</li>
-            <li data-de="Sa: 08:00 – 15:00" data-en="Sat: 08:00 – 15:00">Sa: 08:00 – 15:00</li>
-            <li><strong data-de="Bestellungen: 24/7" data-en="Orders: 24/7">Bestellungen: 24/7</strong></li>
-          </ul>
+          <h4 data-de="Zahlungsmethoden" data-en="Payment Methods">Zahlungsmethoden</h4>
+          <div class="payment-badges">
+            <div class="payment-badge"><i data-feather="credit-card"></i><span>Visa / MC</span></div>
+            <div class="payment-badge"><i data-feather="package"></i><span data-de="Nachnahme" data-en="Cash on delivery">Nachnahme</span></div>
+            <div class="payment-badge"><i data-feather="home"></i><span data-de="Überweisung" data-en="Transfer">Überweisung</span></div>
+          </div>
+          <div style="margin-top:16px;">
+            <h4 data-de="Öffnungszeiten" data-en="Opening Hours">Öffnungszeiten</h4>
+            <p style="font-size:13px;color:#B0B0B0;margin-top:6px;" data-de="Mo–Fr: 07:00–18:00 | Sa: 08:00–15:00" data-en="Mon–Fri: 07:00–18:00 | Sat: 08:00–15:00">Mo–Fr: 07:00–18:00 | Sa: 08:00–15:00</p>
+            <p style="font-size:13px;color:var(--color-primary-red-bright);margin-top:4px;font-weight:700;" data-de="Bestellungen: 24/7" data-en="Orders: 24/7">Bestellungen: 24/7</p>
+          </div>
         </div>
       </div>
       <div class="footer__bottom">© 2024 NEOMAT — <span data-de="Alle Rechte vorbehalten." data-en="All rights reserved.">Alle Rechte vorbehalten.</span></div>
@@ -277,6 +282,13 @@
   <script src="js/auth.js"></script>
   <script src="js/catalog.js"></script>
   <script src="js/main.js"></script>
-  <script>feather.replace({ 'stroke-width': 1.6 });</script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof feather !== 'undefined') {
+        feather.replace({ 'stroke-width': 1.6, 'width': 24, 'height': 24 });
+      }
+    });
+  </script>
 </body>
 </html>

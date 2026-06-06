@@ -60,6 +60,7 @@
   @media (max-width: 1024px) { .advantages-grid { grid-template-columns: repeat(2, 1fr); } .iso-block { flex-direction: column; text-align: center; } }
   @media (max-width: 600px)  { .advantages-grid { grid-template-columns: 1fr; } .iso-badge { margin: 0 auto; } }
   </style>
+  <link rel="stylesheet" href="css/v5-fixes.css">
 </head>
 <body>
 
@@ -67,6 +68,15 @@
     <span>✅ <span data-de="Kostenloser Versand ab 100 € in ganz Deutschland" data-en="Free shipping from €100 across Germany">Kostenloser Versand ab 100 € in ganz Deutschland</span></span>
   </div>
 
+  <!-- ANNOUNCE BAR (автослайдер) -->
+  <div class="announce-bar">
+    <div class="announce-slider" id="announceSlider">
+      <div class="announce-slide active" data-de="✅ Kostenloser Versand ab 100 € in ganz Deutschland" data-en="✅ Free shipping from €100 across Germany">✅ Kostenloser Versand ab 100 € in ganz Deutschland</div>
+      <div class="announce-slide" data-de="🚗 Individuelle EVA-Matten — präzise gefertigt für Ihr Fahrzeug" data-en="🚗 Custom EVA mats — precision made for your vehicle">🚗 Individuelle EVA-Matten — präzise gefertigt für Ihr Fahrzeug</div>
+      <div class="announce-slide" data-de="⭐ 4.9 / 5 — über 847 zufriedene Kunden" data-en="⭐ 4.9 / 5 — over 847 satisfied customers">⭐ 4.9 / 5 — über 847 zufriedene Kunden</div>
+      <div class="announce-slide" data-de="🏭 Produktion: 2–3 Tage · Lieferung: 2–4 Tage nach Deutschland" data-en="🏭 Production: 2–3 days · Delivery: 2–4 days to Germany">🏭 Produktion: 2–3 Tage · Lieferung: 2–4 Tage nach Deutschland</div>
+    </div>
+  </div>
   <header class="header">
     <div class="container header__inner">
       <a href="index.html" class="logo" aria-label="NEOMAT — Startseite">
@@ -200,6 +210,13 @@
   <script src="js/cart.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/main.js"></script>
-  <script>feather.replace({ 'stroke-width': 1.6 });</script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof feather !== 'undefined') {
+        feather.replace({ 'stroke-width': 1.6, 'width': 24, 'height': 24 });
+      }
+    });
+  </script>
 </body>
 </html>

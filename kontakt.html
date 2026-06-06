@@ -24,10 +24,20 @@
   <!-- Feather Icons -->
   <link rel="stylesheet" href="css/feather.css">
   <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+  <link rel="stylesheet" href="css/v5-fixes.css">
 </head>
 <body>
   <div class="info-bar">
     <span>✅ <span data-de="Kostenloser Versand ab 100 € in ganz Deutschland" data-en="Free shipping from €100 across Germany">Kostenloser Versand ab 100 € in ganz Deutschland</span></span>
+  </div>
+  <!-- ANNOUNCE BAR (автослайдер) -->
+  <div class="announce-bar">
+    <div class="announce-slider" id="announceSlider">
+      <div class="announce-slide active" data-de="✅ Kostenloser Versand ab 100 € in ganz Deutschland" data-en="✅ Free shipping from €100 across Germany">✅ Kostenloser Versand ab 100 € in ganz Deutschland</div>
+      <div class="announce-slide" data-de="🚗 Individuelle EVA-Matten — präzise gefertigt für Ihr Fahrzeug" data-en="🚗 Custom EVA mats — precision made for your vehicle">🚗 Individuelle EVA-Matten — präzise gefertigt für Ihr Fahrzeug</div>
+      <div class="announce-slide" data-de="⭐ 4.9 / 5 — über 847 zufriedene Kunden" data-en="⭐ 4.9 / 5 — over 847 satisfied customers">⭐ 4.9 / 5 — über 847 zufriedene Kunden</div>
+      <div class="announce-slide" data-de="🏭 Produktion: 2–3 Tage · Lieferung: 2–4 Tage nach Deutschland" data-en="🏭 Production: 2–3 days · Delivery: 2–4 days to Germany">🏭 Produktion: 2–3 Tage · Lieferung: 2–4 Tage nach Deutschland</div>
+    </div>
   </div>
   <header class="header">
     <div class="container header__inner">
@@ -140,20 +150,17 @@
         </div>
       </div>
         <div class="footer__col">
-          <h4 data-de="Zahlungsmethoden" data-en="Payment methods">Zahlungsmethoden</h4>
-          <ul>
-            <li data-de="💳 Visa / Mastercard" data-en="💳 Visa / Mastercard">💳 Visa / Mastercard</li>
-            <li data-de="📦 Nachnahme" data-en="📦 Cash on delivery">📦 Nachnahme</li>
-            <li data-de="🏦 Banküberweisung" data-en="🏦 Bank transfer">🏦 Banküberweisung</li>
-          </ul>
-        </div>
-        <div class="footer__col">
-          <h4 data-de="Öffnungszeiten" data-en="Opening hours">Öffnungszeiten</h4>
-          <ul>
-            <li data-de="Mo–Fr: 07:00 – 18:00" data-en="Mon–Fri: 07:00 – 18:00">Mo–Fr: 07:00 – 18:00</li>
-            <li data-de="Sa: 08:00 – 15:00" data-en="Sat: 08:00 – 15:00">Sa: 08:00 – 15:00</li>
-            <li><strong data-de="Bestellungen: 24/7" data-en="Orders: 24/7">Bestellungen: 24/7</strong></li>
-          </ul>
+          <h4 data-de="Zahlungsmethoden" data-en="Payment Methods">Zahlungsmethoden</h4>
+          <div class="payment-badges">
+            <div class="payment-badge"><i data-feather="credit-card"></i><span>Visa / MC</span></div>
+            <div class="payment-badge"><i data-feather="package"></i><span data-de="Nachnahme" data-en="Cash on delivery">Nachnahme</span></div>
+            <div class="payment-badge"><i data-feather="home"></i><span data-de="Überweisung" data-en="Transfer">Überweisung</span></div>
+          </div>
+          <div style="margin-top:16px;">
+            <h4 data-de="Öffnungszeiten" data-en="Opening Hours">Öffnungszeiten</h4>
+            <p style="font-size:13px;color:#B0B0B0;margin-top:6px;" data-de="Mo–Fr: 07:00–18:00 | Sa: 08:00–15:00" data-en="Mon–Fri: 07:00–18:00 | Sat: 08:00–15:00">Mo–Fr: 07:00–18:00 | Sa: 08:00–15:00</p>
+            <p style="font-size:13px;color:var(--color-primary-red-bright);margin-top:4px;font-weight:700;" data-de="Bestellungen: 24/7" data-en="Orders: 24/7">Bestellungen: 24/7</p>
+          </div>
         </div>
       </div>
       <div class="footer__bottom">© 2024 NEOMAT — <span data-de="Alle Rechte vorbehalten." data-en="All rights reserved.">Alle Rechte vorbehalten.</span></div>
@@ -187,6 +194,13 @@
   <script src="js/cart.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/main.js"></script>
-  <script>feather.replace({ 'stroke-width': 1.6 });</script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof feather !== 'undefined') {
+        feather.replace({ 'stroke-width': 1.6, 'width': 24, 'height': 24 });
+      }
+    });
+  </script>
 </body>
 </html>

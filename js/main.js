@@ -224,3 +224,57 @@ function toggleAccordion(btn) {
     content.style.maxHeight = content.scrollHeight + 'px';
   }
 }
+
+/* =================================================================
+   ANNOUNCE BAR SLIDER (авто-слайдер каждые 4 секунды)
+   ================================================================= */
+function startAnnounceSlider() {
+  const slider = document.getElementById('announceSlider');
+  if (!slider) return;
+  const slides = slider.querySelectorAll('.announce-slide');
+  if (slides.length < 2) return;
+  let current = 0;
+  setInterval(() => {
+    slides[current].classList.remove('active');
+    slides[current].classList.add('exit');
+    const prev = current;
+    setTimeout(() => slides[prev].classList.remove('exit'), 500);
+    current = (current + 1) % slides.length;
+    slides[current].classList.add('active');
+  }, 4000);
+}
+document.addEventListener('DOMContentLoaded', startAnnounceSlider);
+
+/* =================================================================
+   КАСТОМНЫЕ SELECT ДРОПДАУНЫ (блок 02 конфигуратора)
+   ================================================================= */
+function initCustomSelects() {
+  document.querySelectorAll('.custom-select').forEach(sel => {
+    const trigger = sel.querySelector('.custom-select-trigger');
+    const options = sel.querySelectorAll('.custom-option');
+    if (!trigger) return;
+
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.querySelectorAll('.custom-select.open').forEach(s => { if (s !== sel) s.classList.remove('open'); });
+      sel.classList.toggle('open');
+      if (typeof feather !== 'undefined') feather.replace({ 'stroke-width': 1.6 });
+    });
+
+    options.forEach(opt => {
+      opt.addEventListener('click', () => {
+        options.forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        const span = trigger.querySelector('span');
+        if (span) span.textContent = opt.dataset['de'] || opt.textContent;
+        sel.classList.remove('open');
+        sel.dataset.value = opt.dataset.value;
+      });
+    });
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.custom-select.open').forEach(s => s.classList.remove('open'));
+  });
+}
+document.addEventListener('DOMContentLoaded', initCustomSelects);

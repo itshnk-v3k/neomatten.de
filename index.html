@@ -233,26 +233,20 @@
   <!-- Feather Icons -->
   <link rel="stylesheet" href="css/feather.css">
   <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+  <link rel="stylesheet" href="css/v5-fixes.css">
 </head>
 
 <body>
-
-  <!-- INFO BAR -->
-  <div class="info-bar">
-    <span>✅ <span data-de="Bei Bestellungen ab 100 € — kostenloser Versand in ganz Deutschland" data-en="Orders from €100 — free shipping across Germany">Bei Bestellungen ab 100 € — kostenloser Versand in ganz Deutschland</span></span>
+<!-- HEADER -->
+  <!-- ANNOUNCE BAR (автослайдер) -->
+  <div class="announce-bar">
+    <div class="announce-slider" id="announceSlider">
+      <div class="announce-slide active" data-de="✅ Kostenloser Versand ab 100 € in ganz Deutschland" data-en="✅ Free shipping from €100 across Germany">✅ Kostenloser Versand ab 100 € in ganz Deutschland</div>
+      <div class="announce-slide" data-de="🚗 Individuelle EVA-Matten — präzise gefertigt für Ihr Fahrzeug" data-en="🚗 Custom EVA mats — precision made for your vehicle">🚗 Individuelle EVA-Matten — präzise gefertigt für Ihr Fahrzeug</div>
+      <div class="announce-slide" data-de="⭐ 4.9 / 5 — über 847 zufriedene Kunden" data-en="⭐ 4.9 / 5 — over 847 satisfied customers">⭐ 4.9 / 5 — über 847 zufriedene Kunden</div>
+      <div class="announce-slide" data-de="🏭 Produktion: 2–3 Tage · Lieferung: 2–4 Tage nach Deutschland" data-en="🏭 Production: 2–3 days · Delivery: 2–4 days to Germany">🏭 Produktion: 2–3 Tage · Lieferung: 2–4 Tage nach Deutschland</div>
+    </div>
   </div>
-  <!-- Живой счётчик заказов -->
-  <div class="live-counter">
-    <span class="counter-icon">🔄</span>
-    <span data-de="Heute in Produktion:" data-en="In production today:">Heute in Produktion:</span>
-    <strong id="ordersCount">6</strong>
-    <span data-de="Bestellungen" data-en="orders">Bestellungen</span>
-    <span class="divider">|</span>
-    <span data-de="Lieferung ab:" data-en="Delivery from:">Lieferung ab:</span>
-    <strong id="deliveryDate"></strong>
-  </div>
-
-  <!-- HEADER -->
   <header class="header">
     <div class="container header__inner">
       <a href="index.html" class="logo" aria-label="NEOMAT — Startseite">
@@ -535,8 +529,15 @@
             <div class="reviews-count" data-de="847 Bewertungen" data-en="847 reviews">847 Bewertungen</div>
           </div>
         </div>
-        <div class="reviews-grid fade-in-up" id="reviewsGrid"><!-- рендерит JS --></div>
-        <div class="fade-in-up" style="text-align:center;">
+        <div class="reviews-slider-wrap fade-in-up">
+          <button class="reviews-btn" onclick="reviewsSlide(-1)" aria-label="Zurück">‹</button>
+          <div class="reviews-slider">
+            <div class="reviews-track" id="reviewsTrack"><!-- рендерит reviews.js --></div>
+          </div>
+          <button class="reviews-btn" onclick="reviewsSlide(1)" aria-label="Weiter">›</button>
+        </div>
+        <div class="reviews-dots" id="reviewsDots"></div>
+        <div class="fade-in-up" style="text-align:center; margin-top:24px;">
           <button class="btn btn-primary" onclick="showAddReviewPopup()" data-de="Bewertung hinzufügen" data-en="Add a review">Bewertung hinzufügen</button>
         </div>
       </div>
@@ -549,27 +550,32 @@
           <span class="section-eyebrow" data-de="Service" data-en="Service">Service</span>
           <h2 data-de="Zahlung & Lieferung" data-en="Payment & Delivery">Zahlung & Lieferung</h2>
         </div>
-        <div class="ico-grid fade-in-up">
-          <div class="ico-item">
-            <div class="ico-item__icon"><i data-feather="credit-card"></i></div>
-            <h3><span data-de="Online" data-en="Online">Online</span></h3>
-            <p><span data-de="Zahlung per Visa oder Mastercard." data-en="Payment by Visa or Mastercard.">Zahlung per Visa oder Mastercard.</span></p>
+        <div class="zahlung-steps fade-in-up">
+          <div class="zahlung-step">
+            <div class="step-icon-circle"><i data-feather="credit-card"></i></div>
+            <h3 data-de="Online" data-en="Online">Online</h3>
+            <p data-de="Visa / Mastercard" data-en="Visa / Mastercard">Visa / Mastercard</p>
           </div>
-          <div class="ico-item">
-            <div class="ico-item__icon"><i data-feather="package"></i></div>
-            <h3><span data-de="Nachnahme" data-en="Cash on delivery">Nachnahme</span></h3>
-            <p><span data-de="Zahlung bei Erhalt der Bestellung." data-en="Payment upon receipt of the order.">Zahlung bei Erhalt der Bestellung.</span></p>
+          <div class="zahlung-step">
+            <div class="step-icon-circle"><i data-feather="package"></i></div>
+            <h3 data-de="Nachnahme" data-en="Cash on delivery">Nachnahme</h3>
+            <p data-de="Zahlung bei Erhalt der Bestellung" data-en="Payment upon receipt">Zahlung bei Erhalt der Bestellung</p>
           </div>
-          <div class="ico-item">
-            <div class="ico-item__icon"><i data-feather="shopping-bag"></i></div>
-            <h3><span data-de="Selbstabholung" data-en="Pickup">Selbstabholung</span></h3>
-            <p><span data-de="Bar oder bargeldlos (bei vorhandener Ausgabestelle)." data-en="Cash or card (where a pickup point exists).">Bar oder bargeldlos (bei vorhandener Ausgabestelle).</span></p>
+          <div class="zahlung-step">
+            <div class="step-icon-circle"><i data-feather="map-pin"></i></div>
+            <h3 data-de="Selbstabholung" data-en="Pickup">Selbstabholung</h3>
+            <p data-de="Bar oder Karte (bei vorhandener Ausgabestelle)" data-en="Cash or card (where pickup exists)">Bar oder Karte</p>
+          </div>
+          <div class="zahlung-step">
+            <div class="step-icon-circle"><i data-feather="truck"></i></div>
+            <h3 data-de="Kostenlos ab 100 €" data-en="Free from €100">Kostenlos ab 100 €</h3>
+            <p data-de="Kostenloser Versand nach Deutschland" data-en="Free shipping to Germany">Versand nach Deutschland</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ===================== 9. BERATUNG ===================== -->
+        <!-- ===================== 9. BERATUNG ===================== -->
     <section class="section beratung-v3" id="beratung">
       <div class="beratung-v3__overlay"></div>
       <div class="container">
@@ -669,20 +675,17 @@
         </div>
       </div>
         <div class="footer__col">
-          <h4 data-de="Zahlungsmethoden" data-en="Payment methods">Zahlungsmethoden</h4>
-          <ul>
-            <li data-de="💳 Visa / Mastercard" data-en="💳 Visa / Mastercard">💳 Visa / Mastercard</li>
-            <li data-de="📦 Nachnahme" data-en="📦 Cash on delivery">📦 Nachnahme</li>
-            <li data-de="🏦 Banküberweisung" data-en="🏦 Bank transfer">🏦 Banküberweisung</li>
-          </ul>
-        </div>
-        <div class="footer__col">
-          <h4 data-de="Öffnungszeiten" data-en="Opening hours">Öffnungszeiten</h4>
-          <ul>
-            <li data-de="Mo–Fr: 07:00 – 18:00" data-en="Mon–Fri: 07:00 – 18:00">Mo–Fr: 07:00 – 18:00</li>
-            <li data-de="Sa: 08:00 – 15:00" data-en="Sat: 08:00 – 15:00">Sa: 08:00 – 15:00</li>
-            <li><strong data-de="Bestellungen: 24/7" data-en="Orders: 24/7">Bestellungen: 24/7</strong></li>
-          </ul>
+          <h4 data-de="Zahlungsmethoden" data-en="Payment Methods">Zahlungsmethoden</h4>
+          <div class="payment-badges">
+            <div class="payment-badge"><i data-feather="credit-card"></i><span>Visa / MC</span></div>
+            <div class="payment-badge"><i data-feather="package"></i><span data-de="Nachnahme" data-en="Cash on delivery">Nachnahme</span></div>
+            <div class="payment-badge"><i data-feather="home"></i><span data-de="Überweisung" data-en="Transfer">Überweisung</span></div>
+          </div>
+          <div style="margin-top:16px;">
+            <h4 data-de="Öffnungszeiten" data-en="Opening Hours">Öffnungszeiten</h4>
+            <p style="font-size:13px;color:#B0B0B0;margin-top:6px;" data-de="Mo–Fr: 07:00–18:00 | Sa: 08:00–15:00" data-en="Mon–Fri: 07:00–18:00 | Sat: 08:00–15:00">Mo–Fr: 07:00–18:00 | Sa: 08:00–15:00</p>
+            <p style="font-size:13px;color:var(--color-primary-red-bright);margin-top:4px;font-weight:700;" data-de="Bestellungen: 24/7" data-en="Orders: 24/7">Bestellungen: 24/7</p>
+          </div>
         </div>
       </div>
       <div class="footer__bottom">© 2024 NEOMAT — <span data-de="Alle Rechte vorbehalten." data-en="All rights reserved.">Alle Rechte vorbehalten.</span></div>
@@ -753,6 +756,13 @@
   <script src="js/auth.js"></script>
   <script src="js/main.js"></script>
   <script src="js/reviews.js"></script>
-  <script>feather.replace({ 'stroke-width': 1.6 });</script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof feather !== 'undefined') {
+        feather.replace({ 'stroke-width': 1.6, 'width': 24, 'height': 24 });
+      }
+    });
+  </script>
 </body>
 </html>

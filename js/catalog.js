@@ -44,11 +44,12 @@ function param(name) { return new URLSearchParams(location.search).get(name); }
 
 /* ---------- Рендер брендов ---------- */
 function brandTile(name) {
-  const initials = name.replace(/[^A-Za-zА-Яа-я ]/g, '').split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+  const initials = name.replace(/[^A-Za-z]/g, '').substring(0, 2).toUpperCase() || name[0].toUpperCase();
   return `
-    <a href="katalog.html?cat=mats&brand=${encodeURIComponent(name)}" class="brand-card">
-      <span class="brand-card__logo">${initials}</span>
-      <span class="brand-card__name">${name}</span>
+    <a href="konfigurator.html?brand=${encodeURIComponent(name)}" class="brand-row">
+      <span class="brand-row__logo">${initials}</span>
+      <span class="brand-row__name">${name}</span>
+      <span class="brand-row__arrow">→</span>
     </a>`;
 }
 function renderBrands(list) {
@@ -56,7 +57,7 @@ function renderBrands(list) {
   if (!grid) return;
   const en = (typeof isEnglish === 'function') && isEnglish();
   if (!list.length) {
-    grid.innerHTML = `<div class="catalog-empty">${en ? 'No brands found.' : 'Keine Marken gefunden.'}</div>`;
+    grid.innerHTML = `<div class="catalog-empty" style="padding:32px;text-align:center;color:#888;">${en ? 'No brands found.' : 'Keine Marken gefunden.'}</div>`;
     return;
   }
   grid.innerHTML = list.map(brandTile).join('');
