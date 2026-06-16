@@ -1,0 +1,34 @@
+<!--
+  EN: Header button toggles `open`; the chevron rotates 180deg and the body
+      expands via a grid-rows 0fr/1fr transition while projecting <ng-content>.
+  RU: Кнопка-заголовок переключает `open`; шеврон поворачивается на 180°, а тело
+      раскрывается через переход grid-rows 0fr/1fr, проецируя <ng-content>.
+-->
+<button
+  type="button"
+  [id]="panelId + '-trigger'"
+  class="flex w-full items-center justify-between gap-3 px-4 py-4 text-left text-sm font-semibold text-content transition-colors hover:text-primary focus-visible:text-primary focus-visible:outline-none"
+  [attr.aria-expanded]="open()"
+  [attr.aria-controls]="panelId"
+  (click)="toggle()">
+  <span>{{ titleKey() | translate }}</span>
+  <svg
+    lucideChevronDown
+    class="size-5 shrink-0 text-content-muted transition-transform duration-200"
+    [class.rotate-180]="open()"></svg>
+</button>
+
+<div
+  [id]="panelId"
+  role="region"
+  [attr.aria-labelledby]="panelId + '-trigger'"
+  class="grid transition-[grid-template-rows] duration-200 ease-out"
+  [class]="open() ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'">
+  <div
+    class="overflow-hidden text-sm text-content-secondary transition-opacity duration-200"
+    [class]="open() ? 'opacity-100' : 'opacity-0'">
+    <div class="px-4 pb-4">
+      <ng-content />
+    </div>
+  </div>
+</div>

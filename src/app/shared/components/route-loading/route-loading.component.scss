@@ -1,0 +1,9 @@
+/*
+ * EN: Route progress bar host — block; positioning/visuals are Tailwind utilities
+ *     in the template. This file is the conventional third slot.
+ * RU: Хост полосы прогресса — block; позиционирование/вид — утилитами Tailwind в
+ *     шаблоне. Файл — конвенциональный третий слот.
+ */
+:host {
+  display: block;
+}

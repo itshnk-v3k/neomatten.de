@@ -1,0 +1,7 @@
+/*
+ * EN: Reviews styles — host is a block; section/carousel layout uses Tailwind.
+ * RU: Стили отзывов — host — блок; раскладка секции/карусели через Tailwind.
+ */
+:host {
+  display: block;
+}

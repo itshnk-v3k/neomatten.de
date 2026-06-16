@@ -1,0 +1,35 @@
+@if (label()) {
+  <label [for]="inputId()" class="mb-1.5 block text-sm font-medium text-content">
+    {{ label() | translate }}
+    @if (required()) {
+      <span class="ml-0.5 text-error" aria-hidden="true">*</span>
+    }
+  </label>
+}
+
+<input
+  [id]="inputId()"
+  [type]="type()"
+  [value]="value()"
+  [attr.placeholder]="placeholder() ? (placeholder() | translate) : null"
+  [autocomplete]="autocomplete()"
+  [disabled]="disabled()"
+  [attr.aria-label]="!label() && ariaLabel() ? (ariaLabel() | translate) : null"
+  [attr.aria-invalid]="errorMessage ? true : null"
+  [attr.aria-describedby]="
+    errorMessage ? inputId() + '-error' : hint() ? inputId() + '-hint' : null
+  "
+  [class]="
+    'h-11 w-full rounded-md border bg-surface-input px-4 text-sm text-content outline-none transition-colors placeholder:text-content-muted focus:border-primary disabled:cursor-not-allowed disabled:opacity-60 ' +
+    (errorMessage ? 'border-error' : 'border-border')
+  "
+  (input)="onInput($event)"
+  (blur)="markTouched()" />
+
+@if (errorMessage) {
+  <p [id]="inputId() + '-error'" class="mt-1.5 text-xs text-error">{{ errorMessage }}</p>
+} @else if (hint()) {
+  <p [id]="inputId() + '-hint'" class="mt-1.5 text-xs text-content-muted">
+    {{ hint() | translate }}
+  </p>
+}

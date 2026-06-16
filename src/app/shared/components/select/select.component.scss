@@ -1,0 +1,13 @@
+/*
+ * EN: Select styles (host is a block; visuals use Tailwind utilities in template).
+ * RU: Стили select (host — блок; оформление через утилиты Tailwind в шаблоне).
+ */
+:host {
+  display: block;
+}
+
+// On a dark-background form (.dark-form on an ancestor), render the label in a
+// light color so it stays readable.
+:host-context(.dark-form) label {
+  color: #fff;
+}

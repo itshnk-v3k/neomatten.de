@@ -1,0 +1,105 @@
+<!--
+  EN: Header bar. In normal flow at the top of the page; becomes sticky with a
+      shadow once scrolled (see `scrolled` signal). Desktop nav is hidden below
+      lg; the burger opens the mobile menu. Section links scroll in-page (no hash)
+      while route links use routerLink. Icon actions carry aria-labels.
+  RU: Панель хедера. В обычном потоке вверху страницы; становится закреплённой с
+      тенью при прокрутке (сигнал `scrolled`). Десктоп-навигация скрыта ниже lg;
+      бургер открывает мобильное меню. Ссылки на секции прокручивают без хеша,
+      ссылки-маршруты используют routerLink. Иконки несут aria-label.
+-->
+<!-- Position lives on the host (see HeaderComponent host bindings); this element
+     only carries the visual styling that toggles between the top/scrolled states. -->
+<header
+  class="border-b bg-surface transition-shadow duration-200"
+  [class.border-border]="scrolled()"
+  [class.border-transparent]="!scrolled()"
+  [class.shadow-soft]="scrolled()"
+  [class.backdrop-blur]="scrolled()">
+  <div class="mx-auto flex h-[72px] max-w-container items-center gap-4 px-4 sm:px-6">
+    <!-- Logo: NM monogram only (true aspect ratio); the wordmark lives in the footer. -->
+    <a
+      routerLink="/"
+      [attr.aria-label]="'header_home' | translate"
+      class="flex shrink-0 items-center">
+      <img
+        ngSrc="assets/logo/neomat_nm_transparent.png"
+        width="517"
+        height="300"
+        priority
+        alt=""
+        class="h-8 w-auto xl:h-9" />
+    </a>
+
+    <!-- Desktop navigation. Sizing scales up at xl so the (longer German) labels
+         never overlap the logo/actions at 1024–1280px; nowrap keeps each on one line. -->
+    <nav
+      class="ml-2 hidden items-center gap-0 lg:flex xl:ml-4 xl:gap-1"
+      [attr.aria-label]="'header_menu' | translate">
+      @for (link of links; track link.labelKey) {
+        @if (link.sectionId) {
+          <button
+            type="button"
+            class="whitespace-nowrap rounded-md px-2 py-2 text-[13px] font-medium text-content transition-colors duration-150 hover:text-primary xl:px-3 xl:text-sm"
+            (click)="goToSection(link)">
+            {{ link.labelKey | translate }}
+          </button>
+        } @else {
+          <a
+            class="whitespace-nowrap rounded-md px-2 py-2 text-[13px] font-medium text-content transition-colors duration-150 hover:text-primary xl:px-3 xl:text-sm"
+            routerLinkActive="text-primary"
+            [routerLinkActiveOptions]="{ exact: true }"
+            ariaCurrentWhenActive="page"
+            [routerLink]="link.path">
+            {{ link.labelKey | translate }}
+          </a>
+        }
+      }
+    </nav>
+
+    <!-- Actions -->
+    <div class="ml-auto flex items-center gap-1 sm:gap-2">
+      <div class="hidden md:block">
+        <nm-language-switcher />
+      </div>
+
+      <a
+        [href]="phoneHref"
+        class="hidden size-10 items-center justify-center rounded-md text-content transition-colors hover:bg-surface-subtle hover:text-primary md:inline-flex"
+        [attr.aria-label]="'header_call' | translate">
+        <svg lucidePhone class="size-5"></svg>
+      </a>
+
+      <a
+        routerLink="/account"
+        class="inline-flex size-10 items-center justify-center rounded-md text-content transition-colors hover:bg-surface-subtle hover:text-primary"
+        [attr.aria-label]="'page_account_title' | translate">
+        <svg lucideUser class="size-5"></svg>
+      </a>
+
+      <a
+        routerLink="/cart"
+        class="relative inline-flex size-10 items-center justify-center rounded-md text-content transition-colors hover:bg-surface-subtle hover:text-primary"
+        [attr.aria-label]="'page_cart_title' | translate">
+        <svg lucideShoppingCart class="size-5"></svg>
+        @if (cartCount() > 0) {
+          <span
+            class="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[0.625rem] font-bold text-content-inverse">
+            {{ cartCount() }}
+          </span>
+        }
+      </a>
+
+      <button
+        type="button"
+        class="inline-flex size-10 items-center justify-center rounded-md text-content transition-colors hover:bg-surface-subtle hover:text-primary lg:hidden"
+        [attr.aria-label]="'header_open_menu' | translate"
+        [attr.aria-expanded]="mobileMenuOpen()"
+        (click)="mobileMenuOpen.set(true)">
+        <svg lucideMenu class="size-6"></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nm-mobile-menu [open]="mobileMenuOpen()" (openChange)="mobileMenuOpen.set($event)" />

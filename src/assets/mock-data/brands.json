@@ -1,0 +1,566 @@
+[
+  {
+    "id": "acura",
+    "name": "Acura",
+    "modelCount": 8,
+    "patternCount": 14
+  },
+  {
+    "id": "aion",
+    "name": "AİON",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "alfa-romeo",
+    "name": "Alfa Romeo",
+    "modelCount": 22,
+    "patternCount": 29
+  },
+  {
+    "id": "audi",
+    "name": "Audi",
+    "modelCount": 62,
+    "patternCount": 115
+  },
+  {
+    "id": "bmw",
+    "name": "BMW",
+    "modelCount": 102,
+    "patternCount": 147
+  },
+  {
+    "id": "buick",
+    "name": "Buick",
+    "modelCount": 2,
+    "patternCount": 2
+  },
+  {
+    "id": "byd",
+    "name": "BYD",
+    "modelCount": 10,
+    "patternCount": 10
+  },
+  {
+    "id": "cadillac",
+    "name": "Cadillac",
+    "modelCount": 9,
+    "patternCount": 11
+  },
+  {
+    "id": "chana",
+    "name": "Chana",
+    "modelCount": 2,
+    "patternCount": 2
+  },
+  {
+    "id": "change",
+    "name": "Change",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "chery",
+    "name": "Chery",
+    "modelCount": 23,
+    "patternCount": 24
+  },
+  {
+    "id": "chevrolet",
+    "name": "Chevrolet",
+    "modelCount": 41,
+    "patternCount": 65
+  },
+  {
+    "id": "chrysler",
+    "name": "Chrysler",
+    "modelCount": 17,
+    "patternCount": 20
+  },
+  {
+    "id": "citroen",
+    "name": "Citroen",
+    "modelCount": 46,
+    "patternCount": 73
+  },
+  {
+    "id": "cupra",
+    "name": "Cupra",
+    "modelCount": 5,
+    "patternCount": 5
+  },
+  {
+    "id": "dacia",
+    "name": "Dacia",
+    "modelCount": 14,
+    "patternCount": 23
+  },
+  {
+    "id": "dadi",
+    "name": "Dadi",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "daewoo",
+    "name": "Daewoo",
+    "modelCount": 11,
+    "patternCount": 13
+  },
+  {
+    "id": "daf",
+    "name": "DAF",
+    "modelCount": 2,
+    "patternCount": 2
+  },
+  {
+    "id": "daihatsu",
+    "name": "Daihatsu",
+    "modelCount": 9,
+    "patternCount": 10
+  },
+  {
+    "id": "dfsk",
+    "name": "DFSK",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "dodge",
+    "name": "Dodge",
+    "modelCount": 13,
+    "patternCount": 26
+  },
+  {
+    "id": "ds",
+    "name": "DS",
+    "modelCount": 4,
+    "patternCount": 4
+  },
+  {
+    "id": "faw",
+    "name": "FAW",
+    "modelCount": 4,
+    "patternCount": 4
+  },
+  {
+    "id": "ferrari",
+    "name": "Ferrari",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "fiat",
+    "name": "Fiat",
+    "modelCount": 49,
+    "patternCount": 74
+  },
+  {
+    "id": "fisker",
+    "name": "Fisker",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "ford",
+    "name": "Ford",
+    "modelCount": 70,
+    "patternCount": 175
+  },
+  {
+    "id": "geely",
+    "name": "Geely",
+    "modelCount": 10,
+    "patternCount": 11
+  },
+  {
+    "id": "gmc",
+    "name": "GMC",
+    "modelCount": 4,
+    "patternCount": 6
+  },
+  {
+    "id": "great-wall",
+    "name": "Great Wall",
+    "modelCount": 12,
+    "patternCount": 13
+  },
+  {
+    "id": "honda",
+    "name": "Honda",
+    "modelCount": 34,
+    "patternCount": 118
+  },
+  {
+    "id": "hummer",
+    "name": "Hummer",
+    "modelCount": 2,
+    "patternCount": 3
+  },
+  {
+    "id": "hyundai",
+    "name": "Hyundai",
+    "modelCount": 88,
+    "patternCount": 142
+  },
+  {
+    "id": "ikco",
+    "name": "IKCO",
+    "modelCount": 2,
+    "patternCount": 2
+  },
+  {
+    "id": "infiniti",
+    "name": "Infiniti",
+    "modelCount": 20,
+    "patternCount": 27
+  },
+  {
+    "id": "isuzu",
+    "name": "Isuzu",
+    "modelCount": 3,
+    "patternCount": 4
+  },
+  {
+    "id": "iveco",
+    "name": "Iveco",
+    "modelCount": 7,
+    "patternCount": 8
+  },
+  {
+    "id": "jac",
+    "name": "JAC",
+    "modelCount": 6,
+    "patternCount": 6
+  },
+  {
+    "id": "jaecoo",
+    "name": "Jaecoo",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "jaguar",
+    "name": "Jaguar",
+    "modelCount": 17,
+    "patternCount": 22
+  },
+  {
+    "id": "jeep",
+    "name": "Jeep",
+    "modelCount": 24,
+    "patternCount": 34
+  },
+  {
+    "id": "kgm",
+    "name": "KGM",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "khazar",
+    "name": "Khazar",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "kia",
+    "name": "Kia",
+    "modelCount": 39,
+    "patternCount": 109
+  },
+  {
+    "id": "lamborghini",
+    "name": "Lamborghini",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "lancia",
+    "name": "Lancia",
+    "modelCount": 4,
+    "patternCount": 4
+  },
+  {
+    "id": "land-rover",
+    "name": "Land Rover",
+    "modelCount": 31,
+    "patternCount": 45
+  },
+  {
+    "id": "leopaard",
+    "name": "Leopaard",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "lexus",
+    "name": "Lexus",
+    "modelCount": 32,
+    "patternCount": 49
+  },
+  {
+    "id": "lifan",
+    "name": "Lifan",
+    "modelCount": 3,
+    "patternCount": 3
+  },
+  {
+    "id": "lincoln",
+    "name": "Lincoln",
+    "modelCount": 8,
+    "patternCount": 11
+  },
+  {
+    "id": "man",
+    "name": "MAN",
+    "modelCount": 5,
+    "patternCount": 5
+  },
+  {
+    "id": "maserati",
+    "name": "Maserati",
+    "modelCount": 3,
+    "patternCount": 3
+  },
+  {
+    "id": "mazda",
+    "name": "Mazda",
+    "modelCount": 40,
+    "patternCount": 58
+  },
+  {
+    "id": "mercedes-benz",
+    "name": "Mercedes-Benz",
+    "modelCount": 132,
+    "patternCount": 179
+  },
+  {
+    "id": "mg",
+    "name": "MG",
+    "modelCount": 8,
+    "patternCount": 8
+  },
+  {
+    "id": "mini",
+    "name": "Mini",
+    "modelCount": 17,
+    "patternCount": 18
+  },
+  {
+    "id": "mitsubishi",
+    "name": "Mitsubishi",
+    "modelCount": 35,
+    "patternCount": 65
+  },
+  {
+    "id": "nissan",
+    "name": "Nissan",
+    "modelCount": 72,
+    "patternCount": 104
+  },
+  {
+    "id": "opel",
+    "name": "Opel",
+    "modelCount": 72,
+    "patternCount": 100
+  },
+  {
+    "id": "peugeot",
+    "name": "Peugeot",
+    "modelCount": 58,
+    "patternCount": 105
+  },
+  {
+    "id": "pontiac",
+    "name": "Pontiac",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "porsche",
+    "name": "Porsche",
+    "modelCount": 8,
+    "patternCount": 16
+  },
+  {
+    "id": "ravon",
+    "name": "Ravon",
+    "modelCount": 2,
+    "patternCount": 3
+  },
+  {
+    "id": "relive",
+    "name": "Relive",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "renault",
+    "name": "Renault",
+    "modelCount": 62,
+    "patternCount": 131
+  },
+  {
+    "id": "rover",
+    "name": "Rover",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "saab",
+    "name": "Saab",
+    "modelCount": 5,
+    "patternCount": 9
+  },
+  {
+    "id": "saipa",
+    "name": "Saipa",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "scania",
+    "name": "Scania",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "scion",
+    "name": "Scion",
+    "modelCount": 4,
+    "patternCount": 6
+  },
+  {
+    "id": "seat",
+    "name": "Seat",
+    "modelCount": 27,
+    "patternCount": 38
+  },
+  {
+    "id": "seres",
+    "name": "Seres",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "skoda",
+    "name": "Skoda",
+    "modelCount": 28,
+    "patternCount": 55
+  },
+  {
+    "id": "skywell",
+    "name": "Skywell",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "smart",
+    "name": "SMART",
+    "modelCount": 2,
+    "patternCount": 4
+  },
+  {
+    "id": "ssangyong",
+    "name": "SsangYong",
+    "modelCount": 18,
+    "patternCount": 21
+  },
+  {
+    "id": "subaru",
+    "name": "Subaru",
+    "modelCount": 27,
+    "patternCount": 37
+  },
+  {
+    "id": "suzuki",
+    "name": "Suzuki",
+    "modelCount": 17,
+    "patternCount": 29
+  },
+  {
+    "id": "swm",
+    "name": "SWM",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "t03",
+    "name": "T03",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "tesla",
+    "name": "Tesla",
+    "modelCount": 7,
+    "patternCount": 10
+  },
+  {
+    "id": "togg",
+    "name": "Togg",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "toyota",
+    "name": "Toyota",
+    "modelCount": 104,
+    "patternCount": 169
+  },
+  {
+    "id": "volkswagen",
+    "name": "Volkswagen",
+    "modelCount": 77,
+    "patternCount": 162
+  },
+  {
+    "id": "volvo",
+    "name": "Volvo",
+    "modelCount": 29,
+    "patternCount": 53
+  },
+  {
+    "id": "yoyo",
+    "name": "Yoyo",
+    "modelCount": 1,
+    "patternCount": 1
+  },
+  {
+    "id": "vaz",
+    "name": "ВАЗ",
+    "modelCount": 16,
+    "patternCount": 19
+  },
+  {
+    "id": "vaz-lada",
+    "name": "ВАЗ (Lada)",
+    "modelCount": 16,
+    "patternCount": 16
+  },
+  {
+    "id": "gaz",
+    "name": "ГАЗ",
+    "modelCount": 6,
+    "patternCount": 7
+  },
+  {
+    "id": "zaz",
+    "name": "ЗАЗ",
+    "modelCount": 5,
+    "patternCount": 6
+  },
+  {
+    "id": "tavria",
+    "name": "Таврия",
+    "modelCount": 3,
+    "patternCount": 3
+  },
+  {
+    "id": "uaz",
+    "name": "УАЗ",
+    "modelCount": 1,
+    "patternCount": 2
+  }
+]

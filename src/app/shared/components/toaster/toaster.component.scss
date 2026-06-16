@@ -1,0 +1,11 @@
+/*
+ * EN: Toaster host is a block; ngx-sonner renders its own fixed overlay. The
+ *     overlay/close-button styling lives in the global styles.scss (third-party
+ *     component → global stylesheet, no piercing combinators).
+ * RU: Хост тостера — block; ngx-sonner рисует свой фиксированный слой. Стилизация
+ *     слоя/кнопки закрытия — в глобальном styles.scss (сторонний компонент →
+ *     глобальные стили, без пробивающих комбинаторов).
+ */
+:host {
+  display: block;
+}

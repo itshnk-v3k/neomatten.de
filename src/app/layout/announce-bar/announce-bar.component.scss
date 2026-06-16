@@ -1,0 +1,7 @@
+/*
+ * EN: Announce bar styles (host as block; all visuals via Tailwind utilities).
+ * RU: Стили промо-полосы (host как block; всё оформление утилитами Tailwind).
+ */
+:host {
+  display: block;
+}

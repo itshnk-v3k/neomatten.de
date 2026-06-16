@@ -1,0 +1,36 @@
+<!--
+  EN: Hidden native radio for accessibility, with a styled circle (border-primary
+      + inner bg-primary dot when checked) and an optional localized label.
+  RU: Скрытое нативное радио для доступности, оформленный кружок (border-primary
+      и внутренняя точка bg-primary при выборе) и необязательная метка.
+-->
+<label
+  [for]="inputId()"
+  class="inline-flex cursor-pointer select-none items-center gap-2"
+  [class.cursor-not-allowed]="disabled()"
+  [class.opacity-60]="disabled()">
+  <input
+    [id]="inputId()"
+    type="radio"
+    class="sr-only"
+    [name]="name()"
+    [value]="value()"
+    [checked]="checked()"
+    [disabled]="disabled()"
+    (change)="onSelect()" />
+
+  <span
+    aria-hidden="true"
+    [class]="
+      'flex size-5 shrink-0 items-center justify-center rounded-full border transition-colors ' +
+      (checked() ? 'border-primary' : 'border-border bg-surface-input')
+    ">
+    @if (checked()) {
+      <span class="size-2.5 rounded-full bg-primary"></span>
+    }
+  </span>
+
+  @if (label()) {
+    <span class="text-sm text-content">{{ label() | translate }}</span>
+  }
+</label>

@@ -1,0 +1,73 @@
+<!--
+  EN: Product card — thumbnail + name link to the detail page, short description,
+      price and an add-to-cart button.
+  RU: Карточка товара — миниатюра + ссылка-название на страницу товара, краткое
+      описание, цена и кнопка «В корзину».
+-->
+<article
+  class="flex flex-col overflow-hidden rounded-xl border border-border bg-surface shadow-soft transition-colors hover:border-primary">
+  <a
+    [routerLink]="detailLink()"
+    class="relative block aspect-square overflow-hidden bg-surface-subtle">
+    @if (product().images[0]; as img) {
+      @if (!imageFailed()) {
+        <img
+          [ngSrc]="img"
+          width="640"
+          height="640"
+          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+          [alt]="product().name"
+          (load)="imageLoaded.set(true)"
+          (error)="onImageError()"
+          class="size-full object-cover transition-opacity"
+          [class.opacity-0]="!imageLoaded()" />
+        @if (!imageLoaded()) {
+          <nm-skeleton variant="image" class="absolute inset-0 rounded-none" />
+        }
+      } @else {
+        <nm-image-placeholder class="size-full rounded-none" />
+      }
+    } @else {
+      <nm-image-placeholder class="size-full rounded-none" />
+    }
+  </a>
+  <div class="flex flex-1 flex-col p-5">
+    <h3 class="font-bold">
+      <a [routerLink]="detailLink()" class="transition-colors hover:text-primary">
+        {{ product().name }}
+      </a>
+    </h3>
+    <p class="mt-0.5 text-xs text-content-muted">
+      {{ 'form_label_sku' | translate }} {{ product().sku }}
+    </p>
+    <p class="mt-1 line-clamp-2 text-sm text-content-secondary">
+      {{ product().description | translate }}
+    </p>
+    <!-- Stock status: out of stock / low-stock warning / available count. -->
+    @if (product().stockQuantity === 0) {
+      <p class="mt-2 text-sm font-semibold text-error">
+        {{ 'product_out_of_stock' | translate }}
+      </p>
+    } @else if (product().stockQuantity <= 5) {
+      <p class="mt-2 text-sm font-medium text-warning">
+        {{ 'product_low_stock' | translate: { count: product().stockQuantity } }}
+      </p>
+    } @else {
+      <p class="mt-2 text-sm text-content-secondary">
+        {{ 'product_in_stock' | translate }}: {{ product().stockQuantity }}
+      </p>
+    }
+    <div class="mt-4 flex items-center justify-between gap-3">
+      <span class="text-xl font-extrabold">{{ product().price }} &euro;</span>
+      <button
+        nmButton
+        size="sm"
+        type="button"
+        [disabled]="product().stockQuantity === 0"
+        [loading]="addToCartAction.pending()"
+        (click)="addToCartAction.execute()">
+        {{ 'action_add_to_cart' | translate }}
+      </button>
+    </div>
+  </div>
+</article>

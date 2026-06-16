@@ -1,0 +1,27 @@
+<!--
+  EN: Optional group legend plus one nm-radio per option; checked is wired to the
+      bound value and `selected` updates the form value. Layout follows orientation.
+  RU: Необязательная легенда группы и по одному nm-radio на опцию; checked
+      привязан к значению, а `selected` обновляет значение формы. Раскладка по orientation.
+-->
+<fieldset class="m-0 border-0 p-0">
+  @if (label()) {
+    <legend class="mb-2 block text-sm font-medium text-content">{{ label() | translate }}</legend>
+  }
+
+  <div
+    [class]="
+      'flex gap-3 ' +
+      (orientation() === 'horizontal' ? 'flex-row flex-wrap items-center' : 'flex-col')
+    ">
+    @for (option of options(); track option.value) {
+      <nm-radio
+        [label]="option.label"
+        [value]="option.value"
+        [name]="name()"
+        [checked]="option.value === value()"
+        [disabled]="disabled() || !!option.disabled"
+        (selected)="onSelect($event)" />
+    }
+  </div>
+</fieldset>

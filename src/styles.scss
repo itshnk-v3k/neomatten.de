@@ -1,0 +1,337 @@
+/* =====================================================================
+   EN: Global stylesheet — Montserrat font import, Tailwind layers, and a
+       small set of base resets (box model, scrollbar, element defaults).
+       Brand design tokens live in tailwind.config.cjs (the single source of
+       truth) and are referenced here via theme(); avoid :root token dumps.
+   RU: Глобальные стили — подключение шрифта Montserrat, слои Tailwind и
+       небольшой набор базовых сбросов (box-sizing, скроллбар, дефолты
+       элементов). Бренд-токены заданы в tailwind.config.cjs (единый
+       источник правды) и используются здесь через theme().
+   ===================================================================== */
+
+/* Montserrat is loaded via a non-render-blocking <link> in index.html (with
+   preconnect + display=swap). It is intentionally NOT @imported here — a CSS
+   @import is fetched only after this stylesheet downloads and parses, which
+   makes the font request render-blocking and delays FCP. */
+
+/* Leaflet base styles (the contact-page map). Global so they reach the
+   map elements Leaflet creates at runtime. */
+@import 'leaflet/dist/leaflet.css';
+
+/* CDK Overlay base styles (positioning container + backdrop) for the
+   phone-input country dropdown rendered in the global overlay container. */
+@import '@angular/cdk/overlay-prebuilt.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    height: 100%;
+    scroll-behavior: smooth;
+    /* Offset in-page scroll targets so they clear the sticky header (72px). */
+    scroll-padding-top: 5rem;
+    background-color: theme('colors.surface.DEFAULT');
+    color: theme('colors.content.DEFAULT');
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    height: 100%;
+    min-height: 100%;
+    margin: 0;
+  }
+
+  /* Custom scrollbar — NEOMATTEN brand: thin (6px), red thumb, light track. */
+  * {
+    box-sizing: border-box;
+    /* Remove the grey tap flash on touch devices (replaced by our focus ring). */
+    -webkit-tap-highlight-color: transparent;
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.primary.DEFAULT') theme('colors.surface.subtle');
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: theme('colors.surface.subtle');
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: theme('colors.primary.DEFAULT');
+    border-radius: 3px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: theme('colors.primary.bright');
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 700;
+  }
+
+  ul,
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button:not([disabled]) {
+    cursor: pointer;
+  }
+
+  a,
+  button {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+  }
+
+  textarea {
+    resize: none;
+  }
+
+  img,
+  svg:not([data-sonner-icon]) {
+    display: block;
+    height: auto;
+  }
+
+  /* Prevent media from being ghost-dragged out of the page or accidentally
+     text-selected. Icons live inside buttons/links, so pointer-events is dropped
+     on the media itself (the click falls through to the interactive host) and
+     re-enabled for genuinely interactive images and the Leaflet map below. */
+  img,
+  svg,
+  video {
+    -webkit-user-drag: none;
+    user-drag: none;
+    -webkit-user-select: none;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  a img,
+  button img,
+  [role='button'] img,
+  .leaflet-container img,
+  .leaflet-container svg {
+    pointer-events: auto;
+  }
+
+  ::selection {
+    background-color: theme('colors.primary.DEFAULT');
+    color: theme('colors.content.inverse');
+  }
+
+  /* lucide-angular renders an inline SVG host element; center it by default. */
+  lucide-icon,
+  lucide-angular {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    height: fit-content;
+  }
+
+  *:focus-visible {
+    outline: 2px solid theme('colors.primary.DEFAULT');
+    outline-offset: 2px;
+  }
+}
+
+/* =====================================================================
+   nm-button busy state (the ButtonDirective sets aria-busy when [loading] is
+   true). The label is hidden via color:transparent — which keeps its box, so
+   the button never resizes — and a brand spinner is centered over it. The
+   spinner colour comes from the per-variant --nm-spin custom property (the
+   hidden label means currentColor can't be used). A directive cannot project a
+   template node, so this lives globally rather than in a component stylesheet.
+   ===================================================================== */
+
+button[nmButton][aria-busy='true'],
+a[nmButton][aria-busy='true'] {
+  position: relative;
+  color: transparent !important;
+}
+
+button[nmButton][aria-busy='true']::after,
+a[nmButton][aria-busy='true']::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: -0.625rem 0 0 -0.625rem;
+  border: 2px solid var(--nm-spin, #fff);
+  border-top-color: transparent;
+  border-radius: 9999px;
+  animation: nm-button-spin 0.6s linear infinite;
+}
+
+@keyframes nm-button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =====================================================================
+   Phone-input country dropdown. Styles the CDK overlay pane (panelClass
+   `nm-phone-dropdown`) — the pane is created by CDK, not the component, so it
+   carries no view-encapsulation attribute and must be styled globally (no
+   ng-deep). Inner layout uses Tailwind utilities in the component template.
+   ===================================================================== */
+.nm-phone-dropdown {
+  display: flex;
+  flex-direction: column;
+  /* Width is pinned to the field in PhoneDropdownService; cap it so it never
+     exceeds the viewport, and never grows to fit long country names. */
+  max-width: calc(100vw - 1rem);
+  overflow: hidden; /* the container itself never scrolls — only the list does */
+  background: theme('colors.surface.DEFAULT');
+  border: 1px solid theme('colors.border.DEFAULT');
+  border-radius: 8px;
+  box-shadow: theme('boxShadow.elev');
+}
+
+/* Upper height cap on the CDK overlay pane. Uses viewport units (vh), NOT a
+   percentage: the panel opens with withFlexibleDimensions(true), so a `%` here
+   would resolve against CDK's flexible bounding box (the space left next to the
+   trigger) and wrongly shrink the panel. `vh` is viewport-relative, so it only
+   acts as an upper bound while CDK fits the panel to the available space. The
+   two-class selector outweighs CDK's `.cdk-overlay-pane { max-height: 100% }`. */
+.cdk-overlay-pane.nm-phone-dropdown {
+  max-height: 60vh;
+}
+
+/* Sticky search header: pinned at the top, never shrinks, never scrolls away. */
+.nm-phone-dropdown-search {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  flex-shrink: 0;
+  padding: 8px;
+  background: theme('colors.surface.DEFAULT');
+  border-bottom: 1px solid theme('colors.border.DEFAULT');
+}
+
+.nm-phone-dropdown-search input {
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 14px;
+  color: theme('colors.content.DEFAULT');
+  background: theme('colors.surface.input');
+  border: 1px solid theme('colors.border.DEFAULT');
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.nm-phone-dropdown-search input::placeholder {
+  color: theme('colors.content.muted');
+}
+
+.nm-phone-dropdown-search input:focus {
+  border-color: theme('colors.primary.DEFAULT');
+}
+
+/* Only the country list scrolls; overscroll stays inside the panel. */
+.nm-phone-dropdown-list {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px 0;
+}
+
+@media (max-width: 767px) {
+  .cdk-overlay-pane.nm-phone-dropdown {
+    max-height: 50vh;
+  }
+}
+
+/* =====================================================================
+   ngx-sonner toaster overrides. ngx-sonner is a third-party component that
+   renders its own markup (and classes we don't author), so styling it from a
+   component stylesheet would require piercing encapsulation (the deprecated
+   deep combinator). The correct Angular approach for third-party component
+   styling is a global rule here, where there is no encapsulation to pierce.
+   ===================================================================== */
+
+/* Lift the overlay above every dialog/popup (toast z-index 2200 > popup 2000 /
+   discount 2100) and cap the desktop width. */
+[data-sonner-toaster] {
+  z-index: 2200;
+  --width: 360px;
+}
+
+/* Built-in close button (enabled via [closeButton]) restyled to the design:
+   placed INSIDE the toast card, vertically centered on its right edge next to
+   the text. ngx-sonner's default rules float it at the top-left corner (it
+   positions against the toaster container), so the toast must be the positioned
+   ancestor (`position: relative`) and the overrides need `!important` to win.
+   `padding-right` on the toast reserves room so the text never sits under the ✕. */
+[data-sonner-toast] {
+  position: relative;
+  padding-right: 2.5rem !important;
+}
+
+[data-sonner-toast] [data-close-button] {
+  position: absolute !important;
+  right: 0.75rem !important;
+  top: 50% !important;
+  left: auto !important;
+  transform: translateY(-50%) !important;
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: theme('colors.content.muted');
+  transition: color 0.15s ease;
+}
+
+[data-sonner-toast] [data-close-button]:hover {
+  color: theme('colors.ink.DEFAULT');
+  background: transparent;
+}
+
+[data-sonner-toast] [data-close-button] > svg {
+  width: 1rem;
+  height: 1rem;
+}

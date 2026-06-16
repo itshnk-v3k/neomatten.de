@@ -1,0 +1,38 @@
+<!--
+  EN: Hidden native checkbox for accessibility, with a styled track + sliding
+      thumb (bg-primary when on, bg-chrome-mid/30 when off) and optional label.
+  RU: Скрытый нативный чекбокс для доступности, оформленная дорожка со
+      скользящим ползунком (bg-primary вкл., bg-chrome-mid/30 выкл.) и метка.
+-->
+<label
+  [for]="inputId()"
+  class="inline-flex cursor-pointer select-none items-center gap-2"
+  [class.cursor-not-allowed]="disabled()"
+  [class.opacity-60]="disabled()">
+  <input
+    [id]="inputId()"
+    type="checkbox"
+    role="switch"
+    class="sr-only"
+    [checked]="checked()"
+    [disabled]="disabled()"
+    (change)="onToggle($event)"
+    (blur)="markTouched()" />
+
+  <span
+    aria-hidden="true"
+    [class]="
+      'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ' +
+      (checked() ? 'bg-primary' : 'bg-chrome-mid/30')
+    ">
+    <span
+      [class]="
+        'inline-block size-5 transform rounded-full bg-surface shadow-soft transition-transform ' +
+        (checked() ? 'translate-x-[22px]' : 'translate-x-0.5')
+      "></span>
+  </span>
+
+  @if (label()) {
+    <span class="text-sm text-content">{{ label() | translate }}</span>
+  }
+</label>

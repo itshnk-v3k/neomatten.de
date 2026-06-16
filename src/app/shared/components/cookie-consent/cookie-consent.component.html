@@ -1,0 +1,33 @@
+<!--
+  EN: Fixed bottom consent bar (above overlays). Cookie icon + text with a privacy
+      link on the left, Accept / Decline buttons on the right.
+  RU: Фиксированная нижняя полоса согласия (над оверлеями). Слева иконка cookie +
+      текст со ссылкой на политику, справа кнопки «Принять» / «Отклонить».
+-->
+@if (visible()) {
+  <div
+    class="fixed bottom-0 left-0 right-0 z-[4000] bg-ink-900 text-white"
+    role="region"
+    [attr.aria-label]="'cookie_text' | translate">
+    <div
+      class="mx-auto flex max-w-container flex-col gap-4 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <p class="flex items-start gap-3 text-sm sm:items-center">
+        <svg lucideCookie class="size-5 shrink-0 text-primary-bright"></svg>
+        <span>
+          {{ 'cookie_text' | translate }}
+          <a routerLink="/privacy-policy" class="ml-1 text-primary-bright underline">
+            {{ 'cookie_privacy_link' | translate }}
+          </a>
+        </span>
+      </p>
+      <div class="flex shrink-0 gap-3">
+        <button nmButton variant="outline" type="button" class="rounded-full" (click)="decline()">
+          {{ 'cookie_decline' | translate }}
+        </button>
+        <button nmButton type="button" class="rounded-full" (click)="accept()">
+          {{ 'cookie_accept' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

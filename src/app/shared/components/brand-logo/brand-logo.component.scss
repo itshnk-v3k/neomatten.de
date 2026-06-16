@@ -1,0 +1,7 @@
+/*
+ * EN: Brand-logo styles — host is inline-flex so the tile aligns with text.
+ * RU: Стили логотипа марки — host inline-flex, плитка выравнивается по тексту.
+ */
+:host {
+  display: inline-flex;
+}

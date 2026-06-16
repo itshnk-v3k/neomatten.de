@@ -1,0 +1,54 @@
+<!--
+  EN: Imprint — breadcrumb, title and structured sections. All copy via i18n.
+  RU: Impressum — крошки, заголовок и структурированные секции. Текст через i18n.
+-->
+<section class="mx-auto max-w-3xl px-6 py-12 lg:py-16">
+  <nm-breadcrumb />
+  <h1 class="mt-4 text-3xl font-bold md:text-4xl">{{ 'imprint_title' | translate }}</h1>
+
+  @if (loading()) {
+    <div class="mt-8 flex flex-col gap-6">
+      <nm-skeleton variant="title" />
+      @for (block of [1, 2, 3, 4]; track block) {
+        <nm-skeleton variant="text" [lines]="3" />
+      }
+    </div>
+  } @else {
+    <div class="mt-8 space-y-8">
+      <section>
+        <h2 class="text-xl font-bold">{{ 'imprint_company_heading' | translate }}</h2>
+        <p class="mt-2 whitespace-pre-line text-content-secondary">
+          {{ 'imprint_company' | translate }}
+        </p>
+      </section>
+      <section>
+        <h2 class="text-xl font-bold">{{ 'imprint_address_heading' | translate }}</h2>
+        <p class="mt-2 whitespace-pre-line text-content-secondary">
+          {{ 'imprint_address' | translate }}
+        </p>
+      </section>
+      <section>
+        <h2 class="text-xl font-bold">{{ 'imprint_contact_heading' | translate }}</h2>
+        <p class="mt-2 whitespace-pre-line text-content-secondary">
+          {{ 'imprint_contact' | translate }}
+        </p>
+      </section>
+      <section>
+        <h2 class="text-xl font-bold">{{ 'imprint_register_heading' | translate }}</h2>
+        <p class="mt-2 whitespace-pre-line text-content-secondary">
+          {{ 'imprint_register' | translate }}
+        </p>
+      </section>
+      <section>
+        <h2 class="text-xl font-bold">{{ 'imprint_vat_heading' | translate }}</h2>
+        <p class="mt-2 whitespace-pre-line text-content-secondary">
+          {{ 'imprint_vat' | translate }}
+        </p>
+      </section>
+      <section>
+        <h2 class="text-xl font-bold">{{ 'imprint_disclaimer_heading' | translate }}</h2>
+        <p class="mt-2 text-content-secondary">{{ 'imprint_disclaimer' | translate }}</p>
+      </section>
+    </div>
+  }
+</section>

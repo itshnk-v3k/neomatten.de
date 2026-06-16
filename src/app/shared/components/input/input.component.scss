@@ -1,0 +1,23 @@
+/*
+ * EN: Input styles (host is a block; visuals use Tailwind utilities in template).
+ * RU: Стили инпута (host — блок; оформление через утилиты Tailwind в шаблоне).
+ */
+:host {
+  display: block;
+}
+
+// On a dark-background form (.dark-form on an ancestor), render the label and
+// muted hint/placeholder text in light colors so they stay readable.
+:host-context(.dark-form) label {
+  color: #fff;
+}
+
+:host-context(.dark-form) .text-content-muted {
+  color: rgb(255 255 255 / 0.7);
+}
+
+// The input itself keeps a light background, so its placeholder must stay the
+// standard muted gray (content.muted) — not inherit the white label color.
+:host-context(.dark-form) input::placeholder {
+  color: #888888;
+}

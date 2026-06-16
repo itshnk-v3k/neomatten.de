@@ -1,0 +1,12 @@
+<!--
+  EN: Horizontally centered spinner with an optional translated label beside it.
+  RU: Центрированный по горизонтали спиннер с необязательной переведённой подписью.
+-->
+<div role="status" [attr.aria-live]="'polite'" class="flex items-center justify-center gap-2">
+  <svg lucideLoaderCircle aria-hidden="true" [class]="iconClasses()"></svg>
+  @if (labelKey()) {
+    <span class="text-sm text-content-secondary">{{ labelKey() | translate }}</span>
+  } @else {
+    <span class="sr-only">{{ 'status_loading' | translate }}</span>
+  }
+</div>

@@ -1,0 +1,39 @@
+<!--
+  EN: Hidden native checkbox for accessibility (label/box click toggles it),
+      with a styled visual box that shows a lucide check when checked.
+  RU: Скрытый нативный чекбокс для доступности (клик по метке/квадрату
+      переключает его) и оформленный квадрат с галочкой lucide при выборе.
+-->
+<label
+  [for]="inputId()"
+  class="inline-flex cursor-pointer select-none items-center gap-2"
+  [class.cursor-not-allowed]="disabled()"
+  [class.opacity-60]="disabled()">
+  <input
+    [id]="inputId()"
+    type="checkbox"
+    class="sr-only"
+    [checked]="checked()"
+    [disabled]="disabled()"
+    (change)="onToggle($event)"
+    (blur)="markTouched()" />
+
+  <span
+    aria-hidden="true"
+    [class]="
+      'flex size-5 shrink-0 items-center justify-center rounded border transition-colors ' +
+      (checked()
+        ? 'border-primary bg-primary text-content-inverse'
+        : 'border-border bg-surface-input')
+    ">
+    @if (checked()) {
+      <svg lucideCheck class="size-3"></svg>
+    }
+  </span>
+
+  @if (label()) {
+    <span class="text-sm text-content">{{ label() | translate }}</span>
+  }
+  <!-- Optional projected label content (e.g. an inline link). -->
+  <span class="text-sm text-content empty:hidden"><ng-content /></span>
+</label>

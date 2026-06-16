@@ -1,0 +1,22 @@
+<!--
+  EN: Vector mark → bitmap logo → chrome initials tile, in priority order.
+  RU: Векторный знак → растровый логотип → хром-плитка с инициалами, по приоритету.
+-->
+@if (icon(); as ic) {
+  <nm-brand-icon [icon]="ic" [class]="sizeClass()" />
+} @else if (logoUrl(); as url) {
+  <img
+    [ngSrc]="url"
+    width="128"
+    height="128"
+    [alt]="name() + ' logo'"
+    [class]="sizeClass()"
+    class="shrink-0 object-contain" />
+} @else {
+  <span
+    aria-hidden="true"
+    [class]="boxClass()"
+    class="inline-grid shrink-0 place-items-center rounded-md bg-gradient-chrome font-extrabold uppercase tracking-tight text-ink shadow-soft">
+    {{ initials() }}
+  </span>
+}

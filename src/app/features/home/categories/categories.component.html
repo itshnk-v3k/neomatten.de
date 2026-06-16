@@ -1,0 +1,54 @@
+<!-- ===================== CATEGORIES ===================== -->
+<section class="bg-surface-subtle py-16 lg:py-24">
+  <div class="mx-auto max-w-container px-6">
+    <div class="mx-auto mb-12 max-w-2xl text-center" nmReveal>
+      <span class="text-sm font-semibold uppercase tracking-[3px] text-primary">
+        {{ 'home_categories_eyebrow' | translate }}
+      </span>
+      <h2 class="mt-3 text-3xl font-bold md:text-4xl">{{ 'home_categories_title' | translate }}</h2>
+    </div>
+
+    @if (loading()) {
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        @for (i of [0, 1, 2]; track i) {
+          <nm-skeleton variant="card" />
+        }
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-3" nmReveal>
+        @for (category of categories; track category.titleKey; let i = $index) {
+          <a
+            [routerLink]="category.route"
+            class="ease-out-brand group flex flex-col overflow-hidden rounded-lg border border-border bg-surface shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:border-primary hover:shadow-card">
+            <div class="relative h-52 overflow-hidden">
+              @if (category.image && !hasFailed(i)) {
+                <img
+                  [ngSrc]="category.image"
+                  fill
+                  [alt]="category.titleKey | translate"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  (error)="onImageError(i)"
+                  class="object-cover transition-transform duration-300 group-hover:scale-105" />
+              } @else {
+                <nm-image-placeholder class="size-full rounded-none" />
+              }
+            </div>
+            <div class="flex flex-1 flex-col p-6">
+              <h3 class="text-xl font-semibold">{{ category.titleKey | translate }}</h3>
+              <p class="mt-2 flex-1 text-sm text-content-secondary">
+                {{ category.descKey | translate }}
+              </p>
+              <span class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-primary">
+                {{ category.linkKey | translate }} →
+              </span>
+            </div>
+          </a>
+        }
+      </div>
+    }
+
+    <div class="mt-10 text-center" nmReveal>
+      <a nmButton routerLink="/products">{{ 'home_categories_cta' | translate }}</a>
+    </div>
+  </div>
+</section>

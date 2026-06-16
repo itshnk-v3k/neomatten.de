@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Monochrome Safari pinned-tab mask for the NEOMATTEN "NM" mark. Safari ignores
+  colour and applies the user's `mask-icon` color, so the artwork is a single
+  solid black silhouette on a transparent canvas. Placeholder lettermark — swap
+  for the brand's true vector mark when available.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#000000">
+  <path d="M64 96h62l68 150 68-150h62v320h-58V214l-58 128h-32l-58-128v202H64z"/>
+  <path d="M392 96h56v240h70v80h-126z"/>
+</svg>

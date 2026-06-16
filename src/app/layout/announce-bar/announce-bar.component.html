@@ -1,0 +1,20 @@
+<!--
+  EN: Thin, centered promo bar announcing the current rotating message. Marked
+      role="status" / aria-live="polite" so updates are announced; the message
+      span is keyed on the index so it re-runs the fade-in animation on change.
+  RU: Тонкая центрированная промо-полоса с текущим прокручиваемым сообщением.
+      role="status" / aria-live="polite", чтобы обновления озвучивались; span с
+      сообщением привязан к индексу, чтобы заново проигрывать анимацию появления.
+-->
+<div
+  role="status"
+  aria-live="polite"
+  class="bg-ink py-2 text-center text-xs text-content-inverse sm:text-sm">
+  <div class="mx-auto max-w-container px-6">
+    @for (message of messages; track message; let i = $index) {
+      @if (i === index()) {
+        <span class="inline-block animate-in fade-in">{{ message | translate }}</span>
+      }
+    }
+  </div>
+</div>

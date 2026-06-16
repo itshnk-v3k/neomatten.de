@@ -1,0 +1,7 @@
+/*
+ * EN: Before/after styles — host is a block; layout uses Tailwind utilities.
+ * RU: Стили «до/после» — host — блок; раскладка через утилиты Tailwind.
+ */
+:host {
+  display: block;
+}

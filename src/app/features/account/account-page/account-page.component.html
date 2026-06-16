@@ -1,0 +1,151 @@
+<!--
+  EN: Account dashboard ("My Orders") — greeting, order history (status badge,
+      date, total, items) and a danger zone to delete the account. Layout chrome
+      (breadcrumb, sidebar nav, logout) is provided by the account shell.
+  RU: Панель аккаунта («Мои заказы») — приветствие, история заказов (бейдж статуса,
+      дата, сумма, позиции) и опасная зона удаления аккаунта. Обвязка лейаута
+      (крошки, навигация, выход) — в оболочке аккаунта.
+-->
+<div class="mx-auto w-full max-w-full lg:max-w-[80%]">
+  <h1 class="text-2xl font-bold md:text-3xl">
+    {{ 'account_greeting' | translate }}
+    @if (user(); as u) {
+      , {{ u.name }}
+    }
+    !
+  </h1>
+
+  <!-- Order history -->
+  <section class="mt-6">
+    <h2 class="text-xl font-bold">{{ 'account_orders_title' | translate }}</h2>
+    @if (orders.loading()) {
+      <ul class="mt-4 flex flex-col gap-4">
+        @for (i of [0, 1, 2]; track i) {
+          <li
+            class="rounded-xl border border-l-4 border-border border-l-primary bg-surface p-5 shadow-soft">
+            <div class="flex items-center justify-between gap-3">
+              <nm-skeleton variant="text" width="35%" />
+              <nm-skeleton variant="badge" />
+            </div>
+            <nm-skeleton variant="text" width="50%" class="mt-3" />
+          </li>
+        }
+      </ul>
+    } @else if (orderList().length === 0) {
+      <div class="mt-4 rounded-xl border border-border bg-surface p-8 text-center shadow-soft">
+        <p class="text-content-secondary">{{ 'account_no_orders' | translate }}</p>
+        <a routerLink="/configurator" nmButton class="mt-4 rounded-full">
+          {{ 'account_no_orders_cta' | translate }}
+        </a>
+      </div>
+    } @else {
+      <ul class="mt-4 flex flex-col gap-4">
+        @for (order of orderList(); track order.id) {
+          <li
+            class="rounded-xl border border-l-4 border-border border-l-primary bg-surface p-5 shadow-soft">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center gap-2">
+                <span class="text-lg font-extrabold tracking-tight">#{{ order.id }}</span>
+                <button
+                  type="button"
+                  class="text-content-muted transition-colors hover:text-primary"
+                  [attr.aria-label]="'order_copy_id' | translate"
+                  (click)="copyToClipboard(order.id, 'order_copy_id')">
+                  @if (isCopied(order.id)) {
+                    <svg lucideCheck class="size-4 text-success" aria-hidden="true"></svg>
+                  } @else {
+                    <svg lucideCopy class="size-4" aria-hidden="true"></svg>
+                  }
+                </button>
+              </div>
+              <span
+                [class]="
+                  'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ' +
+                  statusBadgeClasses(order.status)
+                ">
+                {{ 'order_status_' + order.status | translate }}
+              </span>
+            </div>
+            <p class="mt-2 flex items-center gap-1.5 text-sm text-content-secondary">
+              @switch (order.paymentMethod) {
+                @case ('stripe_card') {
+                  <svg lucideCreditCard class="size-4 text-content-muted" aria-hidden="true"></svg>
+                }
+                @case ('klarna') {
+                  <svg lucideShoppingBag class="size-4 text-content-muted" aria-hidden="true"></svg>
+                }
+                @case ('paypal') {
+                  <svg lucidePackage class="size-4 text-content-muted" aria-hidden="true"></svg>
+                }
+                @default {
+                  <svg lucideStore class="size-4 text-content-muted" aria-hidden="true"></svg>
+                }
+              }
+              <span class="text-content-muted">{{ 'order_payment_label' | translate }}:</span>
+              <span class="font-medium text-content">
+                {{ paymentKey(order.paymentMethod) | translate }}
+              </span>
+            </p>
+            <div class="mt-2 flex flex-wrap gap-x-6 gap-y-1 text-sm text-content-secondary">
+              <span>{{ order.createdAt | date: 'dd.MM.yyyy, HH:mm:ss' }}</span>
+              <!-- Total quantity across all lines (not the line-item count), with
+                   singular/plural copy so a single-item order reads "1 item". -->
+              @let itemQuantity = totalQuantity(order);
+              <span>
+                {{ itemQuantity }}
+                @if (itemQuantity === 1) {
+                  {{ 'order_item_singular' | translate }}
+                } @else {
+                  {{ 'order_items_plural' | translate }}
+                }
+              </span>
+            </div>
+            <ul class="mt-3 space-y-1 border-t border-border pt-3 text-sm">
+              @for (item of order.items; track $index) {
+                <li class="flex justify-between gap-4">
+                  <span class="min-w-0 text-content-secondary">
+                    {{ item.quantity }}× {{ item.name }}
+                    @if (item.sku) {
+                      @let sku = item.orderItemSku ?? item.sku;
+                      <span class="mt-0.5 flex items-center gap-1 text-xs text-content-muted">
+                        <span>{{ 'form_label_sku' | translate }} {{ sku }}</span>
+                        <button
+                          type="button"
+                          class="text-content-muted transition-colors hover:text-primary"
+                          [attr.aria-label]="'order_copy_sku' | translate"
+                          (click)="copyToClipboard(sku, 'order_copy_sku')">
+                          @if (isCopied(sku)) {
+                            <svg lucideCheck class="size-3.5 text-success" aria-hidden="true"></svg>
+                          } @else {
+                            <svg lucideCopy class="size-3.5" aria-hidden="true"></svg>
+                          }
+                        </button>
+                      </span>
+                    }
+                  </span>
+                  <span class="font-medium">{{ item.unitPrice * item.quantity }} &euro;</span>
+                </li>
+              }
+            </ul>
+            <p class="mt-3 text-right text-lg font-extrabold">{{ order.total }} &euro;</p>
+            @if (order.status === 'review') {
+              <div
+                class="mt-3 rounded-md border border-border bg-surface-subtle p-3 text-sm text-content-secondary">
+                {{ 'order_review_notice' | translate }}
+              </div>
+            } @else if (order.status === 'pending') {
+              <div class="mt-3 rounded-md border border-info/20 bg-info/10 p-3 text-sm text-info">
+                {{ 'order_production_notice' | translate }}
+              </div>
+            } @else if (order.status === 'completed') {
+              <div
+                class="mt-3 rounded-md border border-success/20 bg-success/10 p-3 text-sm text-success">
+                {{ 'order_completed_notice' | translate }}
+              </div>
+            }
+          </li>
+        }
+      </ul>
+    }
+  </section>
+</div>

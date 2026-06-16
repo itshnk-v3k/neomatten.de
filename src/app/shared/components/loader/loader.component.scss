@@ -1,0 +1,7 @@
+/*
+ * EN: Loader styles (host is a block; spinner layout uses Tailwind utilities).
+ * RU: Стили лоадера (host — блок; раскладка спиннера через утилиты Tailwind).
+ */
+:host {
+  display: block;
+}

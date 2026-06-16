@@ -1,0 +1,70 @@
+<!--
+  EN: Per-step explanation dialogs, opened from the ℹ️ buttons on each step.
+  RU: Поясняющие диалоги шагов, открываются кнопками ℹ️ у каждого шага.
+-->
+<!-- Material info dialog (step 03) -->
+<nm-dialog [(open)]="materialInfoOpen" titleKey="configurator_material_eva">
+  <p>{{ 'configurator_material_eva_info' | translate }}</p>
+</nm-dialog>
+
+<!-- Texture info dialog (step 04) -->
+<nm-dialog [(open)]="textureInfoOpen" titleKey="configurator_step_texture">
+  <dl class="space-y-3">
+    <div>
+      <dt class="font-semibold text-content">{{ 'configurator_texture_raute' | translate }}</dt>
+      <dd class="text-content-secondary">{{ 'texture_info_raute' | translate }}</dd>
+    </div>
+    <div>
+      <dt class="font-semibold text-content">{{ 'configurator_texture_wabe' | translate }}</dt>
+      <dd class="text-content-secondary">{{ 'texture_info_wabe' | translate }}</dd>
+    </div>
+    <div>
+      <dt class="font-semibold text-content">{{ 'configurator_texture_tropfen' | translate }}</dt>
+      <dd class="text-content-secondary">{{ 'texture_info_tropfen' | translate }}</dd>
+    </div>
+  </dl>
+</nm-dialog>
+
+<!-- Build-your-set info dialog (step 11) -->
+<nm-dialog [(open)]="kitInfoOpen" titleKey="configurator_step_kit">
+  <dl class="space-y-3">
+    <div>
+      <dt class="font-semibold text-content">
+        {{ 'configurator_preset_full_interior' | translate }}
+      </dt>
+      <dd class="text-content-secondary">{{ 'kit_info_full_interior' | translate }}</dd>
+    </div>
+    <div>
+      <dt class="font-semibold text-content">{{ 'configurator_preset_premium' | translate }}</dt>
+      <dd class="text-content-secondary">{{ 'kit_info_premium_set' | translate }}</dd>
+    </div>
+  </dl>
+</nm-dialog>
+
+<!-- Accessories info dialog (step 10) -->
+<nm-dialog [(open)]="accessoriesInfoOpen" titleKey="configurator_step_accessories">
+  <dl class="space-y-3">
+    <div>
+      <dt class="font-semibold text-content">{{ 'configurator_clips_with' | translate }}</dt>
+      <dd class="text-content-secondary">{{ 'configurator_clips_with_hint' | translate }}</dd>
+    </div>
+    <div>
+      <dt class="font-semibold text-content">{{ 'configurator_clips_without' | translate }}</dt>
+      <dd class="text-content-secondary">{{ 'configurator_clips_without_hint' | translate }}</dd>
+    </div>
+  </dl>
+</nm-dialog>
+
+<!-- Heel-pad info dialog (step 08) -->
+<nm-dialog [(open)]="heelInfoOpen" titleKey="configurator_step_heel">
+  <dl class="space-y-3">
+    <div>
+      <dt class="font-semibold text-content">{{ 'configurator_heel_standard' | translate }}</dt>
+      <dd class="text-content-secondary">{{ 'heel_pad_info_standard' | translate }}</dd>
+    </div>
+    <div>
+      <dt class="font-semibold text-content">{{ 'configurator_heel_3d' | translate }}</dt>
+      <dd class="text-content-secondary">{{ 'heel_pad_info_3d' | translate }}</dd>
+    </div>
+  </dl>
+</nm-dialog>

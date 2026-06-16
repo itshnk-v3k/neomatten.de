@@ -1,0 +1,41 @@
+<!--
+  EN: Ordered breadcrumb trail. Crumbs with a link are routerLinks; the last
+      crumb is the current page (aria-current). Hidden when only "Home" remains.
+  RU: Упорядоченная цепочка крошек. Крошки со ссылкой — routerLink; последняя —
+      текущая страница (aria-current). Скрыта, если осталась только «Главная».
+-->
+@if (crumbs().length > 1) {
+  <nav [attr.aria-label]="'breadcrumb_aria' | translate" class="mb-6">
+    <ol class="flex flex-wrap items-center gap-1.5 text-sm text-content-secondary">
+      @for (crumb of crumbs(); track $index; let last = $last) {
+        <li class="flex items-center gap-1.5">
+          @if (crumb.link) {
+            <a
+              [routerLink]="crumb.link"
+              class="transition-colors hover:text-primary focus-visible:text-primary focus-visible:outline-none">
+              @if (crumb.labelKey) {
+                {{ crumb.labelKey | translate }}
+              } @else {
+                {{ crumb.label }}
+              }
+            </a>
+          } @else {
+            <span class="font-medium text-content" aria-current="page">
+              @if (crumb.labelKey) {
+                {{ crumb.labelKey | translate }}
+              } @else {
+                {{ crumb.label }}
+              }
+            </span>
+          }
+          @if (!last) {
+            <svg
+              lucideChevronRight
+              class="size-4 shrink-0 text-content-muted"
+              aria-hidden="true"></svg>
+          }
+        </li>
+      }
+    </ol>
+  </nav>
+}

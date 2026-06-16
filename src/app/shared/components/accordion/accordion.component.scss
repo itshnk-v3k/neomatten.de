@@ -1,0 +1,7 @@
+/*
+ * EN: Accordion container styles (host visuals applied via Tailwind utilities).
+ * RU: Стили контейнера аккордеона (оформление host через утилиты Tailwind).
+ */
+:host {
+  display: block;
+}

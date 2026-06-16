@@ -1,0 +1,8 @@
+{
+  "/api/": {
+    "target": "https://api-staging.neomatten.de",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

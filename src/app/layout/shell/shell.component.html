@@ -1,0 +1,31 @@
+<!--
+  EN: Page chrome — announce bar + header on top, footer at the bottom, routed
+      page in between, and the global toast outlet.
+  RU: Обрамление страницы — announce bar + хедер сверху, футер снизу, маршрутная
+      страница между ними и глобальный вывод тостов.
+-->
+<!-- Top-of-viewport route navigation progress bar (above all overlays). -->
+<nm-route-loading />
+
+<div class="flex min-h-screen flex-col">
+  <nm-announce-bar />
+  <nm-header />
+
+  <main class="flex-1">
+    <router-outlet />
+  </main>
+
+  <nm-footer />
+</div>
+
+<!-- Global toast outlet (paired with ToastService). -->
+<nm-toaster />
+
+<!-- Global 10% first-order discount popup (non-authenticated users, once). -->
+<nm-discount-popup />
+
+<!-- Global post-payment "Order confirmed!" dialog (survives navigation to /account). -->
+<nm-order-confirmed-dialog />
+
+<!-- First-visit cookie-consent bar (fixed bottom; persists the choice). -->
+<nm-cookie-consent />

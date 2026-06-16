@@ -1,0 +1,40 @@
+<!--
+  EN: Right of Withdrawal — breadcrumb, title, intro and structured sections (i18n).
+  RU: Widerrufsbelehrung — крошки, заголовок, вступление и секции (i18n).
+-->
+<section class="mx-auto max-w-3xl px-6 py-12 lg:py-16">
+  <nm-breadcrumb />
+  <h1 class="mt-4 text-3xl font-bold md:text-4xl">{{ 'withdrawal_title' | translate }}</h1>
+
+  @if (loading()) {
+    <div class="mt-8 flex flex-col gap-6">
+      <nm-skeleton variant="title" />
+      @for (block of [1, 2, 3, 4]; track block) {
+        <nm-skeleton variant="text" [lines]="3" />
+      }
+    </div>
+  } @else {
+    <p class="mt-4 text-content-secondary">{{ 'withdrawal_intro' | translate }}</p>
+
+    <div class="mt-8 space-y-8">
+      <section>
+        <h2 class="text-xl font-bold">{{ 'withdrawal_right_heading' | translate }}</h2>
+        <p class="mt-2 text-content-secondary">{{ 'withdrawal_right' | translate }}</p>
+      </section>
+      <section>
+        <h2 class="text-xl font-bold">{{ 'withdrawal_period_heading' | translate }}</h2>
+        <p class="mt-2 text-content-secondary">{{ 'withdrawal_period' | translate }}</p>
+      </section>
+      <section>
+        <h2 class="text-xl font-bold">{{ 'withdrawal_exercise_heading' | translate }}</h2>
+        <p class="mt-2 whitespace-pre-line text-content-secondary">
+          {{ 'withdrawal_exercise' | translate }}
+        </p>
+      </section>
+      <section>
+        <h2 class="text-xl font-bold">{{ 'withdrawal_consequences_heading' | translate }}</h2>
+        <p class="mt-2 text-content-secondary">{{ 'withdrawal_consequences' | translate }}</p>
+      </section>
+    </div>
+  }
+</section>

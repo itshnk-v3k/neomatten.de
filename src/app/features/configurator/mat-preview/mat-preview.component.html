@@ -1,0 +1,70 @@
+<!--
+  EN: CSS-rendered mat preview — material colour fill + texture pattern overlay +
+      edge-colour border, a caption, and overlay badges for 3D mount / heel pad.
+  RU: CSS-превью коврика — заливка цветом материала + узор фактуры + рамка цвета
+      канта, подпись и бейджи-оверлеи для 3D-крепления / подпятника.
+-->
+<figure class="relative">
+  <!-- While the preview render resolves (or none is uploaded yet): image skeleton
+       with an "EVA · —" caption; once loaded, the real render or the CSS fallback shows. -->
+  @if (loading() && !previewUrl()) {
+    <nm-skeleton variant="image" class="h-72 w-full" />
+    <figcaption class="mt-3 text-center text-sm font-semibold text-content-secondary">
+      EVA · —
+    </figcaption>
+  } @else {
+    <!-- TODO(admin): when a real preview render exists (MediaService.getMatPreviewUrl),
+         show it; otherwise fall back to the CSS-rendered preview below. -->
+    @if (previewUrl(); as url) {
+      <div class="relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-soft">
+        @if (!imageFailed()) {
+          <img
+            [ngSrc]="url"
+            fill
+            [alt]="caption()"
+            sizes="(max-width: 1024px) 90vw, 420px"
+            (error)="onImageError()"
+            class="object-cover" />
+        } @else {
+          <nm-image-placeholder class="size-full rounded-none" />
+        }
+      </div>
+    } @else {
+      <div
+        class="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border-[6px] shadow-soft transition-colors"
+        [style.background-color]="materialHex()"
+        [style.border-color]="edgeHex()">
+        <!-- texture overlay -->
+        <div
+          class="absolute inset-0"
+          [style.background-image]="patternImage()"
+          [style.background-size]="patternSize()"></div>
+      </div>
+    }
+
+    <div class="pointer-events-none absolute inset-0">
+      <!-- badges -->
+      <div class="absolute right-3 top-3 flex flex-col items-end gap-2">
+        @if (mounting() === '3d') {
+          <span class="rounded-full bg-ink/85 px-3 py-1 text-xs font-semibold text-white shadow">
+            {{ 'configurator_mount_3d_badge' | translate }}
+          </span>
+        }
+        @if (heelPad() !== 'none') {
+          <span class="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white shadow">
+            {{ heelPadLabelKey() | translate }}
+          </span>
+        }
+        @if (heelRest() !== 'none') {
+          <span class="rounded-full bg-ink px-3 py-1 text-xs font-semibold text-white shadow">
+            {{ heelRestLabelKey() | translate }}
+          </span>
+        }
+      </div>
+    </div>
+
+    <figcaption class="mt-3 text-center text-sm font-semibold text-content">
+      {{ caption() }}
+    </figcaption>
+  }
+</figure>

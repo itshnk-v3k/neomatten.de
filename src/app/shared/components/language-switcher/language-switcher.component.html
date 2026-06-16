@@ -1,0 +1,23 @@
+<!--
+  EN: Two-button DE/EN toggle; the active language is marked with aria-pressed.
+  RU: Тумблер из двух кнопок DE/EN; активный язык помечен через aria-pressed.
+-->
+<div
+  class="inline-flex items-center rounded-[6px] border border-border p-0.5"
+  role="group"
+  [attr.aria-label]="'language_select' | translate">
+  @for (language of languages; track language) {
+    <button
+      type="button"
+      class="rounded px-2 py-1 text-xs font-semibold uppercase transition-colors"
+      [class]="
+        current() === language
+          ? 'bg-primary text-content-inverse'
+          : 'text-content-secondary hover:text-primary'
+      "
+      [attr.aria-pressed]="current() === language"
+      (click)="select(language)">
+      {{ labelKey(language) | translate }}
+    </button>
+  }
+</div>

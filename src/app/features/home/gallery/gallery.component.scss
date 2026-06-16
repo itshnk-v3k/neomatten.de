@@ -1,0 +1,7 @@
+/*
+ * EN: Gallery styles — host is a block; carousel layout uses Tailwind utilities.
+ * RU: Стили галереи — host — блок; раскладка карусели через утилиты Tailwind.
+ */
+:host {
+  display: block;
+}

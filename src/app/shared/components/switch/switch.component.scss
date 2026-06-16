@@ -1,0 +1,7 @@
+/*
+ * EN: Switch styles (host is inline-block; visuals use Tailwind in template).
+ * RU: Стили тумблера (host — inline-block; оформление через Tailwind в шаблоне).
+ */
+:host {
+  display: inline-block;
+}

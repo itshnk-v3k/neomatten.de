@@ -1,0 +1,7 @@
+/*
+ * EN: Brand-select page styles (layout via Tailwind utilities; host is a block).
+ * RU: Стили страницы выбора марки (вёрстка утилитами Tailwind; host — блок).
+ */
+:host {
+  display: block;
+}

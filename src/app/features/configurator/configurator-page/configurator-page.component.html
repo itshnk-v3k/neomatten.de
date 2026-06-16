@@ -1,0 +1,764 @@
+<!--
+  EN: Configurator — left column (mat preview + clickable car diagram), right
+      column (13 configuration steps). Pricing is reactive; CTAs in step 13 add
+      to cart (always) or pay / contact manager (auth-gated via the dialogs).
+  RU: Конфигуратор — левая колонка (превью коврика + кликабельная схема авто),
+      правая колонка (13 шагов настройки). Цена реактивна; CTA в шаге 13 — в
+      корзину (всегда) или оплата / менеджер (за авторизацией через диалоги).
+-->
+<section class="mx-auto max-w-container px-6 pb-28 pt-10 lg:py-14">
+  <nm-breadcrumb />
+  <header class="mb-8 max-w-2xl">
+    <span class="text-sm font-semibold uppercase tracking-[3px] text-primary">
+      {{ 'configurator_eyebrow' | translate }}
+    </span>
+    <h1 class="mt-3 text-3xl font-bold md:text-4xl">{{ 'page_configurator_title' | translate }}</h1>
+    <p class="mt-3 text-content-secondary">{{ 'configurator_intro' | translate }}</p>
+  </header>
+
+  @if (loading()) {
+    <!-- Skeleton mirrors the real two-column layout (left preview + diagram, right step cards). -->
+    <div class="lg:flex lg:items-start lg:gap-8">
+      <!-- Left column: mat preview + car diagram placeholders -->
+      <div
+        class="mb-6 flex flex-col gap-4 lg:sticky lg:top-20 lg:mb-0 lg:w-[420px] lg:shrink-0 lg:gap-6 lg:self-start">
+        <nm-skeleton variant="image" class="h-72 w-full" />
+        <nm-skeleton variant="image" class="mx-auto h-64 w-44" />
+      </div>
+      <!-- Right column: stacked step-card placeholders -->
+      <div class="flex flex-1 flex-col gap-6">
+        <nm-skeleton variant="card" class="h-32" />
+        <nm-skeleton variant="card" class="h-32" />
+        <nm-skeleton variant="card" class="h-32" />
+      </div>
+    </div>
+  } @else {
+    <div class="lg:flex lg:items-start lg:gap-8">
+      <!-- ===================== LEFT COLUMN ===================== -->
+      <nm-configurator-preview
+        [texture]="texture()"
+        [materialHex]="materialHex()"
+        [edgeHex]="edgeHex()"
+        [mounting]="mounting()"
+        [heelPad]="heelPad()"
+        [heelRest]="heelRest()"
+        [caption]="caption()"
+        [sku]="activePattern()?.sku ?? ''"
+        [colorId]="materialColor()"
+        [zones]="zones()"
+        [activeStep]="activeStep()"
+        [total]="total()"
+        (zoneToggle)="toggleZone($event)" />
+
+      <!-- ===================== RIGHT COLUMN (STEPS) ===================== -->
+      <div class="flex flex-1 flex-col gap-6" [formGroup]="form">
+        <!-- 01 Vehicle information -->
+        <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
+          <h2 class="flex items-center gap-3 text-lg font-bold">
+            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+              1
+            </span>
+            {{ 'configurator_step_vehicle' | translate }}
+          </h2>
+          <div class="mt-4 grid gap-4 sm:grid-cols-3">
+            <nm-select
+              formControlName="brandId"
+              label="configurator_step_brand"
+              [options]="brandOptions()"
+              [required]="true" />
+            <nm-select
+              formControlName="model"
+              label="configurator_step_model"
+              placeholder="configurator_select_model"
+              [options]="modelOptions()"
+              [required]="true" />
+            <nm-select
+              formControlName="yearLabel"
+              label="configurator_step_year"
+              placeholder="configurator_select_year"
+              [options]="yearOptions()"
+              [required]="true" />
+          </div>
+          @if (vehicleInfo(); as info) {
+            <p
+              class="mt-4 rounded-lg bg-surface-subtle px-4 py-3 text-sm font-semibold text-content">
+              {{ info }}
+            </p>
+          } @else {
+            <p class="mt-4 text-sm text-content-secondary">
+              {{ 'configurator_select_vehicle_hint' | translate }}
+            </p>
+          }
+        </section>
+
+        <!-- 02 Refine specification -->
+        <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
+          <h2 class="flex items-center gap-3 text-lg font-bold">
+            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+              2
+            </span>
+            {{ 'configurator_step_refine' | translate }}
+          </h2>
+          <p class="mt-1 text-sm text-content-secondary">
+            {{ 'configurator_refine_hint' | translate }}
+          </p>
+          <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            <nm-select
+              formControlName="yearOfManufacture"
+              label="configurator_field_year_made"
+              placeholder="configurator_optional"
+              [options]="yearOfManufactureOptions()" />
+            <nm-select
+              formControlName="transmission"
+              label="configurator_field_transmission"
+              placeholder="configurator_optional"
+              [options]="transmissionOptions" />
+            <nm-select
+              formControlName="drive"
+              label="configurator_field_drive"
+              placeholder="configurator_optional"
+              [options]="driveOptions" />
+            <nm-select
+              formControlName="engine"
+              label="configurator_field_engine"
+              placeholder="configurator_optional"
+              [options]="engineOptions" />
+            <nm-select
+              formControlName="trim"
+              label="configurator_field_trim"
+              placeholder="configurator_optional"
+              [options]="trimOptions()" />
+          </div>
+        </section>
+
+        <!-- 03 Material type -->
+        <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
+          <h2 class="flex items-center gap-3 text-lg font-bold">
+            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+              3
+            </span>
+            {{ 'configurator_step_material' | translate }}
+          </h2>
+          <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            <div
+              [class]="
+                'flex items-center justify-between gap-3 rounded-xl border-2 p-4 transition-colors ' +
+                (material() === 'eva' ? 'border-primary bg-primary-50' : 'border-border')
+              ">
+              <button
+                type="button"
+                class="flex-1 text-left font-semibold"
+                (click)="selectMaterial('eva')">
+                {{ 'configurator_material_eva' | translate }}
+              </button>
+              <button
+                type="button"
+                class="text-content-muted transition-colors hover:text-primary"
+                [attr.aria-label]="'configurator_material_info' | translate"
+                (click)="openMaterialInfo()">
+                <svg lucideInfo class="size-5"></svg>
+              </button>
+            </div>
+            <div
+              class="flex items-center justify-between gap-3 rounded-xl border-2 border-border p-4 opacity-70">
+              <span class="font-semibold text-content-secondary">
+                {{ 'configurator_material_ecoskin' | translate }}
+              </span>
+              <nm-badge variant="neutral" size="sm">
+                {{ 'configurator_coming_soon' | translate }}
+              </nm-badge>
+            </div>
+          </div>
+
+          <div class="mt-5">
+            <nm-accordion>
+              <nm-accordion-item titleKey="configurator_about_eva_title">
+                {{ 'configurator_about_eva_text' | translate }}
+              </nm-accordion-item>
+              <nm-accordion-item titleKey="cert_title">
+                <p>{{ 'cert_description' | translate }}</p>
+                <a
+                  [href]="certificateUrl"
+                  target="_blank"
+                  rel="noopener"
+                  class="mt-2 inline-block font-semibold text-primary hover:underline">
+                  {{ 'cert_download' | translate }}
+                </a>
+              </nm-accordion-item>
+            </nm-accordion>
+          </div>
+        </section>
+
+        <!-- 04 Texture -->
+        <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
+          <h2 class="flex items-center gap-3 text-lg font-bold">
+            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+              4
+            </span>
+            {{ 'configurator_step_texture' | translate }}
+            <button
+              type="button"
+              class="ml-auto text-content-muted transition-colors hover:text-primary"
+              [attr.aria-label]="'configurator_info_label' | translate"
+              (click)="textureInfoOpen.set(true)">
+              <svg lucideInfo class="size-5"></svg>
+            </button>
+          </h2>
+          <div class="mt-4 grid grid-cols-3 gap-3">
+            @for (tex of textures; track tex) {
+              <button
+                type="button"
+                (click)="selectTexture(tex)"
+                [attr.aria-pressed]="texture() === tex"
+                [class]="
+                  'overflow-hidden rounded-xl border-2 text-center transition-colors ' +
+                  (texture() === tex ? 'border-primary' : 'border-border hover:border-primary')
+                ">
+                @if (textureImage(tex); as img) {
+                  <img
+                    [src]="img"
+                    [alt]="'configurator_texture_' + tex | translate"
+                    loading="lazy"
+                    class="aspect-[10/7] w-full object-cover" />
+                } @else {
+                  <nm-image-placeholder class="block aspect-[10/7] w-full rounded-none" />
+                }
+                <span class="block py-2 text-sm font-semibold">
+                  {{ 'configurator_texture_' + tex | translate }}
+                </span>
+              </button>
+            }
+          </div>
+        </section>
+
+        <!-- 05 Material colour -->
+        <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
+          <h2 class="flex items-center gap-3 text-lg font-bold">
+            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+              5
+            </span>
+            {{ 'configurator_step_material_color' | translate }}
+          </h2>
+          <ul class="mt-4 flex flex-wrap gap-3">
+            @for (c of colorOptions(); track c.id) {
+              <li>
+                <button
+                  type="button"
+                  (click)="selectMaterialColor(c.id)"
+                  [attr.aria-label]="'mat_color_' + c.id | translate"
+                  [attr.aria-pressed]="materialColor() === c.id"
+                  [style.background-color]="c.hex"
+                  [class]="
+                    'size-10 rounded-full ring-2 ring-offset-2 transition-all ' +
+                    (materialColor() === c.id
+                      ? 'ring-primary'
+                      : 'ring-transparent hover:ring-border')
+                  "></button>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <!-- 06 Edge colour -->
+        <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
+          <h2 class="flex items-center gap-3 text-lg font-bold">
+            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+              6
+            </span>
+            {{ 'configurator_step_edge_color' | translate }}
+          </h2>
+          <ul class="mt-4 flex flex-wrap gap-3">
+            @for (c of edgeColors; track c.id) {
+              <li>
+                <button
+                  type="button"
+                  (click)="selectEdgeColor(c.id)"
+                  [attr.aria-label]="'mat_color_' + c.id | translate"
+                  [attr.aria-pressed]="edgeColor() === c.id"
+                  [style.background-color]="c.hex"
+                  [class]="
+                    'size-10 rounded-full ring-2 ring-offset-2 transition-all ' +
+                    (edgeColor() === c.id ? 'ring-primary' : 'ring-transparent hover:ring-border')
+                  "></button>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <!-- 07 Mounting -->
+        <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
+          <h2 class="flex items-center gap-3 text-lg font-bold">
+            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+              7
+            </span>
+            {{ 'configurator_step_mounting' | translate }}
+            <button
+              type="button"
+              class="ml-auto text-content-muted transition-colors hover:text-primary"
+              [nmTooltip]="'mounting_info_3d'"
+              position="left"
+              [attr.aria-label]="'configurator_info_label' | translate">
+              <svg lucideInfo class="size-5"></svg>
+            </button>
+          </h2>
+          <!-- 3D mount is Coming Soon (disabled): only "Without mount" selectable.
+               TODO(admin): enable the 3D mount option when 3D mats are available. -->
+          <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            <button
+              type="button"
+              (click)="setMounting('none')"
+              [attr.aria-pressed]="mounting() === 'none'"
+              [class]="
+                'rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                (mounting() === 'none'
+                  ? 'border-primary bg-primary-50'
+                  : 'border-border hover:border-primary')
+              ">
+              {{ 'configurator_mount_none' | translate }}
+            </button>
+            <div
+              [nmTooltip]="'mounting_coming_soon'"
+              aria-disabled="true"
+              class="relative flex cursor-not-allowed items-center justify-between rounded-xl border-2 border-border p-4 font-semibold opacity-40">
+              {{ 'configurator_mount_3d' | translate }}
+              <span
+                class="absolute right-3 top-3 rounded-full bg-ink px-3 py-1 text-xs font-semibold text-white">
+                {{ 'coming_soon' | translate }}
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 08 Heel pad -->
+        <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
+          <h2 class="flex items-center gap-3 text-lg font-bold">
+            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+              8
+            </span>
+            {{ 'configurator_step_heel' | translate }}
+            <button
+              type="button"
+              class="ml-auto text-content-muted transition-colors hover:text-primary"
+              [attr.aria-label]="'configurator_info_label' | translate"
+              (click)="heelInfoOpen.set(true)">
+              <svg lucideInfo class="size-5"></svg>
+            </button>
+          </h2>
+          @if (!heelPadSupported()) {
+            <p class="mt-2 text-sm text-content-secondary">
+              {{ 'configurator_heel_unsupported' | translate }}
+            </p>
+          }
+          <!-- Options are fixed order (Without → Standard → 3D); availability is
+               driven by the resolved pattern's heel_pad field. Unavailable options
+               are visually disabled (not natively, so the tooltip still shows on
+               hover) with a red unavailability note. -->
+          <div class="mt-4 grid gap-3 sm:grid-cols-3">
+            <button
+              type="button"
+              (click)="setHeelPad('none')"
+              [attr.aria-pressed]="heelPad() === 'none'"
+              [class]="
+                'rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                (heelPad() === 'none'
+                  ? 'border-primary bg-primary-50'
+                  : 'border-border hover:border-primary')
+              ">
+              {{ 'configurator_heel_none' | translate }}
+            </button>
+
+            @if (isHeelPadAvailable('standard')) {
+              <button
+                type="button"
+                (click)="setHeelPad('standard')"
+                [attr.aria-pressed]="heelPad() === 'standard'"
+                [class]="
+                  'flex items-center justify-between rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                  (heelPad() === 'standard'
+                    ? 'border-primary bg-primary-50'
+                    : 'border-border hover:border-primary')
+                ">
+                {{ 'configurator_heel_standard' | translate }}
+                <span class="text-sm text-primary">+5 &euro;</span>
+              </button>
+            } @else {
+              <div
+                [nmTooltip]="heelPadUnavailableKey('standard')"
+                tone="error"
+                aria-disabled="true"
+                class="flex cursor-not-allowed items-center justify-between rounded-xl border-2 border-border p-4 text-left font-semibold opacity-40">
+                {{ 'configurator_heel_standard' | translate }}
+                <span class="text-sm text-primary">+5 &euro;</span>
+              </div>
+            }
+
+            @if (isHeelPadAvailable('3d')) {
+              <button
+                type="button"
+                (click)="setHeelPad('3d')"
+                [attr.aria-pressed]="heelPad() === '3d'"
+                [class]="
+                  'flex items-center justify-between rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                  (heelPad() === '3d'
+                    ? 'border-primary bg-primary-50'
+                    : 'border-border hover:border-primary')
+                ">
+                {{ 'configurator_heel_3d' | translate }}
+                <span class="text-sm text-primary">+10 &euro;</span>
+              </button>
+            } @else {
+              <div
+                [nmTooltip]="heelPadUnavailableKey('3d')"
+                tone="error"
+                aria-disabled="true"
+                class="flex cursor-not-allowed items-center justify-between rounded-xl border-2 border-border p-4 text-left font-semibold opacity-40">
+                {{ 'configurator_heel_3d' | translate }}
+                <span class="text-sm text-primary">+10 &euro;</span>
+              </div>
+            }
+          </div>
+        </section>
+
+        <!-- 09 Fersenpolster (heel rest pad) -->
+        <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
+          <h2 class="flex items-center gap-3 text-lg font-bold">
+            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+              9
+            </span>
+            {{ 'heel_rest_title' | translate }}
+          </h2>
+          <div class="mt-4 grid gap-3 sm:grid-cols-3">
+            <button
+              type="button"
+              (click)="setHeelRest('none')"
+              [attr.aria-pressed]="heelRest() === 'none'"
+              [class]="
+                'rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                (heelRest() === 'none'
+                  ? 'border-primary bg-primary-50'
+                  : 'border-border hover:border-primary')
+              ">
+              {{ 'heel_rest_none' | translate }}
+            </button>
+            <button
+              type="button"
+              (click)="setHeelRest('metal')"
+              [attr.aria-pressed]="heelRest() === 'metal'"
+              [class]="
+                'flex items-center justify-between rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                (heelRest() === 'metal'
+                  ? 'border-primary bg-primary-50'
+                  : 'border-border hover:border-primary')
+              ">
+              {{ 'heel_rest_metal' | translate }}
+              <span class="text-sm text-primary">+20 &euro;</span>
+            </button>
+            <button
+              type="button"
+              (click)="setHeelRest('rubber')"
+              [attr.aria-pressed]="heelRest() === 'rubber'"
+              [class]="
+                'flex items-center justify-between rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                (heelRest() === 'rubber'
+                  ? 'border-primary bg-primary-50'
+                  : 'border-border hover:border-primary')
+              ">
+              {{ 'heel_rest_rubber' | translate }}
+              <span class="text-sm text-primary">+15 &euro;</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 10 Accessories -->
+        <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
+          <h2 class="flex items-center gap-3 text-lg font-bold">
+            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+              10
+            </span>
+            {{ 'configurator_step_accessories' | translate }}
+            <button
+              type="button"
+              class="ml-auto text-content-muted transition-colors hover:text-primary"
+              [attr.aria-label]="'configurator_info_label' | translate"
+              (click)="accessoriesInfoOpen.set(true)">
+              <svg lucideInfo class="size-5"></svg>
+            </button>
+          </h2>
+          <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            <button
+              type="button"
+              (click)="setAccessories('with_clips')"
+              [attr.aria-pressed]="accessories() === 'with_clips'"
+              [class]="
+                'rounded-xl border-2 p-4 text-left transition-colors ' +
+                (accessories() === 'with_clips'
+                  ? 'border-primary bg-primary-50'
+                  : 'border-border hover:border-primary')
+              ">
+              <span class="block font-semibold">{{ 'configurator_clips_with' | translate }}</span>
+              <span class="mt-1 block text-xs text-content-secondary">
+                {{ 'configurator_clips_with_hint' | translate }}
+              </span>
+            </button>
+            <button
+              type="button"
+              (click)="setAccessories('without_clips')"
+              [attr.aria-pressed]="accessories() === 'without_clips'"
+              [class]="
+                'rounded-xl border-2 p-4 text-left transition-colors ' +
+                (accessories() === 'without_clips'
+                  ? 'border-primary bg-primary-50'
+                  : 'border-border hover:border-primary')
+              ">
+              <span class="block font-semibold">
+                {{ 'configurator_clips_without' | translate }}
+              </span>
+              <span class="mt-1 block text-xs text-content-secondary">
+                {{ 'configurator_clips_without_hint' | translate }}
+              </span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 11 Build your set -->
+        <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
+          <h2 class="flex items-center gap-3 text-lg font-bold">
+            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+              11
+            </span>
+            {{ 'configurator_step_kit' | translate }}
+            <button
+              type="button"
+              class="ml-auto text-content-muted transition-colors hover:text-primary"
+              [attr.aria-label]="'configurator_info_label' | translate"
+              (click)="kitInfoOpen.set(true)">
+              <svg lucideInfo class="size-5"></svg>
+            </button>
+          </h2>
+          <p class="mt-1 text-sm text-content-secondary">
+            {{ 'configurator_kit_hint' | translate }}
+          </p>
+
+          <div class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-3">
+            @for (
+              zone of ['front_left', 'front_right', 'rear_left', 'rear_right', 'trunk'];
+              track zone
+            ) {
+              <button
+                type="button"
+                (click)="toggleZone($any(zone))"
+                [attr.aria-pressed]="isZone($any(zone))"
+                [class]="
+                  'ease-out-brand min-h-[48px] rounded-lg border-2 px-3 py-2.5 text-sm font-medium transition-all duration-150 ' +
+                  (isZone($any(zone))
+                    ? 'border-primary bg-primary-50 text-primary'
+                    : 'border-border hover:border-primary')
+                ">
+                {{ 'kit_piece_' + zone | translate }}
+              </button>
+            }
+          </div>
+
+          <p class="mt-4 text-xs font-semibold uppercase tracking-wide text-content-muted">
+            {{ 'configurator_kit_presets' | translate }}
+          </p>
+          <div class="mt-2 flex flex-wrap gap-2">
+            @for (preset of ['front_row', 'rear_row', 'full_interior', 'premium']; track preset) {
+              <button
+                nmButton
+                variant="outline"
+                size="sm"
+                type="button"
+                (click)="applyPreset($any(preset))">
+                {{ 'configurator_preset_' + preset | translate }}
+              </button>
+            }
+          </div>
+        </section>
+
+        <!-- 12 Delivery -->
+        <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
+          <h2 class="flex items-center gap-3 text-lg font-bold">
+            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+              12
+            </span>
+            {{ 'configurator_step_delivery' | translate }}
+            <button
+              type="button"
+              class="ml-auto text-content-muted transition-colors hover:text-primary"
+              [nmTooltip]="'configurator_delivery_threshold_info'"
+              position="left"
+              [attr.aria-label]="'configurator_info_label' | translate">
+              <svg lucideInfo class="size-5"></svg>
+            </button>
+          </h2>
+          <table class="mt-4 w-full text-sm">
+            <thead>
+              <tr class="border-b border-border text-left text-content-secondary">
+                <th class="py-2 font-medium">{{ 'configurator_delivery_set' | translate }}</th>
+                <th class="py-2 font-medium">{{ 'configurator_delivery_cost' | translate }}</th>
+                <th class="py-2 font-medium">{{ 'configurator_delivery_time' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              <tr>
+                <td class="py-2">{{ 'configurator_delivery_single' | translate }}</td>
+                <td>4.99 &euro;</td>
+                <td>3–5</td>
+              </tr>
+              <tr>
+                <td class="py-2">{{ 'configurator_delivery_pair' | translate }}</td>
+                <td>6.99 &euro;</td>
+                <td>3–5</td>
+              </tr>
+              <tr>
+                <td class="py-2">{{ 'configurator_delivery_full' | translate }}</td>
+                <td>9.99 &euro;</td>
+                <td>5–7</td>
+              </tr>
+              <tr>
+                <td class="py-2">{{ 'configurator_delivery_premium' | translate }}</td>
+                <td>12.99 &euro;</td>
+                <td>5–7</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="mt-3 text-sm text-content-secondary">
+            {{ 'configurator_delivery_free_note' | translate }}
+          </p>
+          <p class="mt-2 text-sm font-semibold">
+            {{ 'configurator_delivery_your_cost' | translate }}:
+            @if (freeShipping()) {
+              <span class="text-success">{{ 'configurator_delivery_free' | translate }}</span>
+            } @else {
+              {{ shipping() }} &euro;
+            }
+          </p>
+        </section>
+
+        <!-- 13 Summary + CTA -->
+        <section #stepCard class="rounded-2xl border-2 border-primary bg-surface p-6 shadow-soft">
+          <h2 class="flex items-center gap-3 text-lg font-bold">
+            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+              13
+            </span>
+            {{ 'configurator_step_summary' | translate }}
+          </h2>
+          <dl class="mt-4 space-y-1.5 text-sm">
+            <div class="flex justify-between">
+              <dt class="text-content-secondary">{{ 'configurator_summary_mats' | translate }}</dt>
+              <dd class="font-medium">{{ price() }} &euro;</dd>
+            </div>
+            @if (heelPad() !== 'none') {
+              <div class="flex justify-between">
+                <dt class="text-content-secondary">
+                  {{ 'configurator_step_heel' | translate }}:
+                  {{ 'configurator_heel_' + heelPad() | translate }}
+                </dt>
+                <dd class="font-medium">+{{ heelPadPrice() }} &euro;</dd>
+              </div>
+            }
+            @if (heelRest() !== 'none') {
+              <div class="flex justify-between">
+                <dt class="text-content-secondary">
+                  {{ 'heel_rest_title' | translate }}: {{ 'heel_rest_' + heelRest() | translate }}
+                </dt>
+                <dd class="font-medium">+{{ heelRestPrice() }} &euro;</dd>
+              </div>
+            }
+            <div class="flex justify-between">
+              <dt class="text-content-secondary">{{ 'configurator_step_delivery' | translate }}</dt>
+              <dd class="font-medium">
+                @if (freeShipping()) {
+                  {{ 'configurator_delivery_free' | translate }}
+                } @else {
+                  {{ shipping() }} &euro;
+                }
+              </dd>
+            </div>
+            <div class="flex justify-between border-t border-border pt-2 text-base font-extrabold">
+              <dt>{{ 'configurator_total' | translate }}</dt>
+              <dd>{{ total() }} &euro;</dd>
+            </div>
+          </dl>
+
+          <div class="mt-5 flex flex-col gap-3">
+            <button
+              nmButton
+              size="lg"
+              type="button"
+              (click)="addToCart()"
+              [loading]="addToCartAction.pending()"
+              [disabled]="!canCheckout()">
+              {{ 'action_add_to_cart' | translate }}
+            </button>
+            <div class="grid gap-3 sm:grid-cols-2">
+              <button
+                nmButton
+                variant="outline"
+                type="button"
+                (click)="payNow()"
+                [loading]="checkingOut()"
+                [disabled]="!canCheckout()">
+                {{ 'action_pay_now' | translate }}
+              </button>
+              <button
+                nmButton
+                variant="outline"
+                type="button"
+                (click)="contactManager()"
+                [loading]="checkingOut()"
+                [disabled]="!canCheckout()">
+                {{ 'action_contact_manager' | translate }}
+              </button>
+            </div>
+            @if (!isAuthenticated()) {
+              <p class="text-center text-xs text-content-secondary">
+                {{ 'configurator_auth_hint' | translate }}
+              </p>
+            }
+          </div>
+        </section>
+      </div>
+    </div>
+  }
+</section>
+
+<!-- Sticky bottom bar (mobile only): live total + add to cart. Above content,
+     below dialogs (z-popup 2000). -->
+@if (loaded()) {
+  <div
+    class="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-border bg-surface px-4 py-3 shadow-elev lg:hidden">
+    <div class="min-w-0">
+      <span class="block text-xs text-content-secondary">
+        {{ 'configurator_total' | translate }}
+      </span>
+      <span class="text-lg font-extrabold">{{ total() }} &euro;</span>
+    </div>
+    <button
+      nmButton
+      type="button"
+      class="shrink-0"
+      (click)="addToCart()"
+      [loading]="addToCartAction.pending()"
+      [disabled]="!canCheckout()">
+      {{ 'action_add_to_cart' | translate }}
+    </button>
+  </div>
+}
+
+<!-- Per-step explanation dialogs (material / texture / kit / accessories / heel) -->
+<nm-configurator-info-dialogs
+  [(materialInfoOpen)]="materialInfoOpen"
+  [(textureInfoOpen)]="textureInfoOpen"
+  [(kitInfoOpen)]="kitInfoOpen"
+  [(accessoriesInfoOpen)]="accessoriesInfoOpen"
+  [(heelInfoOpen)]="heelInfoOpen" />
+
+<!-- Auth + payment dialogs -->
+<nm-auth-dialog [(open)]="authOpen" (authenticated)="onAuthenticated()" />
+<nm-payment-dialog
+  [(open)]="paymentOpen"
+  [amount]="total()"
+  [processing]="checkingOut()"
+  (selected)="onPaymentSelected($event)" />

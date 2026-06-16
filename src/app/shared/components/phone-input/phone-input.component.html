@@ -1,0 +1,104 @@
+<!--
+  EN: International phone input — optional translated label, a single field with a
+      country selector (flag + dial code) on the left and the national number on
+      the right (auto-formatted), then a localized error/hint line. The country
+      list opens in a CDK overlay (#menu) with a search box; the target-market
+      countries are pinned on top.
+  RU: Международный ввод телефона — необязательная метка, единое поле с селектором
+      страны (флаг + код) слева и национальным номером справа (автоформат), затем
+      строка локализованной ошибки/подсказки. Список стран открывается в CDK
+      overlay (#menu) с поиском; целевые страны закреплены сверху.
+-->
+@if (label()) {
+  <label [for]="inputId()" class="mb-1.5 block text-sm font-medium text-content">
+    {{ label() | translate }}
+    @if (required()) {
+      <span class="ml-0.5 text-error" aria-hidden="true">*</span>
+    }
+  </label>
+}
+
+<div
+  [class]="
+    'flex h-11 w-full items-stretch overflow-visible rounded-md border bg-surface-input text-sm text-content transition-colors focus-within:border-primary ' +
+    (errorMessage ? 'border-error' : 'border-border') +
+    (disabled() ? ' cursor-not-allowed opacity-60' : '')
+  ">
+  <!-- Country selector (flag + dial code) — anchors the overlay dropdown. -->
+  <button
+    #trigger
+    type="button"
+    [disabled]="disabled()"
+    [attr.aria-label]="'phone_country_select_label' | translate"
+    [attr.aria-haspopup]="'listbox'"
+    [attr.aria-expanded]="dropdownOpen()"
+    class="flex shrink-0 items-center gap-1.5 rounded-l-md border-r border-border px-3 outline-none transition-colors hover:bg-surface-subtle focus-visible:bg-surface-subtle"
+    (click)="toggleDropdown()">
+    <span class="text-base leading-none" aria-hidden="true">{{ selectedCountry().flag }}</span>
+    <span class="font-medium text-content">{{ selectedCountry().phoneCode }}</span>
+    <svg lucideChevronDown class="size-4 text-content-muted" aria-hidden="true"></svg>
+  </button>
+
+  <input
+    [id]="inputId()"
+    type="tel"
+    inputmode="tel"
+    [value]="display()"
+    [attr.placeholder]="placeholder() ? (placeholder() | translate) : countryPlaceholder()"
+    [disabled]="disabled()"
+    [attr.aria-label]="label() ? null : (placeholder() || 'form_phone' | translate)"
+    [attr.aria-invalid]="errorMessage ? true : null"
+    [attr.aria-describedby]="
+      errorMessage ? inputId() + '-error' : hint() ? inputId() + '-hint' : null
+    "
+    class="min-w-0 flex-1 rounded-r-md bg-transparent px-3 text-content outline-none placeholder:text-content-muted disabled:cursor-not-allowed"
+    (input)="onInput($event)"
+    (blur)="markTouched()" />
+</div>
+
+@if (errorMessage) {
+  <p [id]="inputId() + '-error'" class="mt-1.5 text-xs text-error">{{ errorMessage }}</p>
+} @else if (hint()) {
+  <p [id]="inputId() + '-hint'" class="mt-1.5 text-xs text-content-muted">
+    {{ hint() | translate }}
+  </p>
+}
+
+<!-- Country dropdown, rendered into the global CDK overlay container (.nm-phone-dropdown). -->
+<ng-template #menu>
+  <!-- Sticky search header — flex-shrink:0, never scrolls away (see styles.scss). -->
+  <div class="nm-phone-dropdown-search">
+    <input
+      type="text"
+      [value]="searchQuery()"
+      (input)="onSearch($event)"
+      (click)="$event.stopPropagation()"
+      [attr.placeholder]="'phone_search_placeholder' | translate"
+      [attr.aria-label]="'phone_search_placeholder' | translate" />
+  </div>
+  <!-- Scrollable country list — the only part that scrolls. -->
+  <div
+    class="nm-phone-dropdown-list"
+    role="listbox"
+    [attr.aria-label]="'phone_country_select_label' | translate">
+    @for (c of filteredCountries(); track c.code) {
+      <button
+        type="button"
+        role="option"
+        [attr.aria-selected]="c.code === country()"
+        [class]="
+          'flex w-full items-center gap-3 px-3 py-2 text-left text-sm transition-colors hover:bg-surface-subtle ' +
+          (c.code === country() ? 'bg-primary/5 font-medium text-primary' : 'text-content')
+        "
+        (click)="selectCountry(c.code)">
+        <span class="text-base leading-none" aria-hidden="true">{{ c.flag }}</span>
+        <span class="min-w-0 flex-1 truncate">{{ c.name }}</span>
+        <span class="shrink-0 text-content-muted">{{ c.phoneCode }}</span>
+      </button>
+    } @empty {
+      <p class="px-3 py-4 text-center text-sm text-content-muted">
+        {{ 'phone_search_empty' | translate }}
+      </p>
+    }
+  </div>
+</ng-template>

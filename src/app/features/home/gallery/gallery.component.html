@@ -1,0 +1,67 @@
+<!--
+  EN: Embla viewport (overflow-hidden) wrapping a flex track of full-width slides;
+      each slide is an image with a caption overlay. Prev/next buttons and dots
+      below control the carousel; the active dot follows the selected snap.
+  RU: Вьюпорт embla (overflow-hidden) с flex-треком слайдов на всю ширину; каждый
+      слайд — изображение с подписью-оверлеем. Кнопки назад/вперёд и точки снизу
+      управляют каруселью; активная точка следует за выбранным слайдом.
+-->
+<div class="relative">
+  <div
+    emblaCarousel
+    [options]="options"
+    [plugins]="plugins"
+    [subscribeToEvents]="['select', 'reInit']"
+    (emblaChange)="onEmblaChange()"
+    class="overflow-hidden rounded-lg shadow-soft">
+    <div class="flex">
+      @for (slide of slides(); track $index; let i = $index) {
+        <div class="relative min-w-0 flex-[0_0_100%]">
+          @if (slide.src && !hasFailed(i)) {
+            <img
+              [ngSrc]="slide.src"
+              width="980"
+              height="480"
+              [alt]="slide.caption"
+              sizes="100vw"
+              (error)="onImageError(i)"
+              class="h-auto w-full object-cover" />
+          } @else {
+            <nm-image-placeholder class="block aspect-[980/480] w-full rounded-none" />
+          }
+          <div
+            class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-5">
+            <span class="text-sm font-semibold text-white">{{ slide.caption }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <button
+    type="button"
+    [attr.aria-label]="'home_gallery_prev' | translate"
+    class="absolute left-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-content shadow-soft transition-colors hover:bg-white hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+    (click)="prev()">
+    <svg lucideChevronLeft class="size-5"></svg>
+  </button>
+  <button
+    type="button"
+    [attr.aria-label]="'home_gallery_next' | translate"
+    class="absolute right-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-content shadow-soft transition-colors hover:bg-white hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+    (click)="next()">
+    <svg lucideChevronRight class="size-5"></svg>
+  </button>
+
+  <div class="mt-5 flex items-center justify-center gap-2">
+    @for (slide of slides(); track $index; let i = $index) {
+      <button
+        type="button"
+        [attr.aria-label]="('home_gallery_goto_slide' | translate) + ' ' + (i + 1)"
+        [attr.aria-current]="i === selected() ? 'true' : null"
+        class="h-2 rounded-full transition-all"
+        [class]="i === selected() ? 'w-6 bg-primary' : 'w-2 bg-chrome-mid hover:bg-chrome-dark'"
+        (click)="goTo(i)"></button>
+    }
+  </div>
+</div>

@@ -1,0 +1,82 @@
+<!--
+  EN: Auth dialog content — a tab switch (Sign in / Register) above the matching
+      Reactive form. Submitting runs the mock AuthService; success closes and
+      emits `authenticated`.
+  RU: Содержимое диалога авторизации — переключатель вкладок (Вход / Регистрация)
+      над соответствующей формой. Отправка вызывает мок AuthService; успех
+      закрывает диалог и эмитит `authenticated`.
+-->
+<nm-dialog [(open)]="open" titleKey="auth_dialog_title">
+  <div class="mb-5 flex rounded-lg bg-surface-subtle p-1">
+    <button
+      type="button"
+      (click)="setMode('login')"
+      [class]="
+        'flex-1 rounded-md py-2 text-sm font-semibold transition-colors ' +
+        (mode() === 'login' ? 'bg-surface text-primary shadow-soft' : 'text-content-secondary')
+      ">
+      {{ 'auth_login_tab' | translate }}
+    </button>
+    <button
+      type="button"
+      (click)="setMode('register')"
+      [class]="
+        'flex-1 rounded-md py-2 text-sm font-semibold transition-colors ' +
+        (mode() === 'register' ? 'bg-surface text-primary shadow-soft' : 'text-content-secondary')
+      ">
+      {{ 'auth_register_tab' | translate }}
+    </button>
+  </div>
+
+  @if (mode() === 'login') {
+    @if (locked()) {
+      <!-- Brute-force lockout: the login form is hidden until the countdown expires. -->
+      <div class="flex flex-col items-center gap-4 p-6 text-center">
+        <svg lucideShieldAlert class="size-12 text-error"></svg>
+        <h3 class="text-lg font-semibold">{{ 'auth_locked_title' | translate }}</h3>
+        <p class="text-sm text-content-muted">{{ 'auth_locked_body' | translate }}</p>
+        <div class="font-mono text-2xl font-bold text-error">{{ lockoutCountdown() }}</div>
+        <p class="text-xs text-content-muted">
+          <a
+            routerLink="/contact"
+            [queryParams]="{ topic: 'lockout' }"
+            class="text-primary underline hover:text-primary-bright"
+            (click)="open.set(false)">
+            {{ 'auth_locked_hint' | translate }}
+          </a>
+        </p>
+      </div>
+    } @else {
+      <form [formGroup]="loginForm" (ngSubmit)="submitLogin()" class="flex flex-col gap-4">
+        <nm-input formControlName="email" type="email" label="form_email" autocomplete="email" />
+        <nm-input
+          formControlName="password"
+          type="password"
+          label="form_password"
+          autocomplete="current-password" />
+        <button nmButton type="submit" class="mt-2" [loading]="submitting()">
+          {{ 'action_login' | translate }}
+        </button>
+      </form>
+    }
+  } @else {
+    <form [formGroup]="registerForm" (ngSubmit)="submitRegister()" class="flex flex-col gap-4">
+      <nm-input formControlName="name" label="form_name" autocomplete="name" />
+      <nm-input formControlName="email" type="email" label="form_email" autocomplete="email" />
+      <nm-phone-input formControlName="phone" label="form_phone" />
+      <nm-input
+        formControlName="password"
+        type="password"
+        label="form_password"
+        hint="auth_password_hint"
+        autocomplete="new-password" />
+      <button nmButton type="submit" class="mt-2" [loading]="submitting()">
+        {{ 'action_register' | translate }}
+      </button>
+    </form>
+  }
+
+  @if (!locked()) {
+    <nm-social-login />
+  }
+</nm-dialog>

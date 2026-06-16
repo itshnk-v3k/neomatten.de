@@ -1,0 +1,15 @@
+<!--
+  EN: Inline brand SVG. Decorative (aria-hidden) — the link carries aria-label +
+      sr-only text; fill=currentColor inherits the surrounding text/hover color.
+  RU: Встроенный SVG бренда. Декоративный (aria-hidden) — ссылка несёт aria-label +
+      sr-only текст; fill=currentColor наследует цвет текста/ховера окружения.
+-->
+<svg
+  [class]="classes()"
+  viewBox="0 0 24 24"
+  [attr.fill]="fill()"
+  role="img"
+  aria-hidden="true"
+  focusable="false">
+  <path [attr.d]="icon().path" />
+</svg>

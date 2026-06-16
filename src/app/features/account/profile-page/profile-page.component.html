@@ -1,0 +1,112 @@
+<!--
+  EN: Profile-edit form (name / email / phone / address) inside the account shell
+      content column. Save persists via the mock AuthService.
+  RU: Форма редактирования профиля (имя / e-mail / телефон / адрес) в колонке
+      контента оболочки аккаунта. Сохранение — через мок AuthService.
+-->
+<div class="mx-auto w-full max-w-full rounded-lg bg-surface px-6 py-8 shadow-soft lg:max-w-[80%]">
+  <h1 class="text-2xl font-bold">{{ 'account_profile_edit_title' | translate }}</h1>
+  <p class="mt-2 text-sm text-content-secondary">{{ 'account_profile_edit_intro' | translate }}</p>
+  @if (auth.loading()) {
+    <div class="mt-6 flex flex-col gap-4">
+      @for (i of [0, 1, 2, 3]; track i) {
+        <div class="flex flex-col gap-1.5">
+          <nm-skeleton variant="text" width="30%" />
+          <nm-skeleton class="h-11 w-full rounded-md" />
+        </div>
+      }
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-6 flex flex-col gap-4">
+      <nm-input formControlName="name" label="form_name" autocomplete="name" [required]="true" />
+      <nm-input
+        formControlName="email"
+        type="email"
+        label="form_email"
+        autocomplete="email"
+        [required]="true" />
+      <nm-phone-input formControlName="phone" label="form_phone" />
+      <nm-input
+        formControlName="address"
+        label="footer_address_label"
+        autocomplete="street-address" />
+      <button
+        nmButton
+        type="submit"
+        class="mt-2 w-full rounded-full bg-gradient-red hover:scale-[1.02] hover:shadow-glow-red"
+        [loading]="submitting()">
+        {{ 'action_save' | translate }}
+      </button>
+    </form>
+  }
+
+  <!-- Danger zone: sign out + delete account, side by side (each confirmed via dialog). -->
+  <div class="mt-8 border-t border-border pt-8">
+    <div class="flex flex-col gap-4 sm:flex-row">
+      <button
+        nmButton
+        variant="outline"
+        type="button"
+        class="flex-1 rounded-full"
+        (click)="logoutOpen.set(true)">
+        <svg lucideLogOut class="size-5 shrink-0"></svg>
+        {{ 'action_logout' | translate }}
+      </button>
+      <button
+        type="button"
+        class="inline-flex flex-1 items-center justify-center gap-2 rounded-full border-2 border-error bg-transparent px-6 py-2.5 font-semibold text-error transition-colors duration-150 hover:bg-error/10"
+        (click)="deleteOpen.set(true)">
+        <svg lucideAlertTriangle class="size-5 shrink-0"></svg>
+        {{ 'account_delete_account' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete-account confirmation dialog -->
+<nm-dialog [(open)]="deleteOpen" titleKey="account_delete_title">
+  <p>{{ 'account_delete_confirm' | translate }}</p>
+  <div dialogFooter>
+    <button
+      nmButton
+      variant="outline"
+      type="button"
+      class="rounded-full"
+      (click)="deleteOpen.set(false)">
+      {{ 'action_cancel' | translate }}
+    </button>
+    <button
+      nmButton
+      variant="destructive"
+      type="button"
+      class="rounded-full"
+      [loading]="deleting()"
+      (click)="confirmDelete()">
+      {{ 'account_delete' | translate }}
+    </button>
+  </div>
+</nm-dialog>
+
+<!-- Sign-out confirmation dialog -->
+<nm-dialog [(open)]="logoutOpen" titleKey="account_signout_confirm_title">
+  <p>{{ 'account_signout_confirm_body' | translate }}</p>
+  <div dialogFooter>
+    <button
+      nmButton
+      variant="ghost"
+      type="button"
+      class="rounded-full"
+      (click)="logoutOpen.set(false)">
+      {{ 'action_cancel' | translate }}
+    </button>
+    <button
+      nmButton
+      variant="destructive"
+      type="button"
+      class="rounded-full"
+      [loading]="logoutAction.pending()"
+      (click)="logoutAction.execute()">
+      {{ 'action_logout' | translate }}
+    </button>
+  </div>
+</nm-dialog>
