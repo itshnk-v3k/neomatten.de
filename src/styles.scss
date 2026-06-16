@@ -234,7 +234,7 @@ a[nmButton][aria-busy='true']::after {
    acts as an upper bound while CDK fits the panel to the available space. The
    two-class selector outweighs CDK's `.cdk-overlay-pane { max-height: 100% }`. */
 .cdk-overlay-pane.nm-phone-dropdown {
-  max-height: 60vh;
+  max-height: 30vh;
 }
 
 /* Sticky search header: pinned at the top, never shrinks, never scrolls away. */
@@ -278,7 +278,7 @@ a[nmButton][aria-busy='true']::after {
 
 @media (max-width: 767px) {
   .cdk-overlay-pane.nm-phone-dropdown {
-    max-height: 50vh;
+    max-height: 25vh;
   }
 }
 
