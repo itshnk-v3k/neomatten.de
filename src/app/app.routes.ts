@@ -43,7 +43,7 @@ export const routes: Routes = [
               description:
                 'Konfigurieren Sie Ihre EVA-Automatten: Fahrzeug wählen, Farbe und Rand anpassen, sofort bestellen.',
               price: '89',
-              image: 'https://neomatten.de/assets/content/carpet.jpg',
+              image: 'https://neomatten.de/assets/images/content/carpet.jpg',
             },
           },
         },

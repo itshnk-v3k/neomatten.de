@@ -19,7 +19,7 @@ import { filter } from 'rxjs';
 /** Canonical production origin for absolute SEO URLs (no trailing slash). */
 const SITE_URL = COMPANY_INFO.siteUrl;
 /** Default social-share image (absolute) when a route declares no `ogImage`. */
-const DEFAULT_OG_IMAGE = `${SITE_URL}/assets/content/hero-poster.jpg`;
+const DEFAULT_OG_IMAGE = `${SITE_URL}/assets/images/content/hero-poster.jpg`;
 
 /** SEO metadata attached to a route via its `data.seo`. Copy fields are i18n keys. */
 export interface SeoMetadata {

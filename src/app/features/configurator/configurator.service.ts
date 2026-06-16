@@ -186,7 +186,7 @@ export class ConfiguratorService {
 
   constructor() {
     // TODO(backend): GET /api/settings/colours
-    this.http.get<MatColoursData>('assets/mock-data/mat-colours.json').subscribe({
+    this.http.get<MatColoursData>('assets/data/mat-colours.json').subscribe({
       next: data => {
         this.matColours.set(data.mat_colours ?? []);
         this.edgeColours.set(data.edge_colours ?? []);

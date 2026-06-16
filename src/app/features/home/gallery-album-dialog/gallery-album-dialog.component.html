@@ -12,16 +12,15 @@
       @for (image of a.images; track $index; let i = $index) {
         <li class="flex flex-col gap-2">
           <div
-            class="aspect-[4/3] overflow-hidden rounded-lg border border-border bg-surface-subtle">
+            class="relative aspect-[4/3] overflow-hidden rounded-lg border border-border bg-surface-subtle">
             @if (image.src && !hasFailed(i)) {
               <img
                 [ngSrc]="image.src"
-                width="640"
-                height="480"
-                sizes="(min-width: 768px) 360px, 90vw"
+                fill
+                sizes="(min-width: 768px) 45vw, 90vw"
                 [alt]="image.alt"
                 (error)="onImageError(i)"
-                class="size-full object-cover" />
+                class="object-cover" />
             } @else {
               <nm-image-placeholder class="size-full rounded-none" />
             }

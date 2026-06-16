@@ -41,7 +41,7 @@ export class ProductService {
   }
 
   private url(): string {
-    return environment.features.useMockData ? '/assets/mock-data/products.json' : '/api/products';
+    return environment.features.useMockData ? '/assets/data/products.json' : '/api/products';
   }
 
   /** Products in a category (optionally narrowed to a subcategory). */

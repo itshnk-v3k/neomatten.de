@@ -58,7 +58,7 @@ export class VehicleService {
   /** TODO(backend): mock-vs-API URL switch — the only swap point for real data. */
   private url(resource: 'vehicle-patterns' | 'brands'): string {
     return environment.features.useMockData
-      ? `/assets/mock-data/${resource}.json`
+      ? `/assets/data/${resource}.json`
       : `/api/vehicles/${resource}`;
   }
 

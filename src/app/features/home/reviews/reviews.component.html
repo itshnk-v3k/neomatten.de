@@ -55,7 +55,7 @@
             (emblaChange)="onEmblaChange()"
             class="overflow-hidden">
             <div class="flex">
-              @for (review of reviews(); track review.name + review.date) {
+              @for (review of reviews(); track $index) {
                 <div class="min-w-0 flex-[0_0_100%] pr-5 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%]">
                   <article
                     class="flex h-full flex-col rounded-lg border border-border bg-surface p-6">

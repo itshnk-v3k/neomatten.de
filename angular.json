@@ -64,10 +64,14 @@
             "inlineStyleLanguage": "scss",
             "allowedCommonJsDependencies": ["leaflet"],
             "assets": [
+              { "glob": "**/*", "input": "src/assets/i18n", "output": "assets/i18n" },
+              { "glob": "**/*", "input": "src/assets/images", "output": "assets/images" },
+              { "glob": "**/*", "input": "src/assets/data", "output": "assets/data" },
+              { "glob": "**/*", "input": "src/assets/docs", "output": "assets/docs" },
               {
                 "glob": "**/*",
-                "input": "src/assets",
-                "output": "assets"
+                "input": "src/assets/configurator",
+                "output": "assets/configurator"
               },
               { "glob": "robots.txt", "input": "src", "output": "/" },
               { "glob": "sitemap.xml", "input": "src", "output": "/" },

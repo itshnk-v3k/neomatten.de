@@ -1,12 +1,12 @@
 /*
  * EN: Catalogue product DTO for the simple (non-configured) products — headrest
  *     cushions, EVA-material bags and EVA-leather bags. Maps to a future
- *     `products` table; the mock data lives in assets/mock-data and is served by
+ *     `products` table; the mock data lives in assets/data and is served by
  *     ProductService. `specs` is an ordered list of label/value pairs (label is
  *     a translate key) shown on the product detail page.
  * RU: DTO товара каталога для простых (неконфигурируемых) товаров — кисени на
  *     подголовник, сумки из EVA-материала и из EVA-кожи. Ложится в будущую
- *     таблицу `products`; mock-данные в assets/mock-data, отдаёт ProductService.
+ *     таблицу `products`; mock-данные в assets/data, отдаёт ProductService.
  *     `specs` — упорядоченный список пар метка/значение (метка — ключ перевода)
  *     для страницы товара.
  */

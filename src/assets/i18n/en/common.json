@@ -1,7 +1,7 @@
 {
   "header_nav_catalog": "Catalogue",
   "header_nav_advantages": "Benefits",
-  "header_nav_work": "Our Work",
+  "header_nav_work": "Our Works",
   "header_nav_contact": "Contact",
   "header_nav_material": "EVA Material",
   "header_nav_faq": "FAQ",
@@ -153,7 +153,7 @@
   "home_guarantee_original_text": "All our products are certified.",
   "home_guarantee_original_badge": "ORIGINAL",
   "home_gallery_eyebrow": "Gallery",
-  "home_gallery_title": "Our Work",
+  "home_gallery_title": "Our Works",
   "home_gallery_prev": "Previous image",
   "home_gallery_next": "Next image",
   "home_gallery_goto_slide": "Go to image",

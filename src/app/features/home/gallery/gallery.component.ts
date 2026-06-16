@@ -1,5 +1,5 @@
 /*
- * EN: "Our Work" gallery carousel. Ports the legacy slider.js to embla-carousel
+ * EN: "Our Works" gallery carousel. Ports the legacy slider.js to embla-carousel
  *     (loop + 6s autoplay) with prev/next controls and clickable dots whose active
  *     state tracks the selected snap. Captions are brand/model strings (not i18n).
  * RU: Карусель-галерея «Unsere Arbeiten». Портирует устаревший slider.js на
