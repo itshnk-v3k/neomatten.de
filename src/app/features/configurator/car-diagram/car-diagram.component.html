@@ -1,0 +1,49 @@
+<!--
+  EN: Top-view car blueprint with five circular mat hotspots overlaid. Each
+      hotspot is a keyboard-focusable button (aria-label/aria-pressed). Unselected
+      dots are grey and always visible (clearly tappable); selected dots fill in
+      the brand primary. Hover scales the dot 110%.
+  RU: Чертёж авто сверху с пятью наложенными круглыми хотспотами ковриков. Каждый
+      хотспот — фокусируемая кнопка (aria-label/aria-pressed). Невыбранные точки
+      серые и всегда видимы (явно нажимаемые); выбранные заливаются основным
+      цветом бренда. При наведении точка увеличивается на 110%.
+-->
+<div
+  class="relative mx-auto w-44 max-w-full"
+  role="group"
+  [attr.aria-label]="label('configurator_step_kit')">
+  <img
+    [ngSrc]="carImage"
+    [alt]="label('configurator_diagram_title')"
+    width="550"
+    height="1180"
+    class="h-auto w-full select-none" />
+
+  @for (h of hotspots; track h.zone) {
+    <div
+      class="absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-1"
+      [style.left.%]="h.left"
+      [style.top.%]="h.top">
+      <!-- size-8 hit area (min touch target) with a smaller visible dot inside. -->
+      <button
+        type="button"
+        [attr.aria-pressed]="isSelected(h.zone)"
+        [attr.aria-label]="label(h.labelKey)"
+        class="flex size-8 items-center justify-center rounded-full transition-transform duration-150 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+        (click)="onActivate(h.zone)">
+        <span
+          aria-hidden="true"
+          [class]="
+            'block size-4 rounded-full border-2 lg:size-5 ' +
+            (isSelected(h.zone)
+              ? 'border-primary bg-primary opacity-100'
+              : 'border-chrome-dark bg-chrome-mid opacity-70')
+          "></span>
+      </button>
+      <!-- Short label: sr-only on mobile, visible on desktop. -->
+      <span class="sr-only text-[10px] font-bold leading-none text-primary lg:not-sr-only">
+        {{ h.short }}
+      </span>
+    </div>
+  }
+</div>

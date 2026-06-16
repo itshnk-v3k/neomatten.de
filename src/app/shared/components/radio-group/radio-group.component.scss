@@ -1,0 +1,7 @@
+/*
+ * EN: Radio group styles (host is a block; visuals use Tailwind in template).
+ * RU: Стили группы радио (host — блок; оформление через утилиты Tailwind в шаблоне).
+ */
+:host {
+  display: block;
+}

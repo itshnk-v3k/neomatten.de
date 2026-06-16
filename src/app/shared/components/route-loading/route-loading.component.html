@@ -1,0 +1,15 @@
+<!--
+  EN: Fixed 3px bar at the very top, above all overlays. Width tracks progress();
+      the container fades out when not visible.
+  RU: Фиксированная полоса 3px вверху, поверх всех слоёв. Ширина — progress();
+      контейнер исчезает, когда не виден.
+-->
+<div
+  aria-hidden="true"
+  class="pointer-events-none fixed inset-x-0 top-0 z-[3000] h-[3px] transition-opacity duration-300"
+  [class.opacity-0]="!visible()"
+  [class.opacity-100]="visible()">
+  <div
+    class="h-full bg-primary transition-[width] duration-300 ease-out"
+    [style.width.%]="progress()"></div>
+</div>

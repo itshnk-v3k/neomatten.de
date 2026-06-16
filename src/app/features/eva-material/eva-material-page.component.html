@@ -1,0 +1,141 @@
+<!--
+  EN: EVA-material page — hero intro, six reason cards (smaller icons), the ISO
+      9001:2015 certification block with a certificate download, "Why NEOMAT?"
+      points and a configurator CTA.
+  RU: Страница EVA-материала — герой-вступление, шесть карточек-причин (меньшие
+      иконки), блок сертификации ISO 9001:2015 со скачиванием сертификата, пункты
+      «Почему NEOMAT?» и призыв к конфигуратору.
+-->
+
+<!-- Hero -->
+<section class="bg-gradient-to-br from-ink to-ink-soft py-16 text-white lg:py-24">
+  <div class="mx-auto max-w-container px-6">
+    <span class="text-sm font-semibold uppercase tracking-[3px] text-primary-300">
+      {{ 'eva_hero_eyebrow' | translate }}
+    </span>
+    <h1 class="mt-3 text-3xl font-bold md:text-4xl">{{ 'eva_hero_title' | translate }}</h1>
+    <p class="mt-4 max-w-2xl text-lg text-white/75">{{ 'eva_hero_intro' | translate }}</p>
+  </div>
+</section>
+
+<div class="mx-auto max-w-container px-6 py-12 lg:py-16">
+  <nm-breadcrumb />
+
+  <!-- 6 reasons -->
+  <section>
+    <h2 class="text-2xl font-bold md:text-3xl">{{ 'eva_reasons_title' | translate }}</h2>
+    @if (loading()) {
+      <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        @for (card of [1, 2, 3, 4, 5, 6]; track card) {
+          <nm-skeleton variant="card" />
+        }
+      </div>
+    } @else {
+      <ul class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <li
+          class="flex flex-col items-center rounded-xl border border-border bg-surface p-8 text-center shadow-soft transition-colors hover:border-primary">
+          <svg lucideThermometer class="size-8 text-primary" aria-hidden="true"></svg>
+          <h3 class="mt-4 font-bold">{{ 'eva_reason_temp_title' | translate }}</h3>
+          <p class="mt-2 text-sm text-content-secondary">
+            {{ 'eva_reason_temp_text' | translate }}
+          </p>
+        </li>
+        <li
+          class="flex flex-col items-center rounded-xl border border-border bg-surface p-8 text-center shadow-soft transition-colors hover:border-primary">
+          <svg lucideDroplets class="size-8 text-primary" aria-hidden="true"></svg>
+          <h3 class="mt-4 font-bold">{{ 'eva_reason_waterproof_title' | translate }}</h3>
+          <p class="mt-2 text-sm text-content-secondary">
+            {{ 'eva_reason_waterproof_text' | translate }}
+          </p>
+        </li>
+        <li
+          class="flex flex-col items-center rounded-xl border border-border bg-surface p-8 text-center shadow-soft transition-colors hover:border-primary">
+          <svg lucideLeaf class="size-8 text-primary" aria-hidden="true"></svg>
+          <h3 class="mt-4 font-bold">{{ 'eva_reason_hypo_title' | translate }}</h3>
+          <p class="mt-2 text-sm text-content-secondary">
+            {{ 'eva_reason_hypo_text' | translate }}
+          </p>
+        </li>
+        <li
+          class="flex flex-col items-center rounded-xl border border-border bg-surface p-8 text-center shadow-soft transition-colors hover:border-primary">
+          <svg lucideSparkles class="size-8 text-primary" aria-hidden="true"></svg>
+          <h3 class="mt-4 font-bold">{{ 'eva_reason_clean_title' | translate }}</h3>
+          <p class="mt-2 text-sm text-content-secondary">
+            {{ 'eva_reason_clean_text' | translate }}
+          </p>
+        </li>
+        <li
+          class="flex flex-col items-center rounded-xl border border-border bg-surface p-8 text-center shadow-soft transition-colors hover:border-primary">
+          <svg lucideShieldCheck class="size-8 text-primary" aria-hidden="true"></svg>
+          <h3 class="mt-4 font-bold">{{ 'eva_reason_durable_title' | translate }}</h3>
+          <p class="mt-2 text-sm text-content-secondary">
+            {{ 'eva_reason_durable_text' | translate }}
+          </p>
+        </li>
+        <li
+          class="flex flex-col items-center rounded-xl border border-border bg-surface p-8 text-center shadow-soft transition-colors hover:border-primary">
+          <svg lucideBadgeCheck class="size-8 text-primary" aria-hidden="true"></svg>
+          <h3 class="mt-4 font-bold">{{ 'eva_reason_iso_title' | translate }}</h3>
+          <p class="mt-2 text-sm text-content-secondary">{{ 'eva_reason_iso_text' | translate }}</p>
+        </li>
+      </ul>
+    }
+  </section>
+
+  <!-- ISO certification block -->
+  <section
+    class="mt-12 flex flex-col items-center gap-8 rounded-2xl bg-gradient-to-br from-ink to-ink-soft p-8 text-white lg:flex-row lg:p-12">
+    <div
+      class="grid size-32 shrink-0 place-items-center rounded-full border-[3px] border-primary text-center font-bold">
+      <span>
+        <span class="block text-[0.65rem] tracking-wide text-white/70">
+          {{ 'eva_iso_badge_line1' | translate }}
+        </span>
+        <span class="block text-lg">{{ 'eva_iso_badge_line2' | translate }}</span>
+        <span class="block text-[0.65rem] text-primary-300">
+          {{ 'eva_iso_badge_line3' | translate }}
+        </span>
+      </span>
+    </div>
+    <div>
+      <h2 class="text-2xl font-bold">{{ 'cert_title' | translate }}</h2>
+      <p class="mt-2 max-w-2xl text-sm text-primary-300">{{ 'cert_description' | translate }}</p>
+      <a
+        [href]="certificateUrl"
+        target="_blank"
+        rel="noopener"
+        nmButton
+        variant="outline"
+        class="mt-6 border-white/30 text-white hover:bg-white/10">
+        <svg lucideFileText class="size-4" aria-hidden="true"></svg>
+        {{ 'cert_download' | translate }}
+      </a>
+    </div>
+  </section>
+
+  <!-- Why NEOMAT? -->
+  <section class="mt-12">
+    <h2 class="text-2xl font-bold md:text-3xl">{{ 'eva_why_title' | translate }}</h2>
+    <ul class="mt-6 flex flex-col gap-5">
+      @for (point of whyPoints; track point.titleKey) {
+        <li class="flex items-start gap-4">
+          <span class="mt-1.5 size-2.5 shrink-0 rounded-full bg-primary" aria-hidden="true"></span>
+          <span>
+            <b class="block font-semibold">{{ point.titleKey | translate }}</b>
+            <span class="text-content-secondary">{{ point.textKey | translate }}</span>
+          </span>
+        </li>
+      }
+    </ul>
+  </section>
+
+  <!-- CTA -->
+  <section class="mt-12 rounded-2xl border border-border bg-surface-subtle p-8 text-center lg:p-12">
+    <h2 class="text-2xl font-bold md:text-3xl">{{ 'eva_cta_title' | translate }}</h2>
+    <p class="mx-auto mt-3 max-w-xl text-content-secondary">{{ 'eva_cta_text' | translate }}</p>
+    <a routerLink="/configurator" nmButton size="lg" class="mt-6">
+      {{ 'eva_cta_button' | translate }}
+      <svg lucideArrowRight class="size-4" aria-hidden="true"></svg>
+    </a>
+  </section>
+</div>

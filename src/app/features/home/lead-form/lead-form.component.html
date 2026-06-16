@@ -1,0 +1,60 @@
+<!--
+  EN: Reactive lead form. Fields use the shared <nm-input> (placeholder-only with
+      an aria-label); submit uses the shared button directive. Layout switches
+      between a two-column grid (consultation) and a stacked column (contact).
+  RU: Реактивная форма заявки. Поля используют общий <nm-input> (только плейсхолдер
+      с aria-label); отправка — общая директива кнопки. Раскладка переключается
+      между двухколоночной сеткой (консультация) и колонкой (контакт).
+-->
+<form
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+  novalidate
+  [class]="layout() === 'grid' ? 'grid gap-3 sm:grid-cols-2' : 'flex flex-col gap-3'">
+  <nm-input
+    formControlName="name"
+    placeholder="form_name"
+    ariaLabel="form_name"
+    autocomplete="name"
+    [required]="true" />
+  <nm-input
+    formControlName="email"
+    type="email"
+    placeholder="form_email"
+    ariaLabel="form_email"
+    autocomplete="email"
+    [required]="true" />
+  <!-- No static placeholder: the component shows the selected country's
+       international-format example (e.g. "+49 30 1234567") and keeps it in sync as
+       the country changes. Its accessible name falls back to the "form_phone" key. -->
+  <nm-phone-input formControlName="phone" />
+  <nm-input
+    formControlName="vehicle"
+    [placeholder]="vehiclePlaceholderKey()"
+    [ariaLabel]="vehiclePlaceholderKey()" />
+
+  @if (showConsent()) {
+    <div [class.sm:col-span-2]="layout() === 'grid'">
+      <nm-checkbox formControlName="consent">
+        {{ 'contact_consent_label' | translate }}
+        <a
+          routerLink="/privacy-policy"
+          class="ml-1 text-primary underline"
+          (click)="$event.stopPropagation()">
+          {{ 'contact_consent_link' | translate }}
+        </a>
+      </nm-checkbox>
+      @if (form.controls.consent.invalid && form.controls.consent.touched) {
+        <p class="mt-1 text-sm text-error">{{ 'contact_consent_required' | translate }}</p>
+      }
+    </div>
+  }
+
+  <button
+    nmButton
+    type="submit"
+    [loading]="submitAction.pending()"
+    [class]="layout() === 'grid' ? 'sm:col-span-2' : 'self-start'">
+    {{ 'form_submit' | translate }}
+  </button>
+</form>

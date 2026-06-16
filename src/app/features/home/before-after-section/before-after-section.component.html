@@ -1,0 +1,16 @@
+<!-- ===================== BEFORE / AFTER ===================== -->
+<section class="bg-surface py-16 lg:py-24">
+  <div class="mx-auto max-w-container px-6">
+    <div class="mx-auto mb-12 max-w-2xl text-center" nmReveal>
+      <span class="text-sm font-semibold uppercase tracking-[3px] text-primary">
+        {{ 'home_comparison_eyebrow' | translate }}
+      </span>
+      <h2 class="mt-3 text-3xl font-bold md:text-4xl">{{ 'home_comparison_title' | translate }}</h2>
+      <p class="mt-3 text-content-secondary">{{ 'home_comparison_text' | translate }}</p>
+    </div>
+
+    <div class="mx-auto max-w-4xl" nmReveal>
+      <nm-before-after [beforeSrc]="beforeImage" [afterSrc]="afterImage" />
+    </div>
+  </div>
+</section>

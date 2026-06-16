@@ -1,0 +1,7 @@
+/*
+ * EN: Language switcher styles (host inline-block; visuals via Tailwind utilities).
+ * RU: Стили переключателя языка (host inline-block; оформление утилитами Tailwind).
+ */
+:host {
+  display: inline-block;
+}

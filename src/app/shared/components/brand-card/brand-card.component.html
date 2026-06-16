@@ -1,0 +1,20 @@
+<!--
+  EN: Circular brand tile linking to /configurator/:brand. Shows the real logo
+      when available, otherwise the initials fallback.
+  RU: Круглая плитка марки со ссылкой на /configurator/:brand. Показывает
+      реальный логотип, если доступен, иначе фолбэк с инициалами.
+-->
+<!-- Brand name not yet available → circle + text skeleton. -->
+@if (!brand().name) {
+  <nm-skeleton variant="circle" class="mx-auto size-16" />
+  <nm-skeleton variant="text" width="60%" class="mx-auto mt-3" />
+} @else {
+  <a
+    [routerLink]="['/configurator', brand().id]"
+    class="ease-out-brand flex h-full flex-col items-center gap-3 rounded-xl border border-border bg-surface p-5 text-center shadow-soft transition-all duration-150 hover:scale-[1.02] hover:border-primary/40 hover:shadow-card">
+    <span class="grid size-20 place-items-center overflow-hidden rounded-full bg-surface-subtle">
+      <nm-brand-logo [name]="brand().name" [slug]="brand().id" size="lg" />
+    </span>
+    <span class="text-sm font-semibold text-content">{{ brand().name }}</span>
+  </a>
+}

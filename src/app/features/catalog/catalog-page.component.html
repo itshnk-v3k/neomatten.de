@@ -1,0 +1,45 @@
+<!--
+  EN: Catalogue brand grid. A search input filters the circular brand cards;
+      tapping a brand opens /configurator/:brand. Individual mat patterns are
+      only configured inside the configurator flow, not listed here.
+  RU: Сетка марок каталога. Поле поиска фильтрует круглые карточки марок; клик
+      по марке открывает /configurator/:brand. Отдельные лекала настраиваются
+      только в конфигураторе и здесь не перечислены.
+-->
+<section class="mx-auto max-w-container px-6 py-12 lg:py-16">
+  <nm-breadcrumb />
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold md:text-4xl">{{ 'page_catalog_title' | translate }}</h1>
+    <p class="mt-3 text-content-secondary">{{ 'catalog_intro' | translate }}</p>
+  </header>
+
+  <!-- Brand search -->
+  <form [formGroup]="filters" class="max-w-md">
+    <nm-input
+      formControlName="search"
+      placeholder="catalog_search_placeholder"
+      ariaLabel="catalog_search_placeholder" />
+  </form>
+
+  @if (loading()) {
+    <!-- Skeleton mirrors the real brand grid (same columns/gap), 12 placeholders. -->
+    <ul class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+      @for (i of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]; track i) {
+        <li>
+          <nm-skeleton variant="circle" class="mx-auto size-16" />
+          <nm-skeleton variant="text" width="60%" class="mx-auto mt-3" />
+        </li>
+      }
+    </ul>
+  } @else if (filteredBrands().length === 0) {
+    <p class="py-16 text-center text-content-secondary">{{ 'catalog_no_results' | translate }}</p>
+  } @else {
+    <ul class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+      @for (brand of filteredBrands(); track brand.id) {
+        <li>
+          <nm-brand-card [brand]="brand" />
+        </li>
+      }
+    </ul>
+  }
+</section>

@@ -1,0 +1,63 @@
+<!--
+  EN: Account shell — breadcrumb, sidebar (lg+) / scrollable tab bar (mobile) and
+      the routed page in the content column. Active item highlighted. Sign-out
+      lives on the profile page (not in the nav). Icons left, text left-aligned.
+  RU: Оболочка аккаунта — крошки, сайдбар (lg+) / прокручиваемая панель вкладок
+      (моб.) и маршрутизируемая страница в колонке контента. Активный пункт
+      подсвечен. Выход — на странице профиля (не в навигации). Иконки слева.
+-->
+<section class="mx-auto max-w-container px-6 py-8 lg:py-12">
+  <nm-breadcrumb />
+
+  <div class="mt-6 lg:flex lg:items-start lg:gap-8">
+    <!-- Desktop sidebar -->
+    <aside
+      class="hidden lg:sticky lg:top-20 lg:block lg:w-60 lg:shrink-0 lg:self-start lg:border-r lg:border-border"
+      [attr.aria-label]="'page_account_title' | translate">
+      <nav class="flex flex-col py-2">
+        @for (item of navItems; track item.path) {
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="border-primary bg-primary/10 font-medium text-primary"
+            [routerLinkActiveOptions]="{ exact: item.exact }"
+            class="ease-out-brand flex items-center justify-start gap-2 border-l-2 border-transparent px-4 py-3 text-left text-content transition-all duration-150 hover:border-primary/50 hover:bg-surface-subtle hover:text-ink">
+            @switch (item.icon) {
+              @case ('orders') {
+                <svg lucidePackage class="size-5 shrink-0"></svg>
+              }
+              @case ('profile') {
+                <svg lucideUser class="size-5 shrink-0"></svg>
+              }
+              @case ('password') {
+                <svg lucideLock class="size-5 shrink-0"></svg>
+              }
+            }
+            <span>{{ item.key | translate }}</span>
+          </a>
+        }
+      </nav>
+    </aside>
+
+    <!-- Mobile tab bar -->
+    <nav
+      #mobileTabBar
+      class="-mx-6 flex gap-1 overflow-x-auto border-b border-border px-6 lg:hidden [&::-webkit-scrollbar]:hidden"
+      [attr.aria-label]="'page_account_title' | translate">
+      @for (item of navItems; track item.path) {
+        <a
+          #mobileTab
+          [routerLink]="item.path"
+          routerLinkActive="is-active-tab border-primary font-medium text-primary"
+          [routerLinkActiveOptions]="{ exact: item.exact }"
+          class="ease-out-brand min-w-fit whitespace-nowrap border-b-2 border-transparent px-4 py-3 text-sm text-content transition-all duration-150 hover:text-primary">
+          {{ item.key | translate }}
+        </a>
+      }
+    </nav>
+
+    <!-- Routed page -->
+    <div class="flex min-w-0 flex-1 flex-col items-center py-8 lg:pt-0">
+      <router-outlet />
+    </div>
+  </div>
+</section>

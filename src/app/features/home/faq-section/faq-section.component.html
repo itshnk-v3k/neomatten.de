@@ -1,0 +1,21 @@
+<!-- ===================== FAQ ===================== -->
+<section id="faq" class="bg-surface-subtle py-16 lg:py-24">
+  <div class="mx-auto max-w-container px-6">
+    <div class="mx-auto mb-12 max-w-2xl text-center" nmReveal>
+      <span class="text-sm font-semibold uppercase tracking-[3px] text-primary">
+        {{ 'home_faq_eyebrow' | translate }}
+      </span>
+      <h2 class="mt-3 text-3xl font-bold md:text-4xl">{{ 'home_faq_title' | translate }}</h2>
+    </div>
+
+    <div class="mx-auto max-w-3xl" nmReveal>
+      <nm-accordion>
+        @for (entry of faqEntries; track entry.questionKey) {
+          <nm-accordion-item [titleKey]="entry.questionKey">
+            {{ entry.answerKey | translate }}
+          </nm-accordion-item>
+        }
+      </nm-accordion>
+    </div>
+  </div>
+</section>

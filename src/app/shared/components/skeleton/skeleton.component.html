@@ -1,0 +1,26 @@
+<!--
+  EN: Pulsing placeholder. Single block for most variants; the multi-line text
+      variant stacks `lines` blocks (gap-2, last one shortened). Size/shape come
+      from `variant` + optional width/height + the merged `class` input.
+  RU: Пульсирующая заглушка. Один блок для большинства вариантов; многострочный
+      text стекает `lines` блоков (gap-2, последний короче). Размер/форма — из
+      `variant` + необязательных width/height + объединяемого входа `class`.
+-->
+@if (isMultiLine()) {
+  <div role="presentation" class="flex flex-col gap-2">
+    @for (i of lineIndices(); track i) {
+      <div
+        aria-hidden="true"
+        [class]="i === lineIndices().length - 1 ? lastLineClass() : blockClass()"
+        [style.width]="styleWidth()"
+        [style.height]="styleHeight()"></div>
+    }
+  </div>
+} @else {
+  <div
+    aria-hidden="true"
+    role="presentation"
+    [class]="blockClass()"
+    [style.width]="styleWidth()"
+    [style.height]="styleHeight()"></div>
+}

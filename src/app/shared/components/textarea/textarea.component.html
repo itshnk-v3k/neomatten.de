@@ -1,0 +1,39 @@
+<!--
+  EN: Textarea template — optional translated label, the textarea bound to the
+      ControlValueAccessor value, and a localized error or hint line below.
+  RU: Шаблон textarea — необязательная переведённая метка, textarea, связанный со
+      значением ControlValueAccessor, и строка локализованной ошибки или подсказки ниже.
+-->
+@if (label()) {
+  <label [for]="inputId()" class="mb-1.5 block text-sm font-medium text-content">
+    {{ label() | translate }}
+    @if (required()) {
+      <span class="ml-0.5 text-error" aria-hidden="true">*</span>
+    }
+  </label>
+}
+
+<textarea
+  [id]="inputId()"
+  [rows]="rows()"
+  [value]="value()"
+  [attr.placeholder]="placeholder() ? (placeholder() | translate) : null"
+  [disabled]="disabled()"
+  [attr.aria-invalid]="errorMessage ? true : null"
+  [attr.aria-describedby]="
+    errorMessage ? inputId() + '-error' : hint() ? inputId() + '-hint' : null
+  "
+  [class]="
+    'w-full rounded-md border bg-surface-input px-4 py-3 text-sm text-content outline-none transition-colors placeholder:text-content-muted focus:border-primary disabled:cursor-not-allowed disabled:opacity-60 ' +
+    (errorMessage ? 'border-error' : 'border-border')
+  "
+  (input)="onInput($event)"
+  (blur)="markTouched()"></textarea>
+
+@if (errorMessage) {
+  <p [id]="inputId() + '-error'" class="mt-1.5 text-xs text-error">{{ errorMessage }}</p>
+} @else if (hint()) {
+  <p [id]="inputId() + '-hint'" class="mt-1.5 text-xs text-content-muted">
+    {{ hint() | translate }}
+  </p>
+}

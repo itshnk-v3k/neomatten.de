@@ -1,0 +1,170 @@
+<!--
+  EN: Contact page — breadcrumb, intro, then a two-column layout: company info +
+      Leaflet map on the left, the contact form on the right.
+  RU: Страница «Контакты» — крошки, вступление, затем две колонки: данные
+      компании + карта Leaflet слева, форма обратной связи справа.
+-->
+<section class="mx-auto max-w-container px-6 py-12 lg:py-16">
+  <nm-breadcrumb />
+  <header class="mb-10 max-w-2xl">
+    <h1 class="text-3xl font-bold md:text-4xl">{{ 'page_contact_title' | translate }}</h1>
+    <p class="mt-3 text-content-secondary">{{ 'contact_intro' | translate }}</p>
+  </header>
+
+  @if (loading()) {
+    <div class="grid gap-8 lg:grid-cols-2">
+      <!-- Company info + map skeleton -->
+      <div class="flex flex-col gap-6">
+        <div class="rounded-xl border border-border bg-surface p-6 shadow-soft">
+          <nm-skeleton variant="title" />
+          <nm-skeleton variant="text" [lines]="4" class="mt-4" />
+        </div>
+        <nm-skeleton variant="image" class="h-[300px] w-full" />
+      </div>
+
+      <!-- Contact form skeleton -->
+      <div class="rounded-xl border border-border bg-surface p-6 shadow-soft">
+        <div class="flex flex-col gap-4">
+          @for (field of [0, 1, 2, 3, 4]; track field) {
+            <div class="flex flex-col gap-1.5">
+              <nm-skeleton variant="text" width="30%" />
+              <nm-skeleton class="h-11 w-full rounded-md" />
+            </div>
+          }
+          <nm-skeleton variant="button" />
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="grid gap-8 lg:grid-cols-2">
+      <!-- Company info + map -->
+      <div class="flex flex-col gap-6">
+        <div class="rounded-xl border border-border bg-surface p-6 shadow-soft">
+          <h2 class="text-lg font-bold">{{ 'contact_info_title' | translate }}</h2>
+          <dl class="mt-4 space-y-4 text-sm">
+            <div>
+              <dt class="font-medium text-content">{{ 'footer_address_label' | translate }}</dt>
+              <dd class="mt-0.5">
+                <a
+                  [href]="mapsUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-primary underline transition-colors hover:text-primary-bright">
+                  {{ company.address.street }}, {{ company.address.city }},
+                  {{ 'footer_country' | translate }}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt class="font-medium text-content">{{ 'footer_phone_label' | translate }}</dt>
+              <dd class="mt-0.5">
+                <a
+                  [href]="phoneHref"
+                  class="text-primary transition-colors hover:text-primary-bright">
+                  {{ company.phone }}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt class="font-medium text-content">{{ 'footer_email_label' | translate }}</dt>
+              <dd class="mt-0.5">
+                <a
+                  [href]="mailHref"
+                  class="text-primary transition-colors hover:text-primary-bright">
+                  {{ company.email }}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt class="font-medium text-content">{{ 'contact_whatsapp' | translate }}</dt>
+              <dd class="mt-0.5">
+                <a
+                  [href]="whatsappHref"
+                  target="_blank"
+                  rel="noopener"
+                  class="inline-flex items-center gap-2 text-primary transition-colors hover:text-primary-bright">
+                  <nm-brand-icon [icon]="whatsappIcon" class="size-4" />
+                  {{ company.phone }}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt class="font-medium text-content">{{ 'contact_telegram' | translate }}</dt>
+              <dd class="mt-0.5">
+                <a
+                  [href]="telegramHref"
+                  target="_blank"
+                  rel="noopener"
+                  class="inline-flex items-center gap-2 text-primary transition-colors hover:text-primary-bright">
+                  <nm-brand-icon [icon]="telegramIcon" class="size-4" />
+                  {{ '@neomatten_de' }}
+                </a>
+              </dd>
+            </div>
+            <div>
+              <dt class="font-medium text-content">{{ 'footer_hours_heading' | translate }}</dt>
+              <dd class="mt-0.5 text-content-secondary">
+                <span class="block">{{ 'footer_hours_weekdays' | translate }}</span>
+                <span class="block">{{ 'footer_hours_saturday' | translate }}</span>
+                <span class="block">{{ 'footer_orders_24_7' | translate }}</span>
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <nm-map
+          [lat]="mapLat"
+          [lng]="mapLng"
+          [ariaLabel]="mapAria"
+          class="block overflow-hidden rounded-xl border border-border shadow-soft" />
+      </div>
+
+      <!-- Contact form -->
+      <div class="rounded-xl border border-border bg-surface p-6 shadow-soft">
+        <h2 class="text-lg font-bold">{{ 'contact_form_title' | translate }}</h2>
+        <form [formGroup]="form" (ngSubmit)="submit()" class="mt-4 flex flex-col gap-4">
+          <nm-input
+            formControlName="name"
+            label="form_name"
+            autocomplete="name"
+            [required]="true" />
+          <nm-input
+            formControlName="email"
+            type="email"
+            label="form_email"
+            autocomplete="email"
+            [required]="true" />
+          <nm-phone-input formControlName="phone" label="form_phone" />
+          <nm-input
+            formControlName="vehicle"
+            label="contact_vehicle_label"
+            placeholder="contact_vehicle_placeholder" />
+          <nm-textarea
+            formControlName="message"
+            label="contact_message_label"
+            placeholder="contact_message_placeholder"
+            [rows]="5"
+            [required]="true" />
+          <div>
+            <nm-checkbox formControlName="consent">
+              {{ 'contact_consent_label' | translate }}
+              <a
+                routerLink="/privacy-policy"
+                class="ml-1 text-primary underline"
+                (click)="$event.stopPropagation()">
+                {{ 'contact_consent_link' | translate }}
+              </a>
+            </nm-checkbox>
+            @if (form.controls.consent.invalid && form.controls.consent.touched) {
+              <p class="mt-1 text-sm text-error">{{ 'contact_consent_required' | translate }}</p>
+            }
+          </div>
+          <p class="text-sm text-content-muted">* {{ 'form_required_fields_note' | translate }}</p>
+          <button nmButton type="submit" class="mt-2 self-start" [loading]="submitAction.pending()">
+            {{ 'form_submit' | translate }}
+          </button>
+        </form>
+      </div>
+    </div>
+  }
+</section>

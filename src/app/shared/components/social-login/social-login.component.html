@@ -1,0 +1,37 @@
+<!--
+  EN: "Or continue with" divider + Google / Facebook outline buttons. Brand marks
+      keep their official colours (nm-brand-icon [colored]).
+  RU: Разделитель «Oder weiter mit» + кнопки Google / Facebook (outline). Логотипы
+      сохраняют официальные цвета (nm-brand-icon [colored]).
+-->
+<div class="relative my-4">
+  <div class="absolute inset-0 flex items-center">
+    <span class="w-full border-t border-border"></span>
+  </div>
+  <div class="relative flex justify-center text-sm">
+    <span class="bg-surface px-3 text-content-muted">
+      {{ 'auth_or_continue_with' | translate }}
+    </span>
+  </div>
+</div>
+
+<div class="flex flex-col gap-3">
+  <button
+    nmButton
+    variant="outline"
+    type="button"
+    [disabled]="pending()"
+    (click)="loginWithGoogle()">
+    <nm-brand-icon [icon]="google" [colored]="true" class="size-5" />
+    {{ 'auth_google' | translate }}
+  </button>
+  <button
+    nmButton
+    variant="outline"
+    type="button"
+    [disabled]="pending()"
+    (click)="loginWithFacebook()">
+    <nm-brand-icon [icon]="facebook" [colored]="true" class="size-5" />
+    {{ 'auth_facebook' | translate }}
+  </button>
+</div>

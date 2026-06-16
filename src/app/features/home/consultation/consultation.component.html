@@ -1,0 +1,13 @@
+<!-- ===================== CONSULTATION ===================== -->
+<section id="beratung" class="relative overflow-hidden bg-ink-900 py-16 text-white lg:py-24">
+  <img [ngSrc]="heroPoster" fill alt="" sizes="100vw" class="object-cover opacity-30" />
+  <div class="absolute inset-0 bg-black/65" aria-hidden="true"></div>
+
+  <div class="relative mx-auto max-w-3xl px-6 text-center" nmReveal>
+    <h2 class="text-3xl font-bold md:text-4xl">{{ 'home_consult_title' | translate }}</h2>
+    <p class="mx-auto mt-3 max-w-xl text-white/80">{{ 'home_consult_text' | translate }}</p>
+    <div class="mt-8 text-left">
+      <nm-lead-form layout="grid" />
+    </div>
+  </div>
+</section>

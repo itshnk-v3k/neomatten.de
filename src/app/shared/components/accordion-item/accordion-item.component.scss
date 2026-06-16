@@ -1,0 +1,9 @@
+/*
+ * EN: Accordion item styles (host is a block with a bottom border applied via
+ *     Tailwind utilities on the host; the rest is Tailwind in the template).
+ * RU: Стили элемента аккордеона (host — блок с нижней границей через утилиты
+ *     Tailwind на host; остальное — утилиты Tailwind в шаблоне).
+ */
+:host {
+  display: block;
+}

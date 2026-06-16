@@ -1,0 +1,7 @@
+/*
+ * EN: Brand-icon styles (host is inline-flex so the inline <svg> aligns like a glyph).
+ * RU: Стили бренд-иконки (host — inline-flex, чтобы встроенный <svg> вёл себя как глиф).
+ */
+:host {
+  display: inline-flex;
+}

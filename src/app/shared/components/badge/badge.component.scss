@@ -1,0 +1,7 @@
+/*
+ * EN: Badge styles (visuals are applied to the host via Tailwind utilities in TS).
+ * RU: Стили бейджа (оформление применяется к host через утилиты Tailwind в TS).
+ */
+:host {
+  display: inline-flex;
+}

@@ -1,0 +1,15 @@
+<!--
+  EN: 10% first-order discount popup — register CTA or "maybe later".
+  RU: Попап скидки 10% на первый заказ — призыв зарегистрироваться или «позже».
+-->
+<nm-dialog [(open)]="open" titleKey="discount_popup_title">
+  <p class="text-content-secondary">{{ 'discount_popup_text' | translate }}</p>
+  <div dialogFooter>
+    <button nmButton variant="ghost" type="button" (click)="later()">
+      {{ 'discount_popup_later' | translate }}
+    </button>
+    <button nmButton type="button" (click)="register()">
+      {{ 'discount_popup_register' | translate }}
+    </button>
+  </div>
+</nm-dialog>

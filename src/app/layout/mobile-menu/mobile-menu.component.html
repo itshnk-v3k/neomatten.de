@@ -1,0 +1,88 @@
+<!--
+  EN: Slide-in sheet — brand header, primary nav (active link marked
+      aria-current), account section (login/register or My Account + greeting),
+      cart link with live badge, and the language switcher. Links close the menu.
+  RU: Выезжающая панель — шапка бренда, основная навигация (активная ссылка с
+      aria-current), секция аккаунта (вход/регистрация или «Мой аккаунт» +
+      приветствие), ссылка корзины с живым бейджем и переключатель языка. Ссылки
+      закрывают меню.
+-->
+<nm-sheet side="right" [open]="open()" (openChange)="open.set($event)">
+  <!-- Brand header: NM logo + DE/EN switcher (replaces the wordmark) -->
+  <div class="mb-2 flex items-center justify-between gap-2 border-b border-border pb-4">
+    <img
+      ngSrc="assets/logo/neomat_nm_transparent.png"
+      width="517"
+      height="300"
+      alt="NEOMATTEN"
+      class="h-8 w-auto" />
+    <nm-language-switcher />
+  </div>
+
+  <!-- Account + cart (top, before the primary nav) -->
+  <div class="-mx-6 flex flex-col border-b border-border">
+    @if (isAuthenticated()) {
+      <a
+        routerLink="/account"
+        (click)="close()"
+        class="flex items-center gap-3 border-b border-border/50 px-6 py-4 text-content transition-colors duration-150 hover:bg-surface-subtle hover:text-primary">
+        <svg lucideUser class="size-5 shrink-0"></svg>
+        <span class="flex flex-col">
+          <span class="text-lg font-medium">{{ 'mobile_menu_my_account' | translate }}</span>
+          @if (user(); as u) {
+            <span class="text-sm text-content-muted">
+              {{ 'mobile_menu_greeting' | translate }}, {{ u.name }}
+            </span>
+          }
+        </span>
+      </a>
+    } @else {
+      <a
+        routerLink="/account/login"
+        (click)="close()"
+        class="flex items-center gap-3 border-b border-border/50 px-6 py-4 text-lg font-medium text-content transition-colors duration-150 hover:bg-surface-subtle hover:text-primary">
+        <svg lucideUser class="size-5 shrink-0"></svg>
+        {{ 'mobile_menu_login_register' | translate }}
+      </a>
+    }
+    <a
+      routerLink="/cart"
+      (click)="close()"
+      class="flex items-center gap-3 px-6 py-4 text-lg font-medium text-content transition-colors duration-150 hover:bg-surface-subtle hover:text-primary">
+      <span class="relative inline-flex shrink-0">
+        <svg lucideShoppingCart class="size-5"></svg>
+        @if (cartCount() > 0) {
+          <span
+            class="absolute -right-2 -top-2 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[0.625rem] font-bold text-content-inverse">
+            {{ cartCount() }}
+          </span>
+        }
+      </span>
+      {{ 'mobile_menu_cart' | translate }}
+    </a>
+  </div>
+
+  <!-- Primary nav -->
+  <nav class="-mx-6 flex flex-col" [attr.aria-label]="'header_menu' | translate">
+    @for (link of links; track link.labelKey) {
+      @if (link.sectionId) {
+        <button
+          type="button"
+          class="border-b border-border/50 px-6 py-4 text-left text-lg font-medium text-content transition-colors duration-150 hover:bg-surface-subtle hover:text-primary"
+          (click)="goToSection(link)">
+          {{ link.labelKey | translate }}
+        </button>
+      } @else {
+        <a
+          [routerLink]="link.path"
+          routerLinkActive="border-l-4 border-primary pl-5 font-semibold text-primary"
+          [routerLinkActiveOptions]="{ exact: true }"
+          ariaCurrentWhenActive="page"
+          class="border-b border-border/50 px-6 py-4 text-lg font-medium text-content transition-colors duration-150 hover:bg-surface-subtle hover:text-primary"
+          (click)="close()">
+          {{ link.labelKey | translate }}
+        </a>
+      }
+    }
+  </nav>
+</nm-sheet>

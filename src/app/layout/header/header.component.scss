@@ -1,0 +1,7 @@
+/*
+ * EN: Header styles (layout via Tailwind utilities; sticky bar needs no extra CSS).
+ * RU: Стили хедера (вёрстка утилитами Tailwind; закреплённой панели CSS не нужен).
+ */
+:host {
+  display: block;
+}

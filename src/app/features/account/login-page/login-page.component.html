@@ -1,0 +1,43 @@
+<!--
+  EN: Login page — breadcrumb, a centred auth card with email + password +
+      remember-me, and links to register / forgot-password.
+  RU: Страница входа — крошки, центрированная карточка с e-mail + пароль +
+      «запомнить меня» и ссылками на регистрацию / восстановление пароля.
+-->
+<section class="mx-auto max-w-container px-6 py-12 lg:py-16">
+  <nm-breadcrumb />
+  <div class="mx-auto max-w-md rounded-2xl border border-border bg-surface p-8 shadow-soft">
+    <h1 class="text-2xl font-bold">{{ 'auth_login_tab' | translate }}</h1>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-6 flex flex-col gap-4">
+      <nm-input
+        formControlName="email"
+        type="email"
+        label="form_email"
+        autocomplete="email"
+        [required]="true" />
+      <nm-input
+        formControlName="password"
+        type="password"
+        label="form_password"
+        autocomplete="current-password"
+        [required]="true" />
+      <div class="flex items-center justify-between">
+        <nm-checkbox formControlName="remember" label="auth_remember_me" />
+        <a routerLink="/account/forgot-password" class="text-sm text-primary hover:underline">
+          {{ 'auth_forgot_link' | translate }}
+        </a>
+      </div>
+      <p class="text-sm text-content-muted">* {{ 'form_required_fields_note' | translate }}</p>
+      <button nmButton type="submit" class="mt-2" [loading]="submitting()">
+        {{ 'action_login' | translate }}
+      </button>
+    </form>
+    <nm-social-login (authenticated)="onSocialAuth()" />
+    <p class="mt-6 text-center text-sm text-content-secondary">
+      {{ 'auth_no_account' | translate }}
+      <a routerLink="/account/register" class="font-semibold text-primary hover:underline">
+        {{ 'action_register' | translate }}
+      </a>
+    </p>
+  </div>
+</section>

@@ -1,0 +1,17 @@
+<!--
+  EN: ngx-sonner toaster outlet. Responsive position — top-right on md+ (stacks
+      downward, ~360px wide via SCSS), top-center on mobile (full width minus
+      margins, handled by ngx-sonner's built-in ≤600px rule). Offset: 1.5rem on
+      desktop, 1rem on mobile. Rich colors, light theme.
+  RU: Точка вывода тостера ngx-sonner. Адаптивная позиция — справа сверху на md+
+      (стек вниз, ~360px через SCSS), сверху по центру на мобильных (на всю ширину
+      минус отступы, через встроенное правило ngx-sonner ≤600px). Отступ: 1.5rem на
+      десктопе, 1rem на мобильном. Насыщенные цвета, светлая тема.
+-->
+<ngx-sonner-toaster
+  [position]="isMobile() ? 'top-center' : 'top-right'"
+  [offset]="isMobile() ? '1rem' : '1.5rem'"
+  [richColors]="true"
+  [closeButton]="true"
+  [duration]="5000"
+  theme="light" />

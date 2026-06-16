@@ -1,0 +1,23 @@
+<!--
+  EN: Post-payment confirmation — success title, thank-you body with the 2–3
+      business-day manufacturing notice, the order id and a CTA to the account
+      orders. Closable via the X (handled by nm-dialog).
+  RU: Подтверждение после оплаты — заголовок успеха, текст благодарности с
+      уведомлением о 2–3 рабочих днях изготовления, номер заказа и кнопка
+      перехода к заказам. Закрывается по X (через nm-dialog).
+-->
+<nm-dialog [open]="open()" (openChange)="onOpenChange($event)" titleKey="order_confirmed_title">
+  @if (order(); as o) {
+    <p class="text-content-secondary">{{ 'order_confirmed_body' | translate }}</p>
+
+    <p class="mt-4 rounded-md bg-surface-subtle px-4 py-3 text-center font-bold text-content">
+      #{{ o.id }}
+    </p>
+  }
+
+  <div dialogFooter>
+    <button nmButton type="button" class="w-full rounded-full" (click)="viewOrders()">
+      {{ 'order_view_orders' | translate }}
+    </button>
+  </div>
+</nm-dialog>

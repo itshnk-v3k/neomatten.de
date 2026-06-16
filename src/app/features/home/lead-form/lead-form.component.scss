@@ -1,0 +1,7 @@
+/*
+ * EN: Lead-form styles — host is a block; form layout uses Tailwind utilities.
+ * RU: Стили формы заявки — host — блок; раскладка формы через утилиты Tailwind.
+ */
+:host {
+  display: block;
+}

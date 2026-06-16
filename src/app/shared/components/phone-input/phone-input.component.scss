@@ -1,0 +1,7 @@
+/*
+ * EN: Phone input styles (host is a block; visuals use Tailwind utilities in template).
+ * RU: Стили ввода телефона (host — блок; оформление через утилиты Tailwind в шаблоне).
+ */
+:host {
+  display: block;
+}

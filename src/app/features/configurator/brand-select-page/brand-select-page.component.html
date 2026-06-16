@@ -1,0 +1,40 @@
+<!--
+  EN: Brand selection grid. Each circular card links to /configurator/:brand
+      (router scroll-position-restoration takes the user to the top). Logo area
+      shows the real brand image when available, else the initials fallback.
+  RU: Сетка выбора марки. Каждая круглая карточка ведёт на /configurator/:brand
+      (восстановление позиции прокрутки роутером поднимает к началу). В области
+      логотипа — реальное изображение марки, иначе фолбэк с инициалами.
+-->
+<section class="mx-auto max-w-container px-6 py-12 lg:py-16">
+  <nm-breadcrumb />
+  <header class="mx-auto mb-10 max-w-2xl text-center">
+    <span class="text-sm font-semibold uppercase tracking-[3px] text-primary">
+      {{ 'configurator_eyebrow' | translate }}
+    </span>
+    <h1 class="mt-3 text-3xl font-bold md:text-4xl">
+      {{ 'configurator_brand_title' | translate }}
+    </h1>
+    <p class="mt-4 text-content-secondary">{{ 'configurator_brand_subtitle' | translate }}</p>
+  </header>
+
+  @if (loading()) {
+    <!-- Skeleton mirrors the real brand grid (same columns/gap), 12 placeholders. -->
+    <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+      @for (i of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]; track i) {
+        <li>
+          <nm-skeleton variant="circle" class="mx-auto size-16" />
+          <nm-skeleton variant="text" width="60%" class="mx-auto mt-3" />
+        </li>
+      }
+    </ul>
+  } @else {
+    <ul class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+      @for (brand of brands(); track brand.id) {
+        <li>
+          <nm-brand-card [brand]="brand" />
+        </li>
+      }
+    </ul>
+  }
+</section>

@@ -1,0 +1,129 @@
+<!--
+  EN: Product detail — breadcrumb (product name as last crumb), then a two-column
+      layout: image gallery left, details (name / description / specs / SKU /
+      delivery / price / add-to-cart) right.
+  RU: Страница товара — крошки (название товара — последняя крошка), затем две
+      колонки: галерея слева, детали (название / описание / характеристики / SKU /
+      доставка / цена / в корзину) справа.
+-->
+<section class="mx-auto max-w-container px-6 py-12 lg:py-16">
+  @if (products.loading()) {
+    <div class="grid gap-8 lg:grid-cols-2">
+      <!-- Gallery placeholder -->
+      <div>
+        <nm-skeleton variant="image" class="aspect-square w-full" />
+      </div>
+      <!-- Details placeholder -->
+      <div>
+        <nm-skeleton variant="title" />
+        <nm-skeleton variant="text" [lines]="3" class="mt-4" />
+        <nm-skeleton variant="button" class="mt-6" />
+      </div>
+    </div>
+  } @else if (product(); as p) {
+    <nm-breadcrumb [currentLabel]="p.name" />
+
+    <div class="grid gap-8 lg:grid-cols-2">
+      <!-- Gallery -->
+      <div>
+        <div
+          class="aspect-square overflow-hidden rounded-2xl border border-border bg-surface-subtle">
+          <img
+            [ngSrc]="activeImage()!"
+            width="640"
+            height="640"
+            sizes="(min-width: 1024px) 45vw, 100vw"
+            [alt]="p.name"
+            class="size-full object-cover" />
+        </div>
+        @if (p.images.length > 1) {
+          <ul class="mt-4 flex gap-3">
+            @for (image of p.images; track image; let i = $index) {
+              <li>
+                <button
+                  type="button"
+                  (click)="select(i)"
+                  [attr.aria-label]="'product_gallery_thumb' | translate"
+                  [attr.aria-current]="i === activeIndex() ? 'true' : null"
+                  [class]="
+                    'size-20 overflow-hidden rounded-lg border-2 transition-colors ' +
+                    (i === activeIndex() ? 'border-primary' : 'border-border hover:border-primary')
+                  ">
+                  <img
+                    [ngSrc]="image"
+                    width="80"
+                    height="80"
+                    sizes="80px"
+                    [alt]="p.name"
+                    class="size-full object-cover" />
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+
+      <!-- Details -->
+      <div>
+        <h1 class="text-3xl font-bold">{{ p.name }}</h1>
+        <p class="mt-2 text-sm text-content-secondary">
+          {{ 'form_label_sku' | translate }} {{ p.sku }}
+        </p>
+        <p class="mt-4 text-content">{{ p.description | translate }}</p>
+
+        <!-- Specs -->
+        <h2 class="mt-8 text-lg font-bold">{{ 'product_specs_title' | translate }}</h2>
+        <dl class="mt-3 divide-y divide-border border-y border-border text-sm">
+          @for (spec of p.specs; track spec.labelKey) {
+            <div class="flex justify-between gap-4 py-2.5">
+              <dt class="text-content-secondary">{{ spec.labelKey | translate }}</dt>
+              <dd class="font-medium text-content">
+                @if (spec.value.startsWith('spec_value_')) {
+                  {{ spec.value | translate }}
+                } @else {
+                  {{ spec.value }}
+                }
+              </dd>
+            </div>
+          }
+        </dl>
+
+        <!-- Delivery -->
+        <h2 class="mt-8 text-lg font-bold">{{ 'product_delivery_title' | translate }}</h2>
+        <p class="mt-2 text-sm text-content-secondary">{{ 'product_delivery_note' | translate }}</p>
+
+        <!-- Stock status: out of stock / low-stock warning / available count. -->
+        @if (p.stockQuantity === 0) {
+          <p class="mt-6 text-sm font-semibold text-error">
+            {{ 'product_out_of_stock' | translate }}
+          </p>
+        } @else if (p.stockQuantity <= 5) {
+          <p class="mt-6 text-sm font-medium text-warning">
+            {{ 'product_low_stock' | translate: { count: p.stockQuantity } }}
+          </p>
+        } @else {
+          <p class="mt-6 text-sm text-content-secondary">
+            {{ 'product_in_stock' | translate }}: {{ p.stockQuantity }}
+          </p>
+        }
+
+        <!-- Price + CTA -->
+        <div class="mt-4 flex items-center gap-6">
+          <span class="text-3xl font-extrabold">{{ p.price }} &euro;</span>
+          <button
+            nmButton
+            size="lg"
+            type="button"
+            [disabled]="p.stockQuantity === 0"
+            [loading]="addToCartAction.pending()"
+            (click)="addToCartAction.execute()">
+            {{ 'action_add_to_cart' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <nm-breadcrumb />
+    <p class="py-16 text-center text-content-secondary">{{ 'product_not_found' | translate }}</p>
+  }
+</section>

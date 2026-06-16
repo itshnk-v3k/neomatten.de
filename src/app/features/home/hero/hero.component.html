@@ -1,0 +1,58 @@
+<!-- ===================== HERO ===================== -->
+<!-- Rendered immediately (no loading skeleton): the hero is static content (poster
+     + headline) with no async data, so gating it would only delay the LCP paint. -->
+<section class="relative flex min-h-[88vh] items-center overflow-hidden bg-ink-900 text-white">
+  <!-- Background video on md+; static poster on mobile to save bandwidth. -->
+  @if (!isMobile()) {
+    <video
+      class="absolute inset-0 size-full object-cover"
+      autoplay
+      [muted]="true"
+      loop
+      playsinline
+      preload="metadata"
+      [poster]="heroPoster"
+      aria-hidden="true">
+      <source [src]="heroVideoWebm" type="video/webm" />
+      <source [src]="heroVideoMp4" type="video/mp4" />
+    </video>
+  } @else {
+    <img
+      [ngSrc]="heroPoster"
+      fill
+      [alt]="'home_hero_bg_alt' | translate"
+      priority
+      sizes="100vw"
+      class="object-cover" />
+  }
+  <!-- Dark overlay so the hero text stays readable over the video. -->
+  <div class="absolute inset-0 bg-black/50" aria-hidden="true"></div>
+
+  <div class="relative mx-auto w-full max-w-container px-6 py-28">
+    <!-- No nmReveal here: this hero copy is above the fold, so an opacity-0 entrance
+         animation would only delay the LCP paint of the headline. -->
+    <div class="max-w-2xl">
+      <span
+        class="mb-4 flex items-center gap-3 text-sm font-semibold uppercase tracking-[3px] text-primary-bright">
+        <span class="h-0.5 w-10 bg-gradient-red" aria-hidden="true"></span>
+        {{ 'home_hero_eyebrow' | translate }}
+      </span>
+      <h1 class="text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">
+        {{ 'home_hero_title' | translate }}
+      </h1>
+      <p class="mt-5 max-w-xl text-lg text-white/80">{{ 'home_hero_subtitle' | translate }}</p>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a nmButton routerLink="/catalog" size="lg">{{ 'home_hero_cta_catalog' | translate }}</a>
+        <button
+          nmButton
+          type="button"
+          variant="outline"
+          size="lg"
+          (click)="scrollTo('beratung')"
+          class="border-white/70 text-white hover:border-white hover:bg-white hover:text-ink">
+          {{ 'home_hero_cta_advice' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

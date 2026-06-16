@@ -1,0 +1,63 @@
+<!--
+  EN: Two stacked, absolutely-positioned images; the "after" layer is clipped to
+      the divider position. The divider hosts a slider-role handle moved by
+      pointer (with capture) or keyboard. Clicking the image jumps the divider.
+  RU: Два наложенных абсолютно спозиционированных изображения; слой «после»
+      обрезается по позиции разделителя. На разделителе — ручка с ролью slider,
+      двигается указателем (с захватом) или клавиатурой. Клик по картинке
+      перемещает разделитель.
+-->
+<div
+  #container
+  class="relative aspect-[16/9] w-full select-none overflow-hidden rounded-lg shadow-soft"
+  (pointerdown)="onContainerPointerDown($event)">
+  <!-- Before (full) -->
+  <div class="absolute inset-0">
+    <img
+      [ngSrc]="beforeSrc()"
+      fill
+      [alt]="beforeAlt() | translate"
+      sizes="100vw"
+      priority
+      class="object-cover" />
+    <span
+      class="pointer-events-none absolute bottom-4 left-4 rounded-full bg-black/60 px-3.5 py-1 text-xs font-semibold text-white">
+      {{ beforeLabelKey() | translate }}
+    </span>
+  </div>
+
+  <!-- After (clipped to the divider) -->
+  <div class="absolute inset-0" [style.clip-path]="'inset(0 0 0 ' + position() + '%)'">
+    <img
+      [ngSrc]="afterSrc()"
+      fill
+      [alt]="afterAlt() | translate"
+      sizes="100vw"
+      class="object-cover" />
+    <span
+      class="pointer-events-none absolute bottom-4 right-4 rounded-full bg-black/60 px-3.5 py-1 text-xs font-semibold text-white">
+      {{ afterLabelKey() | translate }}
+    </span>
+  </div>
+
+  <!-- Divider + handle -->
+  <div
+    class="pointer-events-none absolute top-0 h-full w-1 -translate-x-1/2 bg-white"
+    [style.left.%]="position()">
+    <button
+      type="button"
+      role="slider"
+      tabindex="0"
+      aria-orientation="horizontal"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      [attr.aria-valuenow]="position()"
+      [attr.aria-label]="handleLabelKey() | translate"
+      class="pointer-events-auto absolute left-1/2 top-1/2 grid size-12 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize place-items-center rounded-full bg-primary text-white shadow-[0_2px_12px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+      (pointerdown)="onPointerDown($event)"
+      (pointermove)="onPointerMove($event)"
+      (keydown)="onKeydown($event)">
+      <svg lucideMoveHorizontal class="size-5"></svg>
+    </button>
+  </div>
+</div>

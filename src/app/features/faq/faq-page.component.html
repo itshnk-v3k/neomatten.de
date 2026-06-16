@@ -1,0 +1,34 @@
+<!--
+  EN: FAQ page — breadcrumb, heading, and the seven Q&A pairs in a shared
+      accordion. Each item's content has the horizontal padding from the shared
+      accordion-item so the answer text never touches the side walls.
+  RU: Страница FAQ — крошки, заголовок и семь пар вопрос/ответ в общем аккордеоне.
+      Контент каждого элемента имеет горизонтальные отступы из общего
+      accordion-item, чтобы текст ответа не касался боковых стенок.
+-->
+<section class="mx-auto max-w-3xl px-6 py-12 lg:py-16">
+  <nm-breadcrumb />
+  <header class="mb-10">
+    <h1 class="text-3xl font-bold md:text-4xl">{{ 'page_faq_title' | translate }}</h1>
+  </header>
+
+  @if (loading()) {
+    <!-- Mirrors a collapsed accordion row: question line + chevron. -->
+    <div class="flex flex-col">
+      @for (bar of [1, 2, 3, 4, 5, 6, 7]; track bar) {
+        <div class="flex items-center justify-between border-b border-border py-4">
+          <nm-skeleton variant="text" class="w-3/4" />
+          <nm-skeleton variant="circle" class="size-5" />
+        </div>
+      }
+    </div>
+  } @else {
+    <nm-accordion>
+      @for (entry of faqEntries; track entry.questionKey) {
+        <nm-accordion-item [titleKey]="entry.questionKey">
+          {{ entry.answerKey | translate }}
+        </nm-accordion-item>
+      }
+    </nm-accordion>
+  }
+</section>
