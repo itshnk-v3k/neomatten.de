@@ -13,21 +13,21 @@
   [class]="layout() === 'grid' ? 'grid gap-3 sm:grid-cols-2' : 'flex flex-col gap-3'">
   <nm-input
     formControlName="name"
+    label="form_name"
     placeholder="form_name"
-    ariaLabel="form_name"
     autocomplete="name"
     [required]="true" />
   <nm-input
     formControlName="email"
     type="email"
+    label="form_email"
     placeholder="form_email"
-    ariaLabel="form_email"
     autocomplete="email"
     [required]="true" />
   <!-- No static placeholder: the component shows the selected country's
        international-format example (e.g. "+49 30 1234567") and keeps it in sync as
-       the country changes. Its accessible name falls back to the "form_phone" key. -->
-  <nm-phone-input formControlName="phone" />
+       the country changes. -->
+  <nm-phone-input formControlName="phone" label="form_phone" />
   @if (showTopic()) {
     <nm-select
       formControlName="topic"
@@ -39,8 +39,8 @@
   }
   <nm-input
     formControlName="vehicle"
-    [placeholder]="vehiclePlaceholderKey()"
-    [ariaLabel]="vehiclePlaceholderKey()" />
+    label="contact_vehicle_label"
+    [placeholder]="vehiclePlaceholderKey()" />
 
   @if (showConsent()) {
     <div [class.sm:col-span-2]="layout() === 'grid'">
