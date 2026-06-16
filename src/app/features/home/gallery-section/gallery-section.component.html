@@ -11,7 +11,7 @@
     <div nmLazySection (sectionVisible)="galleryVisible.set(true)">
       @if (galleryVisible()) {
         <div class="mx-auto max-w-4xl" nmReveal>
-          <nm-gallery [slides]="gallerySlides" />
+          <nm-gallery [albums]="galleryAlbums" />
         </div>
       } @else {
         <div class="mx-auto grid max-w-4xl gap-4 sm:grid-cols-3">

@@ -11,6 +11,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { RouterLink } from '@angular/router';
 import { productCategoryPath, type ProductDTO } from '@core/models/product.model';
 import { CartService } from '@core/services/cart.service';
+import { BadgeComponent } from '@shared/components/badge/badge.component';
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import { ImagePlaceholderComponent } from '@shared/components/image-placeholder/image-placeholder.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
@@ -23,6 +24,7 @@ import { createAsyncAction } from '@shared/utils/async-action.util';
   imports: [
     RouterLink,
     NgOptimizedImage,
+    BadgeComponent,
     ButtonDirective,
     ImagePlaceholderComponent,
     SkeletonComponent,

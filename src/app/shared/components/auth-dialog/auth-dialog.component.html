@@ -70,6 +70,20 @@
         label="form_password"
         hint="auth_password_hint"
         autocomplete="new-password" />
+      <div>
+        <nm-checkbox formControlName="dataConsent">
+          {{ 'register_data_consent_label' | translate }}
+          <a
+            routerLink="/privacy-policy"
+            class="ml-1 text-primary underline"
+            (click)="open.set(false)">
+            {{ 'register_data_consent_link' | translate }}
+          </a>
+        </nm-checkbox>
+        @if (showDataConsentError) {
+          <p class="mt-1.5 text-xs text-error">{{ 'validation_required' | translate }}</p>
+        }
+      </div>
       <button nmButton type="submit" class="mt-2" [loading]="submitting()">
         {{ 'action_register' | translate }}
       </button>

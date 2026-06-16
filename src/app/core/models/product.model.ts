@@ -38,6 +38,13 @@ export interface ProductDTO {
    */
   readonly stockQuantity: number;
   /**
+   * Made-to-order products are produced per order: they show a neutral
+   * "Made to order" badge instead of any stock count, and add-to-cart stays
+   * enabled regardless of `stockQuantity`. True for all EVA-bag products today.
+   * TODO(backend): served per-product by `GET /api/products`.
+   */
+  readonly madeToOrder?: boolean;
+  /**
    * Image URLs for the detail-page carousel (first is the listing thumbnail).
    * Empty in the mock JSON today, so call sites render the local
    * nm-image-placeholder.

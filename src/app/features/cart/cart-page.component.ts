@@ -12,11 +12,13 @@
  */
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslationService } from '@core/i18n/translation.service';
 import type { CartItem } from '@core/models/cart-item.model';
 import type { PaymentMethod } from '@core/models/order.model';
 import { AuthService } from '@core/services/auth.service';
 import { CartService } from '@core/services/cart.service';
 import { CheckoutService } from '@core/services/checkout.service';
+import { ConfiguratorService } from '@features/configurator/configurator.service';
 import { LucideMinus, LucidePlus, LucideTrash2 } from '@lucide/angular';
 import { AuthDialogComponent } from '@shared/components/auth-dialog/auth-dialog.component';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
@@ -47,6 +49,16 @@ export class CartPageComponent {
   protected readonly cart = inject(CartService);
   private readonly checkout = inject(CheckoutService);
   private readonly auth = inject(AuthService);
+  private readonly config = inject(ConfiguratorService);
+  private readonly translation = inject(TranslationService);
+
+  /** Localized mat/edge colour names for a configured line (falls back to the id). */
+  protected matColourName(id: string): string {
+    return this.config.matColourName(id, this.translation.currentLanguage());
+  }
+  protected edgeColourName(id: string): string {
+    return this.config.edgeColourName(id, this.translation.currentLanguage());
+  }
 
   protected readonly items = this.cart.items;
   protected readonly subtotal = this.cart.subtotal;

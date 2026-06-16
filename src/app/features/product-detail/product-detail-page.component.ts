@@ -14,6 +14,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { CartService } from '@core/services/cart.service';
 import { ProductService } from '@core/services/product.service';
+import { BadgeComponent } from '@shared/components/badge/badge.component';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import { ImagePlaceholderComponent } from '@shared/components/image-placeholder/image-placeholder.component';
@@ -26,6 +27,7 @@ import { createAsyncAction } from '@shared/utils/async-action.util';
   selector: 'nm-product-detail-page',
   imports: [
     NgOptimizedImage,
+    BadgeComponent,
     BreadcrumbComponent,
     ButtonDirective,
     ImagePlaceholderComponent,

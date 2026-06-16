@@ -101,8 +101,13 @@
         <h2 class="mt-8 text-lg font-bold">{{ 'product_delivery_title' | translate }}</h2>
         <p class="mt-2 text-sm text-content-secondary">{{ 'product_delivery_note' | translate }}</p>
 
-        <!-- Stock status: out of stock / low-stock warning / available count. -->
-        @if (p.stockQuantity === 0) {
+        <!-- Made-to-order products show a neutral badge (no stock count); otherwise
+             the regular stock status: out of stock / low-stock warning / count. -->
+        @if (p.madeToOrder) {
+          <p class="mt-6">
+            <nm-badge variant="outline">{{ 'product_made_to_order' | translate }}</nm-badge>
+          </p>
+        } @else if (p.stockQuantity === 0) {
           <p class="mt-6 text-sm font-semibold text-error">
             {{ 'product_out_of_stock' | translate }}
           </p>
@@ -123,7 +128,7 @@
             nmButton
             size="lg"
             type="button"
-            [disabled]="p.stockQuantity === 0"
+            [disabled]="!p.madeToOrder && p.stockQuantity === 0"
             [loading]="addToCartAction.pending()"
             (click)="addToCartAction.execute()">
             {{ 'action_add_to_cart' | translate }}

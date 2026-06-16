@@ -13,7 +13,7 @@ import { LazySectionDirective } from '@shared/directives/lazy-section.directive'
 import { RevealOnScrollDirective } from '@shared/directives/reveal-on-scroll.directive';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 
-import { GalleryComponent, type GallerySlide } from '../gallery/gallery.component';
+import { type GalleryAlbum,GalleryComponent } from '../gallery/gallery.component';
 
 @Component({
   selector: 'nm-home-gallery',
@@ -35,22 +35,101 @@ export class GallerySectionComponent {
   protected readonly galleryVisible = signal(false);
 
   /**
-   * Work gallery slides — captions are brand/model labels (not translated).
-   * TODO(admin): images are placeholders; real work photos come from the media
-   * API (gallery category). Captions become admin-managed alt/labels.
+   * Work gallery albums — titles/captions are brand/model labels (not translated).
+   * Each album opens a dialog with all its photos. `getPlaceholder` returns null
+   * today, so covers and photos render the local nm-image-placeholder.
+   * TODO(admin): real work photos come from the media API (gallery category);
+   * titles/captions/alt become admin-managed labels.
    */
-  protected readonly gallerySlides: readonly GallerySlide[] = [
-    { src: this.media.getPlaceholder(980, 480, 'neomatten-work1'), caption: 'Audi A7 · EVA Set' },
-    { src: this.media.getPlaceholder(980, 480, 'neomatten-work2'), caption: 'BMW 5er · Premium' },
+  protected readonly galleryAlbums: readonly GalleryAlbum[] = [
     {
-      src: this.media.getPlaceholder(980, 480, 'neomatten-work3'),
-      caption: 'Mercedes C · Vollset',
+      id: 'renault-talisman-2017',
+      title: 'Renault Talisman 2017',
+      coverImage: this.media.getPlaceholder(980, 480, 'neomatten-talisman-cover'),
+      images: [
+        {
+          src: this.media.getPlaceholder(640, 480, 'talisman-1'),
+          alt: 'Driver mat',
+          caption: 'Driver side',
+        },
+        {
+          src: this.media.getPlaceholder(640, 480, 'talisman-2'),
+          alt: 'Passenger mat',
+          caption: 'Passenger side',
+        },
+        {
+          src: this.media.getPlaceholder(640, 480, 'talisman-3'),
+          alt: 'Rear mats',
+          caption: 'Rear row',
+        },
+        {
+          src: this.media.getPlaceholder(640, 480, 'talisman-4'),
+          alt: 'Full interior',
+          caption: 'Full interior',
+        },
+      ],
     },
-    { src: this.media.getPlaceholder(980, 480, 'neomatten-work4'), caption: 'VW Golf · Raute' },
-    { src: this.media.getPlaceholder(980, 480, 'neomatten-work5'), caption: 'Toyota Camry · EVA' },
     {
-      src: this.media.getPlaceholder(980, 480, 'neomatten-work6'),
-      caption: 'Hyundai Tucson · Set',
+      id: 'audi-a7-eva-set',
+      title: 'Audi A7 · EVA Set',
+      coverImage: this.media.getPlaceholder(980, 480, 'neomatten-a7-cover'),
+      images: [
+        {
+          src: this.media.getPlaceholder(640, 480, 'a7-1'),
+          alt: 'Front mats',
+          caption: 'Front row',
+        },
+        { src: this.media.getPlaceholder(640, 480, 'a7-2'), alt: 'Rear mats', caption: 'Rear row' },
+        {
+          src: this.media.getPlaceholder(640, 480, 'a7-3'),
+          alt: 'Boot liner',
+          caption: 'Boot liner',
+        },
+      ],
+    },
+    {
+      id: 'bmw-5er-premium',
+      title: 'BMW 5er · Premium',
+      coverImage: this.media.getPlaceholder(980, 480, 'neomatten-bmw5-cover'),
+      images: [
+        {
+          src: this.media.getPlaceholder(640, 480, 'bmw5-1'),
+          alt: 'Driver mat',
+          caption: 'Driver side',
+        },
+        {
+          src: this.media.getPlaceholder(640, 480, 'bmw5-2'),
+          alt: 'Passenger mat',
+          caption: 'Passenger side',
+        },
+        {
+          src: this.media.getPlaceholder(640, 480, 'bmw5-3'),
+          alt: 'Rear mats',
+          caption: 'Rear row',
+        },
+        {
+          src: this.media.getPlaceholder(640, 480, 'bmw5-4'),
+          alt: 'Heel pad detail',
+          caption: 'Heel pad detail',
+        },
+      ],
+    },
+    {
+      id: 'vw-golf-raute',
+      title: 'VW Golf · Raute',
+      coverImage: this.media.getPlaceholder(980, 480, 'neomatten-golf-cover'),
+      images: [
+        {
+          src: this.media.getPlaceholder(640, 480, 'golf-1'),
+          alt: 'Front mats',
+          caption: 'Front row',
+        },
+        {
+          src: this.media.getPlaceholder(640, 480, 'golf-2'),
+          alt: 'Rear mats',
+          caption: 'Rear row',
+        },
+      ],
     },
   ];
 }

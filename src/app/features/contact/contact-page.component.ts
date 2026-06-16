@@ -38,7 +38,7 @@ import { phoneValidator } from '@shared/validators/phone.validator';
 import { siTelegram, siWhatsapp } from 'simple-icons';
 
 /** Allowed contact topics (also the query-param values accepted on /contact). */
-const CONTACT_TOPICS = ['lockout', 'order_status', 'other'] as const;
+const CONTACT_TOPICS = ['lockout', 'order_status', 'account_deletion', 'other'] as const;
 
 @Component({
   selector: 'nm-contact-page',

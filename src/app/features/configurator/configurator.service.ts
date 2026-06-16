@@ -13,8 +13,11 @@
  *     строит OrderItemDTO / CartItem для готовой конфигурации. Позже мок-таблицу
  *     цен заменит расчёт с бэкенда — вызовы не изменятся.
  */
-import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
+import type { Language } from '@core/i18n/language.model';
 import type { CartItem } from '@core/models/cart-item.model';
+import type { MatColour, MatColoursData } from '@core/models/mat-colour.model';
 import type { OrderItemDTO } from '@core/models/order.model';
 import type { VehiclePattern } from '@core/models/vehicle.model';
 import type { SelectOption } from '@shared/models/select-option.model';
@@ -53,49 +56,16 @@ export const FLOOR_ZONES: readonly CarZone[] = [
   'rear_right',
 ] as const;
 
-// TODO(admin): texture, per-texture colour palette and edge-colour options below
-// are static placeholders. They should become admin-managed catalogue data
-// (e.g. `GET /api/configurator/options`) with swatch images via MediaService.
+// TODO(admin): texture options below are static placeholders. They should become
+// admin-managed catalogue data (e.g. `GET /api/configurator/options`) with swatch
+// images via MediaService. Mat + edge colour palettes are now loaded at runtime
+// from mock JSON (see ConfiguratorService.matColours / edgeColours) and will move
+// to `GET /api/settings/colours`.
 export const TEXTURES: readonly Texture[] = ['raute', 'wabe', 'tropfen'] as const;
 
-/**
- * Curated colour palette per texture (no colour data in the dataset). Each id
- * maps to a `mat_color_*` translate key and a swatch hex.
- */
-export const COLORS_BY_TEXTURE: Readonly<Record<Texture, readonly ColorSwatch[]>> = {
-  raute: [
-    { id: 'black', hex: '#1a1a1a' },
-    { id: 'grey', hex: '#9ca3af' },
-    { id: 'beige', hex: '#d6c7a1' },
-    { id: 'brown', hex: '#6b4f3a' },
-    { id: 'red', hex: '#9b1c1c' },
-    { id: 'blue', hex: '#1e3a8a' },
-  ],
-  wabe: [
-    { id: 'black', hex: '#1a1a1a' },
-    { id: 'grey', hex: '#9ca3af' },
-    { id: 'beige', hex: '#d6c7a1' },
-    { id: 'blue', hex: '#1e3a8a' },
-  ],
-  tropfen: [
-    { id: 'black', hex: '#1a1a1a' },
-    { id: 'grey', hex: '#9ca3af' },
-    { id: 'red', hex: '#9b1c1c' },
-  ],
-};
-
-/** Edge-colour palette (same for every texture). */
-export const EDGE_COLORS: readonly ColorSwatch[] = [
-  { id: 'black', hex: '#1a1a1a' },
-  { id: 'grey', hex: '#9ca3af' },
-  { id: 'beige', hex: '#d6c7a1' },
-  { id: 'red', hex: '#9b1c1c' },
-  { id: 'blue', hex: '#1e3a8a' },
-];
-
-export interface ColorSwatch {
-  readonly id: string;
-  readonly hex: string;
+/** Localized display name for a colour (German name when DE, English otherwise). */
+export function colourName(colour: MatColour, lang: Language): string {
+  return lang === 'de' ? colour.name_de : colour.name_en;
 }
 
 /**
@@ -203,14 +173,40 @@ export type PricingTier = 'economy' | 'standard' | 'premium';
 
 @Injectable({ providedIn: 'root' })
 export class ConfiguratorService {
+  private readonly http = inject(HttpClient);
+
   private readonly loadingSignal = signal(true);
-  /** True while configurator data initializes; flips false after a short delay (mock). */
+  /** True while configurator data initializes; flips false once colours load. */
   readonly loading = this.loadingSignal.asReadonly();
 
+  /** Mat (fill) colour palette, loaded at runtime. Empty until the load resolves. */
+  readonly matColours = signal<MatColour[]>([]);
+  /** Edge (border) colour palette, loaded at runtime. Empty until the load resolves. */
+  readonly edgeColours = signal<MatColour[]>([]);
+
   constructor() {
-    // Mock loading delay so skeleton states are visible during development.
-    // TODO(backend): drive `loading` from the real data/request lifecycle.
-    setTimeout(() => this.loadingSignal.set(false), 600);
+    // TODO(backend): GET /api/settings/colours
+    this.http.get<MatColoursData>('assets/mock-data/mat-colours.json').subscribe({
+      next: data => {
+        this.matColours.set(data.mat_colours ?? []);
+        this.edgeColours.set(data.edge_colours ?? []);
+        this.loadingSignal.set(false);
+      },
+      // Don't strand the page on the skeleton if the palette fails to load.
+      error: () => this.loadingSignal.set(false),
+    });
+  }
+
+  /** Localized name for a stored mat-colour id (falls back to the id itself). */
+  matColourName(id: string, lang: Language): string {
+    const colour = this.matColours().find(c => c.id === id);
+    return colour ? colourName(colour, lang) : id;
+  }
+
+  /** Localized name for a stored edge-colour id (falls back to the id itself). */
+  edgeColourName(id: string, lang: Language): string {
+    const colour = this.edgeColours().find(c => c.id === id);
+    return colour ? colourName(colour, lang) : id;
   }
 
   // Static refine-spec options (no such columns in the dataset — informational).

@@ -239,21 +239,17 @@
             </span>
             {{ 'configurator_step_material_color' | translate }}
           </h2>
-          <ul class="mt-4 flex flex-wrap gap-3">
-            @for (c of colorOptions(); track c.id) {
-              <li>
+          <ul class="mt-4 grid grid-cols-6 gap-3 sm:grid-cols-8">
+            @for (c of matColours(); track c.id) {
+              <li class="flex justify-center">
                 <button
                   type="button"
                   (click)="selectMaterialColor(c.id)"
-                  [attr.aria-label]="'mat_color_' + c.id | translate"
+                  [nmTooltip]="colourName(c)"
+                  [attr.aria-label]="colourName(c)"
                   [attr.aria-pressed]="materialColor() === c.id"
                   [style.background-color]="c.hex"
-                  [class]="
-                    'size-10 rounded-full ring-2 ring-offset-2 transition-all ' +
-                    (materialColor() === c.id
-                      ? 'ring-primary'
-                      : 'ring-transparent hover:ring-border')
-                  "></button>
+                  [class]="swatchClass(c, materialColor() === c.id)"></button>
               </li>
             }
           </ul>
@@ -267,19 +263,17 @@
             </span>
             {{ 'configurator_step_edge_color' | translate }}
           </h2>
-          <ul class="mt-4 flex flex-wrap gap-3">
-            @for (c of edgeColors; track c.id) {
-              <li>
+          <ul class="mt-4 grid grid-cols-6 gap-3 sm:grid-cols-8">
+            @for (c of edgeColours(); track c.id) {
+              <li class="flex justify-center">
                 <button
                   type="button"
                   (click)="selectEdgeColor(c.id)"
-                  [attr.aria-label]="'mat_color_' + c.id | translate"
+                  [nmTooltip]="colourName(c)"
+                  [attr.aria-label]="colourName(c)"
                   [attr.aria-pressed]="edgeColor() === c.id"
                   [style.background-color]="c.hex"
-                  [class]="
-                    'size-10 rounded-full ring-2 ring-offset-2 transition-all ' +
-                    (edgeColor() === c.id ? 'ring-primary' : 'ring-transparent hover:ring-border')
-                  "></button>
+                  [class]="swatchClass(c, edgeColor() === c.id)"></button>
               </li>
             }
           </ul>
@@ -648,6 +642,18 @@
             <div class="flex justify-between">
               <dt class="text-content-secondary">{{ 'configurator_summary_mats' | translate }}</dt>
               <dd class="font-medium">{{ price() }} &euro;</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-content-secondary">
+                {{ 'configurator_step_material_color' | translate }}
+              </dt>
+              <dd class="font-medium">{{ materialColourName() }}</dd>
+            </div>
+            <div class="flex justify-between">
+              <dt class="text-content-secondary">
+                {{ 'configurator_step_edge_color' | translate }}
+              </dt>
+              <dd class="font-medium">{{ edgeColourName() }}</dd>
             </div>
             @if (heelPad() !== 'none') {
               <div class="flex justify-between">

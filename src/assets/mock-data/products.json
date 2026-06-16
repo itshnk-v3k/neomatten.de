@@ -118,7 +118,8 @@
     ],
     "price": 39,
     "images": [],
-    "stockQuantity": 15
+    "stockQuantity": 15,
+    "madeToOrder": true
   },
   {
     "id": "tb-eva-02",
@@ -143,7 +144,8 @@
     ],
     "price": 49,
     "images": [],
-    "stockQuantity": 4
+    "stockQuantity": 4,
+    "madeToOrder": true
   },
   {
     "id": "tb-eva-03",
@@ -168,7 +170,8 @@
     ],
     "price": 59,
     "images": [],
-    "stockQuantity": 28
+    "stockQuantity": 28,
+    "madeToOrder": true
   },
   {
     "id": "tb-eva-04",
@@ -193,7 +196,8 @@
     ],
     "price": 45,
     "images": [],
-    "stockQuantity": 19
+    "stockQuantity": 19,
+    "madeToOrder": true
   },
   {
     "id": "tb-eva-05",
@@ -218,7 +222,8 @@
     ],
     "price": 69,
     "images": [],
-    "stockQuantity": 0
+    "stockQuantity": 0,
+    "madeToOrder": true
   },
   {
     "id": "tb-eva-06",
@@ -243,7 +248,8 @@
     ],
     "price": 29,
     "images": [],
-    "stockQuantity": 37
+    "stockQuantity": 37,
+    "madeToOrder": true
   },
   {
     "id": "tb-led-01",

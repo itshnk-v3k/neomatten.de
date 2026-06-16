@@ -55,7 +55,7 @@
       <button
         type="button"
         class="inline-flex flex-1 items-center justify-center gap-2 rounded-full border-2 border-error bg-transparent px-6 py-2.5 font-semibold text-error transition-colors duration-150 hover:bg-error/10"
-        (click)="deleteOpen.set(true)">
+        (click)="requestDelete()">
         <svg lucideAlertTriangle class="size-5 shrink-0"></svg>
         {{ 'account_delete_account' | translate }}
       </button>
@@ -84,6 +84,29 @@
       (click)="confirmDelete()">
       {{ 'account_delete' | translate }}
     </button>
+  </div>
+</nm-dialog>
+
+<!-- Delete blocked: account has active orders → contact support instead of deleting -->
+<nm-dialog [(open)]="deleteBlockedOpen" titleKey="account_delete_blocked_title">
+  <p>{{ 'account_delete_blocked_body' | translate }}</p>
+  <div dialogFooter>
+    <button
+      nmButton
+      variant="outline"
+      type="button"
+      class="rounded-full"
+      (click)="deleteBlockedOpen.set(false)">
+      {{ 'action_close' | translate }}
+    </button>
+    <a
+      nmButton
+      routerLink="/contact"
+      [queryParams]="{ topic: 'account_deletion' }"
+      class="rounded-full"
+      (click)="deleteBlockedOpen.set(false)">
+      {{ 'account_delete_contact_us' | translate }}
+    </a>
   </div>
 </nm-dialog>
 

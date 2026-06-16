@@ -6,10 +6,12 @@
  *     поверх затемнённого фона, проецирует тело и необязательный [dialogFooter],
  *     и (если dismissible) закрывается по X, клику по фону или Escape.
  */
+import { NgClass } from '@angular/common';
 import type { OnDestroy } from '@angular/core';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   HostListener,
   inject,
@@ -24,7 +26,7 @@ let uid = 0;
 
 @Component({
   selector: 'nm-dialog',
-  imports: [TranslatePipe, LucideX],
+  imports: [NgClass, TranslatePipe, LucideX],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dialog.component.html',
   styleUrl: './dialog.component.scss',
@@ -38,6 +40,20 @@ export class DialogComponent implements OnDestroy {
   readonly titleKey = input<string>('');
   /** When false the dialog cannot be dismissed by user interaction. */
   readonly dismissible = input<boolean>(true);
+  /** Desktop panel width (mobile is always full-screen). 'md' is the default. */
+  readonly size = input<'md' | 'lg' | 'xl'>('md');
+
+  /** Desktop max-width class for the panel, driven by `size`. */
+  protected readonly panelMaxWidth = computed(() => {
+    switch (this.size()) {
+      case 'xl':
+        return 'md:max-w-4xl';
+      case 'lg':
+        return 'md:max-w-2xl';
+      default:
+        return 'md:max-w-lg';
+    }
+  });
 
   /** Unique id for the title, linked via aria-labelledby when titleKey is set. */
   protected readonly titleId = `nm-dialog-title-${uid++}`;

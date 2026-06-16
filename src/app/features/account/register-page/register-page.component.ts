@@ -56,9 +56,16 @@ export class RegisterPageComponent {
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required],
       terms: [false, Validators.requiredTrue],
+      dataConsent: [false, Validators.requiredTrue],
     },
     { validators: matchFieldsValidator('password', 'confirmPassword') }
   );
+
+  /** Whether to show the data-consent error inline (unchecked + interacted). */
+  protected get showDataConsentError(): boolean {
+    const control = this.form.controls.dataConsent;
+    return control.invalid && (control.touched || control.dirty);
+  }
 
   /** Whether to show the password-mismatch error inline under the confirm field. */
   protected get showMismatch(): boolean {

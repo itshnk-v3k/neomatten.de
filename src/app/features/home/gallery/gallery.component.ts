@@ -9,20 +9,35 @@
  */
 import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, signal, viewChild } from '@angular/core';
-import { LucideChevronLeft, LucideChevronRight } from '@lucide/angular';
+import { LucideChevronLeft, LucideChevronRight, LucideExpand } from '@lucide/angular';
 import { ImagePlaceholderComponent } from '@shared/components/image-placeholder/image-placeholder.component';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import type { EmblaOptionsType } from 'embla-carousel';
 import { EmblaCarouselDirective } from 'embla-carousel-angular';
 import AutoplayPlugin from 'embla-carousel-autoplay';
 
+import { GalleryAlbumDialogComponent } from '../gallery-album-dialog/gallery-album-dialog.component';
+
 /**
- * A single gallery slide. `caption` is a brand/model label (kept as-is, not
- * translated). `src` null → the slide renders the local nm-image-placeholder.
+ * A single photo inside a gallery album. `src` null → the local
+ * nm-image-placeholder is rendered. `caption` is an admin label (not translated).
  */
-export interface GallerySlide {
+export interface GalleryImage {
   readonly src: string | null;
-  readonly caption: string;
+  readonly alt: string;
+  readonly caption?: string;
+}
+
+/**
+ * A gallery album shown as one carousel slide. `title`/`coverImage` drive the
+ * slide; clicking it opens the album dialog with all `images`. Strings are
+ * admin-managed labels (kept as-is, not translated).
+ */
+export interface GalleryAlbum {
+  readonly id: string;
+  readonly title: string;
+  readonly coverImage: string | null;
+  readonly images: readonly GalleryImage[];
 }
 
 @Component({
@@ -32,7 +47,9 @@ export interface GallerySlide {
     EmblaCarouselDirective,
     LucideChevronLeft,
     LucideChevronRight,
+    LucideExpand,
     ImagePlaceholderComponent,
+    GalleryAlbumDialogComponent,
     TranslatePipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,7 +57,16 @@ export interface GallerySlide {
   styleUrl: './gallery.component.scss',
 })
 export class GalleryComponent {
-  readonly slides = input.required<readonly GallerySlide[]>();
+  readonly albums = input.required<readonly GalleryAlbum[]>();
+
+  /** Album dialog state: the opened album + its open flag. */
+  protected readonly activeAlbum = signal<GalleryAlbum | null>(null);
+  protected readonly albumOpen = signal(false);
+
+  protected openAlbum(album: GalleryAlbum): void {
+    this.activeAlbum.set(album);
+    this.albumOpen.set(true);
+  }
 
   protected readonly options: EmblaOptionsType = { loop: true, align: 'center' };
   protected readonly plugins = [

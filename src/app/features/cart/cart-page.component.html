@@ -71,7 +71,13 @@
                 @if (item.materialColour) {
                   <div>
                     <dt class="inline">{{ 'configurator_step_material_color' | translate }}:</dt>
-                    <dd class="inline">{{ 'mat_color_' + item.materialColour | translate }}</dd>
+                    <dd class="inline">{{ matColourName(item.materialColour) }}</dd>
+                  </div>
+                }
+                @if (item.edgeColour) {
+                  <div>
+                    <dt class="inline">{{ 'configurator_step_edge_color' | translate }}:</dt>
+                    <dd class="inline">{{ edgeColourName(item.edgeColour) }}</dd>
                   </div>
                 }
               </dl>

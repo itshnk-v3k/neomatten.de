@@ -30,6 +30,7 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslationService } from '@core/i18n/translation.service';
+import type { MatColour } from '@core/models/mat-colour.model';
 import type { PaymentMethod } from '@core/models/order.model';
 import { AuthService } from '@core/services/auth.service';
 import { CartService } from '@core/services/cart.service';
@@ -56,10 +57,8 @@ import { createAsyncAction } from '@shared/utils/async-action.util';
 import {
   type Accessories,
   type CarZone,
-  COLORS_BY_TEXTURE,
   type ConfigState,
   ConfiguratorService,
-  EDGE_COLORS,
   type HeelPadAccessory,
   type HeelRest,
   type KitPreset,
@@ -125,7 +124,9 @@ export class ConfiguratorPageComponent {
 
   // Static option tables (exposed to the template).
   protected readonly textures = TEXTURES;
-  protected readonly edgeColors = EDGE_COLORS;
+  // Colour palettes loaded at runtime by the service (empty until the load resolves).
+  protected readonly matColours = this.config.matColours;
+  protected readonly edgeColours = this.config.edgeColours;
   protected readonly transmissionOptions = this.config.transmissionOptions;
   protected readonly driveOptions = this.config.driveOptions;
   protected readonly engineOptions = this.config.engineOptions;
@@ -240,9 +241,6 @@ export class ConfiguratorPageComponent {
     return out;
   });
 
-  /** Colour palette for the selected texture. */
-  protected readonly colorOptions = computed(() => COLORS_BY_TEXTURE[this.texture()]);
-
   /** Whether the resolved pattern supports a heel pad at all (dataset `heel_pad`). */
   protected readonly heelPadSupported = computed(() => {
     const h = this.activePattern()?.heelPad;
@@ -302,11 +300,43 @@ export class ConfiguratorPageComponent {
 
   /** Colour hex helpers for the preview. */
   protected readonly materialHex = computed(
-    () => this.colorOptions().find(c => c.id === this.materialColor())?.hex ?? '#1a1a1a'
+    () => this.matColours().find(c => c.id === this.materialColor())?.hex ?? '#1a1a1a'
   );
   protected readonly edgeHex = computed(
-    () => EDGE_COLORS.find(c => c.id === this.edgeColor())?.hex ?? '#1a1a1a'
+    () => this.edgeColours().find(c => c.id === this.edgeColor())?.hex ?? '#1a1a1a'
   );
+
+  /** Selected colour names in the active language, for the step-13 summary. */
+  protected readonly materialColourName = computed(() =>
+    this.config.matColourName(this.materialColor(), this.translation.currentLanguage())
+  );
+  protected readonly edgeColourName = computed(() =>
+    this.config.edgeColourName(this.edgeColor(), this.translation.currentLanguage())
+  );
+
+  /** Colour display name in the active language (DE → name_de, else name_en). */
+  protected colourName(colour: MatColour): string {
+    return this.translation.currentLanguage() === 'de' ? colour.name_de : colour.name_en;
+  }
+
+  /**
+   * Light/near-white swatches need a faint border so they read as a circle on the
+   * white surface. Uses perceived luminance (Rec. 601) against a high threshold.
+   */
+  protected isLightColour(hex: string): boolean {
+    const value = hex.replace('#', '');
+    const r = parseInt(value.slice(0, 2), 16);
+    const g = parseInt(value.slice(2, 4), 16);
+    const b = parseInt(value.slice(4, 6), 16);
+    return 0.299 * r + 0.587 * g + 0.114 * b > 200;
+  }
+
+  /** Swatch button classes for a colour (size, ring state, light-border). */
+  protected swatchClass(colour: MatColour, selected: boolean): string {
+    const ring = selected ? 'ring-primary scale-110' : 'ring-transparent hover:ring-border';
+    const border = this.isLightColour(colour.hex) ? ' border border-border/50' : '';
+    return `size-8 rounded-full ring-2 ring-offset-2 ring-offset-surface transition-all ${ring}${border}`;
+  }
 
   protected readonly canCheckout = computed(() => this.vehicleResolved() && this.zones().size > 0);
 
@@ -376,11 +406,18 @@ export class ConfiguratorPageComponent {
       }
     });
 
-    // Keep the material colour valid when the texture (and thus palette) changes.
+    // Keep the chosen colours valid once the palettes load (mock default ids may
+    // not exist in the loaded data). Skip while a palette is still empty.
     effect(() => {
-      const palette = this.colorOptions();
-      if (!palette.some(c => c.id === untracked(this.materialColor))) {
+      const palette = this.matColours();
+      if (palette.length && !palette.some(c => c.id === untracked(this.materialColor))) {
         this.materialColor.set(palette[0].id);
+      }
+    });
+    effect(() => {
+      const palette = this.edgeColours();
+      if (palette.length && !palette.some(c => c.id === untracked(this.edgeColor))) {
+        this.edgeColor.set(palette[0].id);
       }
     });
 
