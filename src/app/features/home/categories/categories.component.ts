@@ -14,13 +14,18 @@ import { SkeletonComponent } from '@shared/components/skeleton/skeleton.componen
 import { RevealOnScrollDirective } from '@shared/directives/reveal-on-scroll.directive';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 
-/** A product category card on the home page. */
+/**
+ * A product category card on the home page. Mirrors the /products overview:
+ * clickable cards carry a `route` + CTA `linkKey`; `comingSoon` cards are
+ * non-clickable and show a badge instead.
+ */
 interface CategoryCard {
   readonly titleKey: string;
-  readonly linkKey: string;
-  readonly altKey: string;
+  readonly descKey: string;
   readonly image: string | null;
-  readonly route: string;
+  readonly linkKey?: string;
+  readonly route?: string;
+  readonly comingSoon?: boolean;
 }
 
 @Component({
@@ -48,28 +53,38 @@ export class CategoriesComponent {
   // Each is a content slot the admin will fill with an uploaded MediaAsset;
   // swapping is a one-line change in MediaService (getPlaceholder → media API).
 
-  /** Product category cards (images are admin-managed placeholders for now). */
+  /**
+   * Product category cards — kept in sync with the /products overview page:
+   * EVA car mats (→ /catalog) and EVA bags (→ /eva-bags) are clickable; leather
+   * bags and cushions are "coming soon" (non-clickable). Images are admin-managed
+   * placeholders for now.
+   */
   protected readonly categories: readonly CategoryCard[] = [
     {
       titleKey: 'home_category_mats_title',
+      descKey: 'home_category_mats_text',
       linkKey: 'home_category_mats_link',
-      altKey: 'home_category_mats_alt',
       image: this.media.getPlaceholder(500, 300, 'neomatten-mats'),
-      route: '/configurator',
+      route: '/catalog',
     },
     {
-      titleKey: 'home_category_evabags_title',
-      linkKey: 'home_category_evabags_link',
-      altKey: 'home_category_evabags_alt',
+      titleKey: 'home_category_bags_title',
+      descKey: 'home_category_bags_text',
+      linkKey: 'home_category_bags_link',
       image: this.media.getPlaceholder(500, 300, 'neomatten-evabags'),
       route: '/eva-bags',
     },
     {
+      titleKey: 'home_category_leather_title',
+      descKey: 'home_category_leather_text',
+      image: this.media.getPlaceholder(500, 300, 'neomatten-leather'),
+      comingSoon: true,
+    },
+    {
       titleKey: 'home_category_cushions_title',
-      linkKey: 'home_category_cushions_link',
-      altKey: 'home_category_cushions_alt',
+      descKey: 'home_category_cushions_text',
       image: this.media.getPlaceholder(500, 300, 'neomatten-cushions'),
-      route: '/cushions',
+      comingSoon: true,
     },
   ];
 

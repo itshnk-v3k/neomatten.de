@@ -121,16 +121,17 @@
           {{ 'home_reviews_add' | translate }}
         </button>
       } @else {
-        <a
-          routerLink="/account/login"
-          [queryParams]="{ returnUrl: '/' }"
-          class="text-sm font-semibold text-primary underline-offset-4 hover:underline">
+        <button nmButton type="button" variant="outline" (click)="openAuthDialog()">
           {{ 'reviews_login_to_review' | translate }}
-        </a>
+        </button>
       }
     </div>
   </div>
 </section>
+
+<!-- Auth dialog — opened from the guest "sign in to review" prompt; stays on the
+     page after success (the dialog closes and the add-review button appears). -->
+<nm-auth-dialog [(open)]="authOpen" />
 
 <!-- Add-review dialog -->
 <nm-dialog [(open)]="dialogOpen" titleKey="home_reviews_dialog_title">

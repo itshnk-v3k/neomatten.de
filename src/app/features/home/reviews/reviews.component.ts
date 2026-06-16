@@ -17,10 +17,10 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { ReviewService } from '@core/services/review.service';
 import { LucideChevronLeft, LucideChevronRight, LucidePlus } from '@lucide/angular';
+import { AuthDialogComponent } from '@shared/components/auth-dialog/auth-dialog.component';
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import { DialogComponent } from '@shared/components/dialog/dialog.component';
 import { InputComponent } from '@shared/components/input/input.component';
@@ -36,8 +36,8 @@ import { EmblaCarouselDirective } from 'embla-carousel-angular';
   selector: 'nm-reviews',
   imports: [
     ReactiveFormsModule,
-    RouterLink,
     EmblaCarouselDirective,
+    AuthDialogComponent,
     DialogComponent,
     InputComponent,
     SkeletonComponent,
@@ -94,6 +94,11 @@ export class ReviewsComponent {
 
   private readonly embla = viewChild.required(EmblaCarouselDirective);
 
+  // Auth dialog state — opened from the guest "sign in to review" prompt. The
+  // dialog defaults to its login tab and closes on success, leaving the user on
+  // the page with the add-review button now visible (no navigation needed).
+  protected readonly authOpen = signal(false);
+
   // Add-review dialog state.
   protected readonly dialogOpen = signal(false);
   protected readonly rating = signal(5);
@@ -122,6 +127,10 @@ export class ReviewsComponent {
       this.canPrev.set(api.canScrollPrev());
       this.canNext.set(api.canScrollNext());
     }
+  }
+
+  protected openAuthDialog(): void {
+    this.authOpen.set(true);
   }
 
   protected openDialog(): void {
