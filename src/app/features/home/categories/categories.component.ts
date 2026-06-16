@@ -8,6 +8,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { afterNextRender, ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MediaService } from '@core/services/media.service';
+import { ButtonDirective } from '@shared/components/button/button.directive';
 import { ImagePlaceholderComponent } from '@shared/components/image-placeholder/image-placeholder.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
 import { RevealOnScrollDirective } from '@shared/directives/reveal-on-scroll.directive';
@@ -31,6 +32,7 @@ interface CategoryCard {
     RevealOnScrollDirective,
     SkeletonComponent,
     ImagePlaceholderComponent,
+    ButtonDirective,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './categories.component.html',
