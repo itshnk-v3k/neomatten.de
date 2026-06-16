@@ -23,7 +23,7 @@
     -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://picsum.photos https://fastly.picsum.photos https://*.tile.openstreetmap.org https://cdn.neomatten.de; media-src 'self'; connect-src 'self' ws: wss: https://api.neomatten.de https://*.tile.openstreetmap.org; base-uri 'self'; form-action 'self'" />
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://m.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://picsum.photos https://fastly.picsum.photos https://*.tile.openstreetmap.org https://cdn.neomatten.de; media-src 'self'; connect-src 'self' ws: wss: https://api.neomatten.de https://*.tile.openstreetmap.org https://api.stripe.com; frame-src https://js.stripe.com https://hooks.stripe.com; base-uri 'self'; form-action 'self'" />
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
 
     <link rel="icon" type="image/png" href="assets/logo/neomat_nm_transparent.png" />
@@ -33,6 +33,8 @@
          UI (400/500/600/700/800) are requested. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- TODO(admin): remove when real images replace picsum placeholders -->
+    <link rel="preconnect" href="https://picsum.photos" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" />
@@ -41,17 +43,12 @@
          image. Preload it at high priority so it paints as early as possible. -->
     <link rel="preload" as="image" href="assets/content/hero-poster.jpg" fetchpriority="high" />
 
-    <!-- Render-blocking initializer: the app waits for the default-language
-         dictionary before first paint. Preloading it here starts the fetch in
-         parallel with the JS bundle instead of after it executes, so it is no
-         longer on the sequential critical path to FCP/LCP. (Default language is
-         'de'; a non-default cookie choice falls back to a normal runtime fetch.) -->
-    <link
-      rel="preload"
-      as="fetch"
-      type="application/json"
-      href="assets/i18n/de/common.json"
-      crossorigin />
+    <!-- Default-language dictionary, fetched at app init. Prefetched (not
+         preloaded) so it warms the cache without the browser's "preloaded but not
+         used within a few seconds" warning when the HttpClient fetch doesn't match
+         the preload's request mode. (Default language is 'de'; a non-default cookie
+         choice falls back to a normal runtime fetch.) -->
+    <link rel="prefetch" href="assets/i18n/de/common.json" />
   </head>
   <body class="font-montserrat">
     <nm-root></nm-root>

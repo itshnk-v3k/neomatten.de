@@ -25,6 +25,13 @@ import { TranslatePipe } from '@shared/pipes/translate.pipe';
   imports: [MatPreviewComponent, CarDiagramComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './configurator-preview.component.html',
+  // The host IS the left flex child, so the sticky/width/self-start layout lives
+  // here (not on an inner div) — otherwise sticky has no sized flex item to anchor
+  // to and the column stops scrolling with the steps.
+  host: {
+    class:
+      'mb-6 flex flex-col gap-4 lg:sticky lg:top-20 lg:mb-0 lg:w-[420px] lg:shrink-0 lg:gap-6 lg:self-start',
+  },
 })
 export class ConfiguratorPreviewComponent {
   readonly texture = input.required<Texture>();
