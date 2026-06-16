@@ -70,7 +70,8 @@
                 "output": "assets"
               },
               { "glob": "robots.txt", "input": "src", "output": "/" },
-              { "glob": "sitemap.xml", "input": "src", "output": "/" }
+              { "glob": "sitemap.xml", "input": "src", "output": "/" },
+              { "glob": "manifest.webmanifest", "input": "src", "output": "/" }
             ],
             "styles": ["src/styles.scss"]
           },
@@ -147,7 +148,8 @@
               "buildTarget": "neomatten:build:staging"
             },
             "development": {
-              "buildTarget": "neomatten:build:development"
+              "buildTarget": "neomatten:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

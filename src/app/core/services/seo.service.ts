@@ -101,6 +101,7 @@ export class SeoService {
       { property: 'og:image:height', content: '630' },
       { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:site', content: '@neomattenberlin' },
+      { name: 'twitter:url', content: canonical },
       { name: 'twitter:title', content: title },
       { name: 'twitter:description', content: description },
       { name: 'twitter:image', content: image },

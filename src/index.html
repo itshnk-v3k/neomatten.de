@@ -2,15 +2,29 @@
 <html lang="de">
   <head>
     <meta charset="utf-8" />
-    <title>NEOMATTEN — EVA-Automatten nach Maß</title>
+    <title>NEOMATTEN — Premium Auto Fußmatten aus Deutschland</title>
     <base href="/" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Viewport -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+
+    <!-- Primary Meta -->
     <meta
       name="description"
-      content="NEOMATTEN — maßgefertigte EVA-Automatten für Ihr Fahrzeug. Hergestellt für Deutschland und Europa." />
-    <meta name="theme-color" content="#1A1A1A" />
+      content="Premium EVA Automatten nach Maß — passgenau für Ihr Fahrzeug. Konfigurieren Sie Ihre individuellen Fußmatten online." />
     <meta name="author" content="NEOMATTEN" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="INDEX, FOLLOW" />
+    <meta name="geo.region" content="DE" />
+    <meta name="geo.placename" content="Berlin, Deutschland" />
+    <meta name="theme-color" content="#8B1A1A" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="NEOMATTEN" />
+    <meta name="msapplication-TileColor" content="#8B1A1A" />
+    <meta name="msapplication-TileImage" content="assets/icons/icon-310x310.png" />
 
     <!--
       Security headers. The authoritative versions are set as real HTTP headers by
@@ -26,13 +40,60 @@
       content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://m.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://cdn.neomatten.de; media-src 'self'; connect-src 'self' ws: wss: https://api.neomatten.de https://*.tile.openstreetmap.org https://api.stripe.com; frame-src https://js.stripe.com https://hooks.stripe.com; base-uri 'self'; form-action 'self'" />
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
 
-    <link rel="icon" type="image/png" href="assets/logo/neomat_nm_transparent.png" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="NEOMATTEN — Premium Auto Fußmatten aus Deutschland" />
+    <meta
+      property="og:description"
+      content="Premium EVA Automatten nach Maß — passgenau für Ihr Fahrzeug. Konfigurieren Sie Ihre individuellen Fußmatten online." />
+    <meta property="og:url" content="https://neomatten.de/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="NEOMATTEN" />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta
+      property="og:image"
+      content="https://neomatten.de/assets/logo/neomat_full_transparent.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="NEOMATTEN Premium Auto Fußmatten" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@neomattenberlin" />
+    <meta name="twitter:title" content="NEOMATTEN — Premium Auto Fußmatten aus Deutschland" />
+    <meta
+      name="twitter:description"
+      content="Premium EVA Automatten nach Maß — passgenau für Ihr Fahrzeug." />
+    <meta
+      name="twitter:image"
+      content="https://neomatten.de/assets/logo/neomat_full_transparent.png" />
+
+    <!-- Canonical + hreflang. IDs match SeoService so it updates these in place per
+         route (no duplicate canonical tags); the static values are the home defaults
+         used before Angular bootstraps / for non-JS crawlers. -->
+    <link id="seo-canonical" rel="canonical" href="https://neomatten.de/" />
+    <link id="seo-alt-de" rel="alternate" hreflang="de" href="https://neomatten.de/" />
+    <link id="seo-alt-en" rel="alternate" hreflang="en" href="https://neomatten.de/" />
+    <link id="seo-alt-default" rel="alternate" hreflang="x-default" href="https://neomatten.de/" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/icon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/icon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="assets/icons/icon-64x64.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/icon-180x180.png" />
+    <link rel="mask-icon" href="assets/icons/safari-pinned-tab.svg" color="#8B1A1A" />
+
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.webmanifest" />
 
     <!-- Fonts: preconnect to cut the connection-setup latency, then load Montserrat
          non-render-blocking with display=swap. Only the weights actually used by the
-         UI (400/500/600/700/800) are requested. -->
+         UI (400/500/600/700/800) are requested. The api/cdn preconnects warm the
+         backend + media-CDN origins for the first data/media request. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://api.neomatten.de" />
+    <link rel="preconnect" href="https://cdn.neomatten.de" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" />
@@ -52,8 +113,41 @@
          the preload's request mode. (Default language is 'de'; a non-default cookie
          choice falls back to a normal runtime fetch.) -->
     <link rel="prefetch" href="assets/i18n/de/common.json" />
+
+    <!-- JSON-LD Organization -->
+    <script type="application/ld+json">
+      [
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "NEOMATTEN",
+          "alternateName": ["Neomatten", "NEOMATTEN.de"],
+          "legalName": "NEOMATTEN",
+          "description": "Premium EVA Automatten nach Maß für alle Fahrzeugmodelle. Konfigurieren Sie Ihre individuellen Fußmatten online.",
+          "url": "https://neomatten.de",
+          "logo": "https://neomatten.de/assets/logo/neomat_full_transparent.png",
+          "foundingDate": "2024",
+          "areaServed": ["DE", "AT", "CH", "EU"],
+          "contactPoint": [
+            {
+              "@type": "ContactPoint",
+              "telephone": "+49-177-2140083",
+              "contactType": "customer service",
+              "availableLanguage": ["German", "English"]
+            }
+          ],
+          "sameAs": [
+            "https://www.instagram.com/neomattendeutschland",
+            "https://www.tiktok.com/@neomattenberlin",
+            "https://t.me/neomatten_de",
+            "https://wa.me/491772140083"
+          ]
+        }
+      ]
+    </script>
   </head>
   <body class="font-montserrat">
     <nm-root></nm-root>
+    <noscript>Bitte aktivieren Sie JavaScript, um diese Anwendung zu nutzen.</noscript>
   </body>
 </html>

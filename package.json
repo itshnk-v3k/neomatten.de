@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --configuration development --host 0.0.0.0",
-    "start:staging": "ng serve --configuration staging --host 0.0.0.0",
+    "start:staging": "ng serve --configuration staging --host 0.0.0.0 --proxy-config proxy.staging.conf.json",
     "start:prod": "ng build --configuration production && npx serve dist/neomatten/browser",
     "build": "ng build --configuration production",
     "build:dev": "ng build --configuration development",
@@ -65,6 +65,7 @@
     "postcss": "^8.5.8",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
+    "sharp": "^0.35.1",
     "tailwindcss": "^3.4.19",
     "ts-node": "^10.9.2",
     "typescript": "~6.0.3",

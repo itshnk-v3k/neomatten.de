@@ -2,5 +2,10 @@ User-agent: *
 Allow: /
 Disallow: /account
 Disallow: /cart
+Disallow: /account/*
+Disallow: /*?
+Disallow: /*?utm_
+Disallow: /*?ref=
 
+Host: https://neomatten.de
 Sitemap: https://neomatten.de/sitemap.xml
