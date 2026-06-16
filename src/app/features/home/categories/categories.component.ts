@@ -15,17 +15,16 @@ import { RevealOnScrollDirective } from '@shared/directives/reveal-on-scroll.dir
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 
 /**
- * A product category card on the home page. Mirrors the /products overview:
- * clickable cards carry a `route` + CTA `linkKey`; `comingSoon` cards are
- * non-clickable and show a badge instead.
+ * A product category card on the home page. The home grid lists only available
+ * (clickable) products — each carries a `route` + CTA `linkKey`. "Coming soon"
+ * products live on the /products overview page, not here.
  */
 interface CategoryCard {
   readonly titleKey: string;
   readonly descKey: string;
   readonly image: string | null;
-  readonly linkKey?: string;
-  readonly route?: string;
-  readonly comingSoon?: boolean;
+  readonly linkKey: string;
+  readonly route: string;
 }
 
 @Component({
@@ -54,10 +53,10 @@ export class CategoriesComponent {
   // swapping is a one-line change in MediaService (getPlaceholder → media API).
 
   /**
-   * Product category cards — kept in sync with the /products overview page:
-   * EVA car mats (→ /configurator) and EVA bags (→ /eva-bags) are clickable; leather
-   * bags and cushions are "coming soon" (non-clickable). Images are admin-managed
-   * placeholders for now.
+   * Available product categories shown on the home page (all clickable). EVA car
+   * mats (→ /configurator), EVA bags (→ /eva-bags) and headrest cushions
+   * (→ /cushions). "Coming soon" products are only listed on /products. Images
+   * are admin-managed placeholders for now.
    */
   protected readonly categories: readonly CategoryCard[] = [
     {
@@ -75,16 +74,11 @@ export class CategoriesComponent {
       route: '/eva-bags',
     },
     {
-      titleKey: 'home_category_leather_title',
-      descKey: 'home_category_leather_text',
-      image: this.media.getPlaceholder(500, 300, 'neomatten-leather'),
-      comingSoon: true,
-    },
-    {
       titleKey: 'home_category_cushions_title',
       descKey: 'home_category_cushions_text',
+      linkKey: 'home_category_cushions_link',
       image: this.media.getPlaceholder(500, 300, 'neomatten-cushions'),
-      comingSoon: true,
+      route: '/cushions',
     },
   ];
 
