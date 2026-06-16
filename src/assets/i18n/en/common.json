@@ -680,6 +680,8 @@
   "order_payment_klarna": "Klarna",
   "order_payment_paypal": "PayPal",
   "order_payment_pickup": "Pay on pickup",
+  "order_copy_id": "Order ID copied",
+  "order_copy_sku": "SKU copied",
   "account_signout_title": "Sign out",
   "account_signout_intro": "Sign out of your account on this device.",
   "account_signout_confirm_title": "Sign out?",

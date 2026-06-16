@@ -11,15 +11,23 @@
  *     смены пароля / удаления аккаунта и выходом. Удаление — через диалог.
  */
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { OrderRecord, OrderStatus, PaymentMethod } from '@core/models/order.model';
 import { AuthService } from '@core/services/auth.service';
 import { OrderService } from '@core/services/order.service';
-import { LucideCreditCard, LucidePackage, LucideShoppingBag, LucideStore } from '@lucide/angular';
+import {
+  LucideCheck,
+  LucideCopy,
+  LucideCreditCard,
+  LucidePackage,
+  LucideShoppingBag,
+  LucideStore,
+} from '@lucide/angular';
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
+import { ToastService } from '@shared/services/toast.service';
 
 @Component({
   selector: 'nm-account-page',
@@ -33,6 +41,8 @@ import { TranslatePipe } from '@shared/pipes/translate.pipe';
     LucideShoppingBag,
     LucidePackage,
     LucideStore,
+    LucideCopy,
+    LucideCheck,
   ],
   // Fill the account content column so the card's lg:max-w-[80%] is meaningful.
   host: { '[style.display]': '"flex"', '[style.width]': '"100%"' },
@@ -42,10 +52,43 @@ import { TranslatePipe } from '@shared/pipes/translate.pipe';
 })
 export class AccountPageComponent {
   private readonly auth = inject(AuthService);
+  private readonly toast = inject(ToastService);
   protected readonly orders = inject(OrderService);
 
   protected readonly user = this.auth.user;
   protected readonly orderList = this.orders.orders;
+
+  /**
+   * Values (order IDs / SKUs) currently showing the "copied" checkmark. Keyed by
+   * the copied text so each button — there can be many SKUs per order — flips
+   * back independently after its own 1.5s timer.
+   */
+  private readonly copied = signal(new Set<string>());
+
+  /** Whether `text`'s copy button should currently render the checkmark. */
+  protected isCopied(text: string): boolean {
+    return this.copied().has(text);
+  }
+
+  /** Copy `text` to the clipboard, toast `successKey`, and flash a checkmark. */
+  protected copyToClipboard(text: string, successKey: string): void {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        this.copied.update(set => new Set(set).add(text));
+        this.toast.success(successKey);
+        setTimeout(() => {
+          this.copied.update(set => {
+            const next = new Set(set);
+            next.delete(text);
+            return next;
+          });
+        }, 1500);
+      })
+      .catch(() => {
+        this.toast.error('error_generic');
+      });
+  }
 
   /** Badge colour classes per order status (matches the spec's status palette). */
   protected statusBadgeClasses(status: OrderStatus): string {

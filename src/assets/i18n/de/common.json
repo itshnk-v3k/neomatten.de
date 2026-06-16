@@ -680,6 +680,8 @@
   "order_payment_klarna": "Klarna",
   "order_payment_paypal": "PayPal",
   "order_payment_pickup": "Zahlung bei Abholung",
+  "order_copy_id": "Bestellnummer kopiert",
+  "order_copy_sku": "Artikelnummer kopiert",
   "account_signout_title": "Abmelden",
   "account_signout_intro": "Melden Sie sich auf diesem Gerät von Ihrem Konto ab.",
   "account_signout_confirm_title": "Abmelden?",

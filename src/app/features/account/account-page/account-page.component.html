@@ -44,7 +44,20 @@
           <li
             class="rounded-xl border border-l-4 border-border border-l-primary bg-surface p-5 shadow-soft">
             <div class="flex flex-wrap items-center justify-between gap-3">
-              <span class="text-lg font-extrabold tracking-tight">#{{ order.id }}</span>
+              <div class="flex items-center gap-2">
+                <span class="text-lg font-extrabold tracking-tight">#{{ order.id }}</span>
+                <button
+                  type="button"
+                  class="text-content-muted transition-colors hover:text-primary"
+                  [attr.aria-label]="'order_copy_id' | translate"
+                  (click)="copyToClipboard(order.id, 'order_copy_id')">
+                  @if (isCopied(order.id)) {
+                    <svg lucideCheck class="size-4 text-success" aria-hidden="true"></svg>
+                  } @else {
+                    <svg lucideCopy class="size-4" aria-hidden="true"></svg>
+                  }
+                </button>
+              </div>
               <span
                 [class]="
                   'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ' +
@@ -93,8 +106,20 @@
                   <span class="min-w-0 text-content-secondary">
                     {{ item.quantity }}× {{ item.name }}
                     @if (item.sku) {
-                      <span class="block text-xs text-content-muted">
-                        {{ 'form_label_sku' | translate }} {{ item.orderItemSku ?? item.sku }}
+                      @let sku = item.orderItemSku ?? item.sku;
+                      <span class="mt-0.5 flex items-center gap-1 text-xs text-content-muted">
+                        <span>{{ 'form_label_sku' | translate }} {{ sku }}</span>
+                        <button
+                          type="button"
+                          class="text-content-muted transition-colors hover:text-primary"
+                          [attr.aria-label]="'order_copy_sku' | translate"
+                          (click)="copyToClipboard(sku, 'order_copy_sku')">
+                          @if (isCopied(sku)) {
+                            <svg lucideCheck class="size-3.5 text-success" aria-hidden="true"></svg>
+                          } @else {
+                            <svg lucideCopy class="size-3.5" aria-hidden="true"></svg>
+                          }
+                        </button>
                       </span>
                     }
                   </span>
