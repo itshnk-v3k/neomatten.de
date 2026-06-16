@@ -15,15 +15,16 @@
     (emblaChange)="onEmblaChange()"
     class="overflow-hidden rounded-lg shadow-soft">
     <div class="flex">
-      @for (slide of slides(); track $index) {
+      @for (slide of slides(); track $index; let i = $index) {
         <div class="relative min-w-0 flex-[0_0_100%]">
-          @if (slide.src; as src) {
+          @if (slide.src && !hasFailed(i)) {
             <img
-              [ngSrc]="src"
+              [ngSrc]="slide.src"
               width="980"
               height="480"
               [alt]="slide.caption"
               sizes="100vw"
+              (error)="onImageError(i)"
               class="h-auto w-full object-cover" />
           } @else {
             <nm-image-placeholder class="block aspect-[980/480] w-full rounded-none" />

@@ -11,8 +11,9 @@
  *     админ позже.
  */
 import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { MediaService } from '@core/services/media.service';
+import { ImagePlaceholderComponent } from '@shared/components/image-placeholder/image-placeholder.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 
@@ -25,7 +26,7 @@ import {
 
 @Component({
   selector: 'nm-mat-preview',
-  imports: [NgOptimizedImage, SkeletonComponent, TranslatePipe],
+  imports: [NgOptimizedImage, ImagePlaceholderComponent, SkeletonComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './mat-preview.component.html',
 })
@@ -55,6 +56,16 @@ export class MatPreviewComponent {
   protected readonly previewUrl = computed(() =>
     this.media.getMatPreviewUrl(this.sku(), this.texture(), this.colorId())
   );
+
+  /**
+   * EN: Flips true if the preview render fails to load → fall back to the placeholder.
+   * RU: Становится true, если рендер-превью не загрузился → показываем заглушку.
+   */
+  protected readonly imageFailed = signal(false);
+
+  protected onImageError(): void {
+    this.imageFailed.set(true);
+  }
 
   /** CSS background pattern for the selected texture. */
   protected readonly patternImage = computed(() => {

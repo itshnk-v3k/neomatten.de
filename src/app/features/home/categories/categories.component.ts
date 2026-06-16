@@ -71,6 +71,20 @@ export class CategoriesComponent {
     },
   ];
 
+  /**
+   * EN: Indices of category images that failed to load → render the placeholder.
+   * RU: Индексы изображений категорий, которые не загрузились → заглушка.
+   */
+  private readonly failed = signal<ReadonlySet<number>>(new Set());
+
+  protected hasFailed(i: number): boolean {
+    return this.failed().has(i);
+  }
+
+  protected onImageError(i: number): void {
+    this.failed.update(s => new Set(s).add(i));
+  }
+
   constructor() {
     afterNextRender(() => setTimeout(() => this.loading.set(false), 600));
   }

@@ -28,6 +28,15 @@
        international-format example (e.g. "+49 30 1234567") and keeps it in sync as
        the country changes. Its accessible name falls back to the "form_phone" key. -->
   <nm-phone-input formControlName="phone" />
+  @if (showTopic()) {
+    <nm-select
+      formControlName="topic"
+      [class.sm:col-span-2]="layout() === 'grid'"
+      label="contact_topic_label"
+      placeholder="contact_topic_label"
+      [options]="topicOptions()"
+      [required]="true" />
+  }
   <nm-input
     formControlName="vehicle"
     [placeholder]="vehiclePlaceholderKey()"

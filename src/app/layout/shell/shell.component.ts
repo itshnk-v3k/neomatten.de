@@ -8,6 +8,7 @@
  */
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CookieConsentComponent } from '@shared/components/cookie-consent/cookie-consent.component';
 import { DiscountPopupComponent } from '@shared/components/discount-popup/discount-popup.component';
 import { OrderConfirmedDialogComponent } from '@shared/components/order-confirmed-dialog/order-confirmed-dialog.component';
 import { RouteLoadingComponent } from '@shared/components/route-loading/route-loading.component';
@@ -28,6 +29,7 @@ import { HeaderComponent } from '../header/header.component';
     DiscountPopupComponent,
     OrderConfirmedDialogComponent,
     RouteLoadingComponent,
+    CookieConsentComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './shell.component.html',

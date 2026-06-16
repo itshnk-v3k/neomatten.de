@@ -244,6 +244,10 @@
   "contact_intro": "Questions about your order or configuration? Reach us by phone, email or the form below.",
   "contact_info_title": "Contact details",
   "contact_form_title": "Write to us",
+  "contact_topic_label": "Topic",
+  "contact_topic_lockout": "Account lockout / Login issue",
+  "contact_topic_order_status": "Order status / Why isn't my status changing?",
+  "contact_topic_other": "Other topic",
   "contact_vehicle_label": "Vehicle (make, model, year)",
   "contact_vehicle_placeholder": "e.g. Audi A4 B8, 2012",
   "contact_message_label": "Message",
@@ -683,5 +687,9 @@
   "phone_search_placeholder": "Search country…",
   "phone_search_empty": "No countries found",
   "account_delete_account": "Delete account",
-  "account_danger_zone": "Danger zone"
+  "account_danger_zone": "Danger zone",
+  "cookie_text": "We use cookies to improve your experience.",
+  "cookie_privacy_link": "Privacy Policy",
+  "cookie_accept": "Accept",
+  "cookie_decline": "Decline"
 }

@@ -19,6 +19,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { LucideShieldAlert } from '@lucide/angular';
 import { ButtonDirective } from '@shared/components/button/button.directive';
@@ -44,6 +45,7 @@ type Mode = 'login' | 'register';
     SocialLoginComponent,
     TranslatePipe,
     LucideShieldAlert,
+    RouterLink,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './auth-dialog.component.html',

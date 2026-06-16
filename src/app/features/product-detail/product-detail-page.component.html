@@ -29,13 +29,18 @@
         <div
           class="aspect-square overflow-hidden rounded-2xl border border-border bg-surface-subtle">
           @if (activeImage(); as img) {
-            <img
-              [ngSrc]="img"
-              width="640"
-              height="640"
-              sizes="(min-width: 1024px) 45vw, 100vw"
-              [alt]="p.name"
-              class="size-full object-cover" />
+            @if (!imageFailed()) {
+              <img
+                [ngSrc]="img"
+                width="640"
+                height="640"
+                sizes="(min-width: 1024px) 45vw, 100vw"
+                [alt]="p.name"
+                (error)="onImageError()"
+                class="size-full object-cover" />
+            } @else {
+              <nm-image-placeholder class="size-full rounded-none" />
+            }
           } @else {
             <nm-image-placeholder class="size-full rounded-none" />
           }

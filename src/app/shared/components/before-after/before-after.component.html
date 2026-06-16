@@ -13,13 +13,14 @@
   (pointerdown)="onContainerPointerDown($event)">
   <!-- Before (full) -->
   <div class="absolute inset-0">
-    @if (beforeSrc(); as src) {
+    @if (beforeSrc() && !beforeFailed()) {
       <img
-        [ngSrc]="src"
+        [ngSrc]="beforeSrc()!"
         fill
         [alt]="beforeAlt() | translate"
         sizes="100vw"
         priority
+        (error)="beforeFailed.set(true)"
         class="object-cover" />
     } @else {
       <nm-image-placeholder class="size-full" />
@@ -32,8 +33,14 @@
 
   <!-- After (clipped to the divider) -->
   <div class="absolute inset-0" [style.clip-path]="'inset(0 0 0 ' + position() + '%)'">
-    @if (afterSrc(); as src) {
-      <img [ngSrc]="src" fill [alt]="afterAlt() | translate" sizes="100vw" class="object-cover" />
+    @if (afterSrc() && !afterFailed()) {
+      <img
+        [ngSrc]="afterSrc()!"
+        fill
+        [alt]="afterAlt() | translate"
+        sizes="100vw"
+        (error)="afterFailed.set(true)"
+        class="object-cover" />
     } @else {
       <nm-image-placeholder class="size-full" />
     }

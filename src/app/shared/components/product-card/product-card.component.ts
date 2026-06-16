@@ -40,6 +40,16 @@ export class ProductCardComponent {
   /** Flips true once the thumbnail fires its `load` event; hides the skeleton overlay. */
   protected readonly imageLoaded = signal(false);
 
+  /**
+   * EN: Flips true if the thumbnail fails to load at runtime → render the placeholder.
+   * RU: Становится true, если миниатюра не загрузилась → показываем заглушку.
+   */
+  protected readonly imageFailed = signal(false);
+
+  protected onImageError(): void {
+    this.imageFailed.set(true);
+  }
+
   protected readonly detailLink = computed(() => [
     productCategoryPath(this.product().category),
     this.product().id,

@@ -55,8 +55,21 @@ export class ProductDetailPageComponent {
     () => this.product()?.images[this.activeIndex()] ?? this.product()?.images[0] ?? null
   );
 
+  /**
+   * EN: Flips true if the active image fails to load → render the placeholder.
+   *     Reset whenever the active image changes (new index = fresh attempt).
+   * RU: Становится true, если активное изображение не загрузилось → заглушка.
+   *     Сбрасывается при смене активного изображения (новый индекс — новая попытка).
+   */
+  protected readonly imageFailed = signal(false);
+
+  protected onImageError(): void {
+    this.imageFailed.set(true);
+  }
+
   protected select(index: number): void {
     this.activeIndex.set(index);
+    this.imageFailed.set(false);
   }
 
   /**

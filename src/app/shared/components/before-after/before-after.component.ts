@@ -43,6 +43,13 @@ export class BeforeAfterComponent {
   /** Divider position as a percentage from the left edge (0–100). */
   protected readonly position = signal(50);
 
+  /**
+   * EN: Flip true if the matching image fails to load → render the placeholder.
+   * RU: Становятся true, если изображение не загрузилось → показываем заглушку.
+   */
+  protected readonly beforeFailed = signal(false);
+  protected readonly afterFailed = signal(false);
+
   private readonly container = viewChild.required<ElementRef<HTMLElement>>('container');
 
   /** Keyboard step in percent for the slider role. */

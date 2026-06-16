@@ -1,10 +1,10 @@
 <!--
   EN: Cart — line items with params + quantity steppers + remove on the left, an
       order summary (subtotal / shipping / discount / total) + CTAs on the right.
-      Empty state links to the configurator.
+      Empty state links to the products page.
   RU: Корзина — позиции с параметрами + степперы + удаление слева, итог заказа
       (подытог / доставка / скидка / итого) + CTA справа. Пустое состояние ведёт
-      в конфигуратор.
+      на страницу товаров.
 -->
 <section class="mx-auto max-w-container px-6 py-12 lg:py-16">
   <nm-breadcrumb />
@@ -39,7 +39,7 @@
   } @else if (items().length === 0) {
     <div class="rounded-2xl border border-border bg-surface p-10 text-center shadow-soft">
       <p class="text-content-secondary">{{ 'cart_empty' | translate }}</p>
-      <a routerLink="/configurator" nmButton class="mt-5">{{ 'cart_empty_cta' | translate }}</a>
+      <a routerLink="/products" nmButton class="mt-5">{{ 'cart_empty_cta' | translate }}</a>
     </div>
   } @else {
     <div class="grid gap-8 lg:grid-cols-[1fr_340px]">

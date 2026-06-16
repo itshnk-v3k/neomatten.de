@@ -244,6 +244,10 @@
   "contact_intro": "Fragen zu Ihrer Bestellung oder Konfiguration? Erreichen Sie uns telefonisch, per E-Mail oder über das Formular unten.",
   "contact_info_title": "Kontaktdaten",
   "contact_form_title": "Schreiben Sie uns",
+  "contact_topic_label": "Thema",
+  "contact_topic_lockout": "Kontosperrung / Login-Problem",
+  "contact_topic_order_status": "Bestellstatus / Warum ändert sich der Status nicht?",
+  "contact_topic_other": "Anderes Thema",
   "contact_vehicle_label": "Fahrzeug (Marke, Modell, Baujahr)",
   "contact_vehicle_placeholder": "z. B. Audi A4 B8, 2012",
   "contact_message_label": "Nachricht",
@@ -683,5 +687,9 @@
   "phone_search_placeholder": "Land suchen…",
   "phone_search_empty": "Keine Länder gefunden",
   "account_delete_account": "Konto löschen",
-  "account_danger_zone": "Gefahrenzone"
+  "account_danger_zone": "Gefahrenzone",
+  "cookie_text": "Wir verwenden Cookies, um Ihre Erfahrung zu verbessern.",
+  "cookie_privacy_link": "Datenschutzerklärung",
+  "cookie_accept": "Akzeptieren",
+  "cookie_decline": "Ablehnen"
 }

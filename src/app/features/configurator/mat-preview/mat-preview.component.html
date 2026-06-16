@@ -17,12 +17,17 @@
          show it; otherwise fall back to the CSS-rendered preview below. -->
     @if (previewUrl(); as url) {
       <div class="relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-soft">
-        <img
-          [ngSrc]="url"
-          fill
-          [alt]="caption()"
-          sizes="(max-width: 1024px) 90vw, 420px"
-          class="object-cover" />
+        @if (!imageFailed()) {
+          <img
+            [ngSrc]="url"
+            fill
+            [alt]="caption()"
+            sizes="(max-width: 1024px) 90vw, 420px"
+            (error)="onImageError()"
+            class="object-cover" />
+        } @else {
+          <nm-image-placeholder class="size-full rounded-none" />
+        }
       </div>
     } @else {
       <div

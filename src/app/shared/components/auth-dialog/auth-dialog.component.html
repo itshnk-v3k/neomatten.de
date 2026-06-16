@@ -36,7 +36,15 @@
         <h3 class="text-lg font-semibold">{{ 'auth_locked_title' | translate }}</h3>
         <p class="text-sm text-content-muted">{{ 'auth_locked_body' | translate }}</p>
         <div class="font-mono text-2xl font-bold text-error">{{ lockoutCountdown() }}</div>
-        <p class="text-xs text-content-muted">{{ 'auth_locked_hint' | translate }}</p>
+        <p class="text-xs text-content-muted">
+          <a
+            routerLink="/contact"
+            [queryParams]="{ topic: 'lockout' }"
+            class="text-primary underline hover:text-primary-bright"
+            (click)="open.set(false)">
+            {{ 'auth_locked_hint' | translate }}
+          </a>
+        </p>
       </div>
     } @else {
       <form [formGroup]="loginForm" (ngSubmit)="submitLogin()" class="flex flex-col gap-4">
@@ -68,5 +76,7 @@
     </form>
   }
 
-  <nm-social-login />
+  @if (!locked()) {
+    <nm-social-login />
+  }
 </nm-dialog>

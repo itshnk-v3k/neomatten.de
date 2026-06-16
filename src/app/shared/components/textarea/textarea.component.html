@@ -24,7 +24,7 @@
     errorMessage ? inputId() + '-error' : hint() ? inputId() + '-hint' : null
   "
   [class]="
-    'w-full rounded-md border bg-surface-input px-4 py-3 text-sm text-content outline-none transition-colors placeholder:text-content-muted focus:border-primary disabled:cursor-not-allowed disabled:opacity-60 ' +
+    'max-h-[240px] min-h-[120px] w-full resize-y overflow-y-auto rounded-md border bg-surface-input px-4 py-3 text-sm text-content outline-none transition-colors placeholder:text-content-muted focus:border-primary disabled:cursor-not-allowed disabled:opacity-60 ' +
     (errorMessage ? 'border-error' : 'border-border')
   "
   (input)="onInput($event)"
