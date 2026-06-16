@@ -11,10 +11,14 @@
     <div class="grid items-start gap-10 lg:grid-cols-2" nmReveal>
       <div class="space-y-3 text-content-secondary">
         <p class="font-semibold text-content">{{ 'footer_country' | translate }}</p>
-        <p class="flex items-center gap-2">
-          <svg lucideMapPin class="size-5 shrink-0 text-primary"></svg>
+        <a
+          [href]="mapsUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-2 font-semibold text-primary hover:text-primary-bright">
+          <svg lucideMapPin class="size-5 shrink-0"></svg>
           {{ company.address.street }}, {{ company.address.city }}
-        </p>
+        </a>
         <p class="font-semibold text-content">{{ 'home_contact_hours_label' | translate }}</p>
         <p>{{ 'home_contact_hours' | translate }}</p>
         <a

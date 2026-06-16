@@ -5,7 +5,7 @@
  *     вертикальной формой заявки (с согласием). Данные — из COMPANY_INFO.
  */
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { COMPANY_INFO, COMPANY_PHONE_HREF } from '@core/config/company-info';
+import { COMPANY_INFO, COMPANY_MAPS_URL, COMPANY_PHONE_HREF } from '@core/config/company-info';
 import { LucideMail, LucideMapPin, LucidePhone } from '@lucide/angular';
 import { RevealOnScrollDirective } from '@shared/directives/reveal-on-scroll.directive';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
@@ -29,4 +29,5 @@ import { LeadFormComponent } from '../lead-form/lead-form.component';
 export class ContactSectionComponent {
   protected readonly company = COMPANY_INFO;
   protected readonly phoneHref = COMPANY_PHONE_HREF;
+  protected readonly mapsUrl = COMPANY_MAPS_URL;
 }

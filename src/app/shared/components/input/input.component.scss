@@ -16,6 +16,8 @@
   color: rgb(255 255 255 / 0.7);
 }
 
+// The input itself keeps a light background, so its placeholder must stay the
+// standard muted gray (content.muted) — not inherit the white label color.
 :host-context(.dark-form) input::placeholder {
-  color: rgb(255 255 255 / 0.5);
+  color: #888888;
 }
