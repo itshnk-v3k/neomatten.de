@@ -113,17 +113,34 @@ export class AuthService {
   private readonly LOGIN_LOCKOUT_MS = 5 * 60 * 1000; // 5 minutes
   private readonly LOCKOUT_KEY = 'neomatten_login_lockout';
 
-  /** Current lockout status: whether locked, how long remains, and the attempt count. */
+  /**
+   * Current lockout status: whether locked, how long remains, and the attempt
+   * count. Three persisted states are distinguished by `lockedUntil`:
+   *   - `lockedUntil === 0` → still accumulating failed attempts (NOT locked yet):
+   *      keep the running count so it can reach the cap.
+   *   - `lockedUntil` in the future → locked; report the remaining time.
+   *   - `lockedUntil` in the past → the lockout window fully elapsed: clear the
+   *      record and report a FRESH start (attempts 0) so the user gets the full
+   *      attempt budget again, not an instant re-lock.
+   */
   getLockoutState(): { locked: boolean; remainingMs: number; attempts: number } {
     const raw = localStorage.getItem(this.LOCKOUT_KEY);
     if (!raw) return { locked: false, remainingMs: 0, attempts: 0 };
     try {
       const data = JSON.parse(raw) as { attempts: number; lockedUntil: number };
+      // Not locked yet — only accumulating attempts; keep counting toward the cap.
+      if (!data.lockedUntil) {
+        return { locked: false, remainingMs: 0, attempts: data.attempts };
+      }
       const remaining = data.lockedUntil - Date.now();
       if (remaining <= 0) {
-        // Lock expired but failed attempts are kept until a success clears them,
-        // so the next failure (if still wrong) re-locks immediately.
-        return { locked: false, remainingMs: 0, attempts: data.attempts };
+        // Lockout fully elapsed → clear it and start fresh (attempts 0).
+        try {
+          localStorage.removeItem(this.LOCKOUT_KEY);
+        } catch {
+          // ignore storage errors
+        }
+        return { locked: false, remainingMs: 0, attempts: 0 };
       }
       return { locked: true, remainingMs: remaining, attempts: data.attempts };
     } catch {
@@ -131,7 +148,12 @@ export class AuthService {
     }
   }
 
-  /** Records one failed login; locks the account once the attempt cap is reached. */
+  /**
+   * Records one failed login; locks the account once the attempt cap is reached.
+   * After an expired lockout `getLockoutState()` already reports `attempts: 0`
+   * (it clears the stale record), so incrementing from `state.attempts` correctly
+   * gives a fresh 1 — not an instant re-lock.
+   */
   recordFailedAttempt(): void {
     const state = this.getLockoutState();
     const attempts = state.attempts + 1;

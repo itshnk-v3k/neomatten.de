@@ -76,10 +76,18 @@ export class AuthDialogComponent {
 
   constructor() {
     // Tick the lockout countdown while locked; the login tab reverts to the form
-    // once getLockoutState() reports the window has expired.
+    // once getLockoutState() reports the window has expired. On the locked→unlocked
+    // transition, reassure the user with a success toast.
     interval(1000)
       .pipe(takeUntilDestroyed())
-      .subscribe(() => this.remainingLockoutMs.set(this.auth.getLockoutState().remainingMs));
+      .subscribe(() => {
+        const wasLocked = this.remainingLockoutMs() > 0;
+        const remaining = this.auth.getLockoutState().remainingMs;
+        this.remainingLockoutMs.set(remaining);
+        if (wasLocked && remaining <= 0) {
+          this.toast.success('auth_lockout_expired');
+        }
+      });
   }
 
   protected readonly loginForm = this.fb.nonNullable.group({

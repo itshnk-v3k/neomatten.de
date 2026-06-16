@@ -38,8 +38,13 @@
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" />
 
     <!-- LCP: the hero poster backs the desktop hero <video> and is the mobile hero
-         image. Preload it at high priority so it paints as early as possible. -->
-    <link rel="preload" as="image" href="assets/content/hero-poster.jpg" fetchpriority="high" />
+         image. Prefetched (not preloaded): the app is client-rendered, so the
+         consuming <video>/<img> only mounts after Angular bootstraps and the lazy
+         home route paints — well after window load. A high-priority `preload`
+         would (a) trip the browser's "preloaded but not used within a few seconds"
+         warning and (b) compete with the JS bundle that must run first. `prefetch`
+         warms the cache at low priority so the poster is ready when the hero mounts. -->
+    <link rel="prefetch" as="image" href="assets/content/hero-poster.jpg" />
 
     <!-- Default-language dictionary, fetched at app init. Prefetched (not
          preloaded) so it warms the cache without the browser's "preloaded but not

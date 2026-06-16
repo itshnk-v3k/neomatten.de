@@ -68,10 +68,18 @@ export class LoginPageComponent {
 
   constructor() {
     // Tick the lockout countdown while locked; the view auto-reverts to the form
-    // once getLockoutState() reports the window has expired.
+    // once getLockoutState() reports the window has expired. On the locked→unlocked
+    // transition, reassure the user with a success toast.
     interval(1000)
       .pipe(takeUntilDestroyed())
-      .subscribe(() => this.remainingLockoutMs.set(this.auth.getLockoutState().remainingMs));
+      .subscribe(() => {
+        const wasLocked = this.remainingLockoutMs() > 0;
+        const remaining = this.auth.getLockoutState().remainingMs;
+        this.remainingLockoutMs.set(remaining);
+        if (wasLocked && remaining <= 0) {
+          this.toast.success('auth_lockout_expired');
+        }
+      });
   }
 
   protected async submit(): Promise<void> {
