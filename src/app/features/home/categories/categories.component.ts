@@ -55,7 +55,7 @@ export class CategoriesComponent {
 
   /**
    * Product category cards — kept in sync with the /products overview page:
-   * EVA car mats (→ /catalog) and EVA bags (→ /eva-bags) are clickable; leather
+   * EVA car mats (→ /configurator) and EVA bags (→ /eva-bags) are clickable; leather
    * bags and cushions are "coming soon" (non-clickable). Images are admin-managed
    * placeholders for now.
    */
@@ -65,7 +65,7 @@ export class CategoriesComponent {
       descKey: 'home_category_mats_text',
       linkKey: 'home_category_mats_link',
       image: this.media.getPlaceholder(500, 300, 'neomatten-mats'),
-      route: '/catalog',
+      route: '/configurator',
     },
     {
       titleKey: 'home_category_bags_title',

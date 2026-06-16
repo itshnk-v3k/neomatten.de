@@ -25,24 +25,6 @@ export const routes: Routes = [
         data: { seo: { titleKey: 'seo_home_title', descriptionKey: 'seo_home_description' } },
       },
       {
-        path: 'catalog',
-        loadComponent: () =>
-          import('@features/catalog/catalog-page.component').then(m => m.CatalogPageComponent),
-        data: {
-          seo: { titleKey: 'seo_catalog_title', descriptionKey: 'seo_catalog_description' },
-          schema: {
-            type: 'product',
-            product: {
-              name: 'EVA Auto Fußmatten nach Maß',
-              description:
-                'Maßgefertigte EVA-Automatten für über 1800 Fahrzeugmodelle — wasserdicht, rutschfest und langlebig.',
-              price: '89',
-              image: 'https://neomatten.de/assets/content/carpet.jpg',
-            },
-          },
-        },
-      },
-      {
         // Configurator step 1 — brand selection grid.
         path: 'configurator',
         loadComponent: () =>
@@ -325,7 +307,10 @@ export const routes: Routes = [
 
       // Redirects from the old German slugs to the new English routes (so
       // existing links / bookmarks keep working instead of hitting 404).
-      { path: 'katalog', redirectTo: 'catalog', pathMatch: 'full' },
+      // /catalog was consolidated into the configurator (same brand grid); keep
+      // the old English + German slugs working by redirecting both.
+      { path: 'catalog', redirectTo: 'configurator', pathMatch: 'full' },
+      { path: 'katalog', redirectTo: 'configurator', pathMatch: 'full' },
       { path: 'konfigurator', redirectTo: 'configurator', pathMatch: 'full' },
       { path: 'warenkorb', redirectTo: 'cart', pathMatch: 'full' },
       { path: 'konto', redirectTo: 'account', pathMatch: 'full' },

@@ -31,7 +31,7 @@ interface ProductCategory {
 })
 export class ProductsPageComponent {
   protected readonly categories: readonly ProductCategory[] = [
-    { titleKey: 'products_mats_title', descKey: 'products_mats_desc', route: '/catalog' },
+    { titleKey: 'products_mats_title', descKey: 'products_mats_desc', route: '/configurator' },
     { titleKey: 'products_eva_bags_title', descKey: 'products_eva_bags_desc', route: '/eva-bags' },
     {
       titleKey: 'products_leather_bags_title',

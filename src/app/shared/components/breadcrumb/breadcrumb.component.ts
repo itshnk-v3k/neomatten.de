@@ -32,7 +32,6 @@ interface Crumb {
  * they exist; adds `breadcrumb_*` keys for the rest.
  */
 const SEGMENT_LABELS: Record<string, string> = {
-  catalog: 'header_nav_catalog',
   configurator: 'header_nav_configurator',
   cart: 'breadcrumb_cart',
   account: 'breadcrumb_account',

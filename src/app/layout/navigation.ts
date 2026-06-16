@@ -21,7 +21,7 @@ export interface NavLink {
 
 /** Primary navigation shown in the header and mobile menu. */
 export const PRIMARY_NAV: readonly NavLink[] = [
-  { labelKey: 'header_nav_catalog', path: '/catalog' },
+  { labelKey: 'header_nav_configurator', path: '/configurator' },
   { labelKey: 'header_nav_advantages', path: '/', sectionId: 'vorteile' },
   { labelKey: 'header_nav_work', path: '/', sectionId: 'arbeiten' },
   { labelKey: 'header_nav_products', path: '/products' },
@@ -32,7 +32,6 @@ export const PRIMARY_NAV: readonly NavLink[] = [
 
 /** Navigation column shown in the footer. */
 export const FOOTER_NAV: readonly NavLink[] = [
-  { labelKey: 'header_nav_catalog', path: '/catalog' },
   { labelKey: 'header_nav_configurator', path: '/configurator' },
   { labelKey: 'header_nav_work', path: '/', sectionId: 'arbeiten' },
   { labelKey: 'header_nav_material', path: '/eva-material' },
