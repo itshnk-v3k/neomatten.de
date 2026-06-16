@@ -15,3 +15,10 @@
 :host-context(.dark-form) .text-content-muted {
   color: rgb(255 255 255 / 0.7);
 }
+
+// The chevron lives inside the always-white field, so it must keep the muted
+// gray (content.muted) on dark-form sections too — without its own class it
+// would be caught by the .text-content-muted override above and render white.
+.phone-chevron {
+  color: #888888;
+}
