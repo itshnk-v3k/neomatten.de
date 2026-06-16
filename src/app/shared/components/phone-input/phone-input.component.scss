@@ -5,3 +5,13 @@
 :host {
   display: block;
 }
+
+// On a dark-background form (.dark-form on an ancestor), render the label and
+// muted hint text in light colors so they stay readable.
+:host-context(.dark-form) label {
+  color: #fff;
+}
+
+:host-context(.dark-form) .text-content-muted {
+  color: rgb(255 255 255 / 0.7);
+}

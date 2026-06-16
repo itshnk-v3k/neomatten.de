@@ -12,7 +12,7 @@
   </header>
 
   <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-    @for (category of categories; track category.route) {
+    @for (category of categories; track category.titleKey) {
       @if (category.comingSoon) {
         <!-- Coming soon: non-clickable card with an overlay badge. -->
         <div

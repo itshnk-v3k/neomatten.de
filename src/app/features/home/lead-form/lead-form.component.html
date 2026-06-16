@@ -10,18 +10,19 @@
   [formGroup]="form"
   (ngSubmit)="submit()"
   novalidate
+  [class.dark-form]="dark()"
   [class]="layout() === 'grid' ? 'grid gap-3 sm:grid-cols-2' : 'flex flex-col gap-3'">
   <nm-input
     formControlName="name"
     label="form_name"
-    placeholder="form_name"
+    placeholder="form_name_placeholder"
     autocomplete="name"
     [required]="true" />
   <nm-input
     formControlName="email"
     type="email"
     label="form_email"
-    placeholder="form_email"
+    placeholder="form_email_placeholder"
     autocomplete="email"
     [required]="true" />
   <!-- No static placeholder: the component shows the selected country's

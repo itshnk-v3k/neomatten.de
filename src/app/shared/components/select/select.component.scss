@@ -5,3 +5,9 @@
 :host {
   display: block;
 }
+
+// On a dark-background form (.dark-form on an ancestor), render the label in a
+// light color so it stays readable.
+:host-context(.dark-form) label {
+  color: #fff;
+}

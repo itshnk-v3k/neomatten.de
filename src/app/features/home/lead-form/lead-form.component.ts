@@ -55,6 +55,8 @@ export class LeadFormComponent {
   readonly showTopic = input<boolean>(false);
   /** Layout: two-column grid (consultation) or stacked column (contact). */
   readonly layout = input<'grid' | 'stacked'>('grid');
+  /** When true, renders labels/hints in light colors for a dark-background section. */
+  readonly dark = input<boolean>(false);
 
   /** Topic options (labels re-resolve on language change). */
   protected readonly topicOptions = computed<SelectOption[]>(() => {
