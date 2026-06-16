@@ -52651,24 +52651,6 @@
   },
   {
     "id": "vp-2924",
-    "brandId": "organizer",
-    "brandName": "Органайзер",
-    "model": "EVA",
-    "name": "Органайзер EVA",
-    "bodyType": null,
-    "heelPad": "none",
-    "restyling": null,
-    "sku": "ORG-01",
-    "trim": null,
-    "yearFrom": null,
-    "yearTo": null,
-    "yearLabel": null,
-    "tiers": [],
-    "pieces": [],
-    "notes": null
-  },
-  {
-    "id": "vp-2925",
     "brandId": "tavria",
     "brandName": "Таврия",
     "model": "1102 Таврия",
@@ -52686,7 +52668,7 @@
     "notes": null
   },
   {
-    "id": "vp-2926",
+    "id": "vp-2925",
     "brandId": "tavria",
     "brandName": "Таврия",
     "model": "1102 Таврия Нова",
@@ -52704,7 +52686,7 @@
     "notes": null
   },
   {
-    "id": "vp-2927",
+    "id": "vp-2926",
     "brandId": "tavria",
     "brandName": "Таврия",
     "model": "110557 Таврия",
@@ -52722,7 +52704,7 @@
     "notes": null
   },
   {
-    "id": "vp-2928",
+    "id": "vp-2927",
     "brandId": "uaz",
     "brandName": "УАЗ",
     "model": "Patriot",
@@ -52740,7 +52722,7 @@
     "notes": null
   },
   {
-    "id": "vp-2929",
+    "id": "vp-2928",
     "brandId": "uaz",
     "brandName": "УАЗ",
     "model": "Patriot",

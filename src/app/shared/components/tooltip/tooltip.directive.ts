@@ -26,6 +26,12 @@ export class TooltipDirective implements OnDestroy {
   readonly nmTooltip = input.required<string>();
   /** Side of the host the bubble is shown on. */
   readonly position = input<TooltipPosition>('top');
+  /**
+   * Visual tone. 'error' renders the bubble as a red error message (text-error
+   * on a light surface with a red border) — used for unavailable-option hints
+   * such as the heel-pad step. 'default' is the dark info bubble.
+   */
+  readonly tone = input<'default' | 'error'>('default');
 
   private bubble: HTMLElement | null = null;
   private readonly bubbleId = `nm-tooltip-${uid++}`;
@@ -46,7 +52,9 @@ export class TooltipDirective implements OnDestroy {
     // Constrain width so long copy wraps instead of overflowing the viewport.
     this.renderer.setStyle(bubble, 'max-width', 'min(400px, calc(100vw - 16px))');
     bubble.className =
-      'bg-ink text-content-inverse text-xs rounded px-2 py-1 shadow-soft z-popup pointer-events-none animate-in fade-in';
+      this.tone() === 'error'
+        ? 'bg-surface text-error border border-error text-xs rounded px-2 py-1 shadow-soft z-popup pointer-events-none animate-in fade-in'
+        : 'bg-ink text-content-inverse text-xs rounded px-2 py-1 shadow-soft z-popup pointer-events-none animate-in fade-in';
 
     this.renderer.appendChild(document.body, bubble);
     this.bubble = bubble;

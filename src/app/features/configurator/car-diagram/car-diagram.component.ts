@@ -15,7 +15,7 @@
  *     реальные фото — меняется только источник изображения.
  */
 import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { TranslationService } from '@core/i18n/translation.service';
 
 import { type CarZone } from '../configurator.service';
@@ -26,8 +26,6 @@ interface Hotspot {
   readonly left: number;
   readonly top: number;
   readonly labelKey: string;
-  /** Short visual label shown below the dot on desktop (FL/FR/RL/RR/T). */
-  readonly short: string;
 }
 
 @Component({
@@ -52,12 +50,27 @@ export class CarDiagramComponent {
   // mirrors sit at y≈22%, so the front seats fall just behind at y≈38%, the rear
   // bench at y≈57% and the trunk near the tail at y≈83%.
   protected readonly hotspots: readonly Hotspot[] = [
-    { zone: 'front_left', left: 34, top: 38, labelKey: 'kit_piece_front_left', short: 'FL' },
-    { zone: 'front_right', left: 66, top: 38, labelKey: 'kit_piece_front_right', short: 'FR' },
-    { zone: 'rear_left', left: 34, top: 57, labelKey: 'kit_piece_rear_left', short: 'RL' },
-    { zone: 'rear_right', left: 66, top: 57, labelKey: 'kit_piece_rear_right', short: 'RR' },
-    { zone: 'trunk', left: 50, top: 83, labelKey: 'kit_piece_trunk', short: 'T' },
+    { zone: 'front_left', left: 34, top: 38, labelKey: 'kit_piece_front_left' },
+    { zone: 'front_right', left: 66, top: 38, labelKey: 'kit_piece_front_right' },
+    { zone: 'rear_left', left: 34, top: 57, labelKey: 'kit_piece_rear_left' },
+    { zone: 'rear_right', left: 66, top: 57, labelKey: 'kit_piece_rear_right' },
+    { zone: 'trunk', left: 50, top: 83, labelKey: 'kit_piece_trunk' },
   ];
+
+  /**
+   * Short visual dot labels, localized: German uses VL/VR/HL/HR/K
+   * (Vorne/Hinten Links/Rechts, Kofferraum); English keeps FL/FR/RL/RR/T.
+   */
+  protected readonly zoneLabels = computed<Record<CarZone, string>>(() => {
+    const de = this.translation.currentLanguage() === 'de';
+    return {
+      front_left: de ? 'VL' : 'FL',
+      front_right: de ? 'VR' : 'FR',
+      rear_left: de ? 'HL' : 'RL',
+      rear_right: de ? 'HR' : 'RR',
+      trunk: de ? 'K' : 'T',
+    };
+  });
 
   protected isSelected(zone: CarZone): boolean {
     return this.zones().has(zone);

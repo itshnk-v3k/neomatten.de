@@ -28,13 +28,17 @@
       <div>
         <div
           class="aspect-square overflow-hidden rounded-2xl border border-border bg-surface-subtle">
-          <img
-            [ngSrc]="activeImage()!"
-            width="640"
-            height="640"
-            sizes="(min-width: 1024px) 45vw, 100vw"
-            [alt]="p.name"
-            class="size-full object-cover" />
+          @if (activeImage(); as img) {
+            <img
+              [ngSrc]="img"
+              width="640"
+              height="640"
+              sizes="(min-width: 1024px) 45vw, 100vw"
+              [alt]="p.name"
+              class="size-full object-cover" />
+          } @else {
+            <nm-image-placeholder class="size-full rounded-none" />
+          }
         </div>
         @if (p.images.length > 1) {
           <ul class="mt-4 flex gap-3">

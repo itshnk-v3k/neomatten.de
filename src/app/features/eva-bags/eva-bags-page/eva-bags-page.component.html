@@ -17,7 +17,11 @@
       routerLink="/eva-bags/with-lid"
       class="group flex flex-col rounded-2xl border border-border bg-surface p-8 shadow-soft transition-colors hover:border-primary">
       <span class="aspect-video overflow-hidden rounded-xl bg-surface-subtle">
-        <img [src]="withLidImage" alt="" loading="lazy" class="size-full object-cover" />
+        @if (withLidImage; as img) {
+          <img [src]="img" alt="" loading="lazy" class="size-full object-cover" />
+        } @else {
+          <nm-image-placeholder class="size-full rounded-none" />
+        }
       </span>
       <h3 class="mt-5 text-xl font-bold group-hover:text-primary">
         {{ 'eva_bags_with_lid_title' | translate }}
@@ -29,7 +33,11 @@
       routerLink="/eva-bags/without-lid"
       class="group flex flex-col rounded-2xl border border-border bg-surface p-8 shadow-soft transition-colors hover:border-primary">
       <span class="aspect-video overflow-hidden rounded-xl bg-surface-subtle">
-        <img [src]="withoutLidImage" alt="" loading="lazy" class="size-full object-cover" />
+        @if (withoutLidImage; as img) {
+          <img [src]="img" alt="" loading="lazy" class="size-full object-cover" />
+        } @else {
+          <nm-image-placeholder class="size-full rounded-none" />
+        }
       </span>
       <h3 class="mt-5 text-xl font-bold group-hover:text-primary">
         {{ 'eva_bags_without_lid_title' | translate }}

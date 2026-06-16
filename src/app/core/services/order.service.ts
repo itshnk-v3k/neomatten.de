@@ -12,7 +12,12 @@
  */
 import { computed, inject, Injectable, signal } from '@angular/core';
 // import { ApiService } from '@core/http/api.service';
-import type { OrderItemDTO, OrderRecord, PaymentMethod } from '@core/models/order.model';
+import type {
+  OrderItemDTO,
+  OrderRecord,
+  OrderStatus,
+  PaymentMethod,
+} from '@core/models/order.model';
 import { AuthService } from '@core/services/auth.service';
 
 const ORDERS_STORAGE_KEY = 'neomatten_orders';
@@ -48,6 +53,9 @@ export class OrderService {
   readonly loading = this.loadingSignal.asReadonly();
 
   constructor() {
+    // One-time migration: `restore()` rewrites any legacy `pending_contact`
+    // orders to `review`; persist the result so the migration sticks.
+    this.persist();
     // Mock loading delay so skeleton states are visible during development.
     // TODO(backend): drive `loading` from `GET /orders` request lifecycle.
     setTimeout(() => this.loadingSignal.set(false), 600);
@@ -87,7 +95,16 @@ export class OrderService {
   private restore(): OrderRecord[] {
     try {
       const raw = localStorage.getItem(ORDERS_STORAGE_KEY);
-      return raw ? (JSON.parse(raw) as OrderRecord[]) : [];
+      if (!raw) {
+        return [];
+      }
+      const stored = JSON.parse(raw) as OrderRecord[];
+      // One-time migration: the removed `pending_contact` status → `review`.
+      return stored.map(order =>
+        (order.status as string) === 'pending_contact'
+          ? { ...order, status: 'review' as OrderStatus }
+          : order
+      );
     } catch {
       return [];
     }

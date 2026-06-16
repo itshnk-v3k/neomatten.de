@@ -207,7 +207,14 @@ function mapList(values, table) {
 
 // --- build ------------------------------------------------------------------
 
-const source = JSON.parse(readFileSync(SRC, 'utf8'));
+// Product categories that leaked into the vehicle export as a fake "brand".
+// "Органайзер" (Organizer) is an EVA organizer-bag product, not a car brand,
+// so its rows are dropped before any pattern/brand is emitted.
+const EXCLUDED_BRANDS = new Set(['Органайзер']);
+
+const source = JSON.parse(readFileSync(SRC, 'utf8')).filter(
+  entry => !EXCLUDED_BRANDS.has(BRAND_CANON.get(entry.brand) ?? entry.brand),
+);
 const patterns = [];
 const brands = new Map(); // brandId -> { id, name, models:Set, patternCount }
 let pad = String(source.length).length;

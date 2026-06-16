@@ -98,38 +98,63 @@ export class AuthService {
     return session;
   }
 
-  /**
-   * Signs in with Google (mock). Real OAuth lands with the backend.
-   * TODO(backend): implement the Google OAuth flow (redirect / popup → exchange
-   * the code server-side, then `this.api.post<AuthSession>('/auth/social/google', …)`).
-   */
-  async loginWithGoogle(): Promise<AuthSession> {
-    return this.socialLogin('Google User', 'user@gmail.com');
+  // Social login (Google/Facebook) is intentionally NOT mocked here: real OAuth
+  // needs a backend + provider credentials, so the SocialLoginComponent only
+  // surfaces an informational toast for now (no session is created).
+  // TODO(backend): add `loginWithGoogle()/loginWithFacebook()` that exchange the
+  // OAuth code server-side, then `this.api.post<AuthSession>('/auth/social/:provider', …)`.
+
+  // --- Login brute-force protection (client-side) ---------------------------
+  // Frontend-only guard against rapid repeated failed logins. Real rate limiting
+  // belongs on the backend; this prevents request spam to the future API and
+  // gives the user immediate feedback. State lives in localStorage so it survives
+  // reloads within the lockout window.
+  private readonly LOGIN_MAX_ATTEMPTS = 5;
+  private readonly LOGIN_LOCKOUT_MS = 5 * 60 * 1000; // 5 minutes
+  private readonly LOCKOUT_KEY = 'neomatten_login_lockout';
+
+  /** Current lockout status: whether locked, how long remains, and the attempt count. */
+  getLockoutState(): { locked: boolean; remainingMs: number; attempts: number } {
+    const raw = localStorage.getItem(this.LOCKOUT_KEY);
+    if (!raw) return { locked: false, remainingMs: 0, attempts: 0 };
+    try {
+      const data = JSON.parse(raw) as { attempts: number; lockedUntil: number };
+      const remaining = data.lockedUntil - Date.now();
+      if (remaining <= 0) {
+        // Lock expired but failed attempts are kept until a success clears them,
+        // so the next failure (if still wrong) re-locks immediately.
+        return { locked: false, remainingMs: 0, attempts: data.attempts };
+      }
+      return { locked: true, remainingMs: remaining, attempts: data.attempts };
+    } catch {
+      return { locked: false, remainingMs: 0, attempts: 0 };
+    }
   }
 
-  /**
-   * Signs in with Facebook (mock). Real OAuth lands with the backend.
-   * TODO(backend): implement the Facebook OAuth flow, then
-   * `this.api.post<AuthSession>('/auth/social/facebook', …)`.
-   */
-  async loginWithFacebook(): Promise<AuthSession> {
-    return this.socialLogin('Facebook User', 'user@facebook.com');
+  /** Records one failed login; locks the account once the attempt cap is reached. */
+  recordFailedAttempt(): void {
+    const state = this.getLockoutState();
+    const attempts = state.attempts + 1;
+    const lockedUntil =
+      attempts >= this.LOGIN_MAX_ATTEMPTS ? Date.now() + this.LOGIN_LOCKOUT_MS : 0;
+    try {
+      localStorage.setItem(this.LOCKOUT_KEY, JSON.stringify({ attempts, lockedUntil }));
+    } catch {
+      // ignore storage errors
+    }
   }
 
-  /** Mock social-login: builds a session for the provider's user and signs in. */
-  private socialLogin(name: string, email: string): AuthSession {
-    const user: UserDTO = {
-      id: this.mockId(),
-      name,
-      email,
-      phone: '',
-      createdAt: new Date().toISOString(),
-      firstOrderDiscount: false,
-    };
-    const session: AuthSession = { user, token: this.mockToken() };
-    this.setSession(session);
-    return session;
+  /** Clears the failed-attempt counter / lockout (call after a successful login). */
+  clearFailedAttempts(): void {
+    try {
+      localStorage.removeItem(this.LOCKOUT_KEY);
+    } catch {
+      // ignore storage errors
+    }
   }
+
+  // TODO(admin): POST /api/auth/clear-lockout/:userId — admin resets a lockout
+  // from the admin panel once the backend owns rate limiting.
 
   /**
    * Refreshes the access token.

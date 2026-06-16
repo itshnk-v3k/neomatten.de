@@ -552,12 +552,6 @@
     "patternCount": 6
   },
   {
-    "id": "organizer",
-    "name": "Органайзер",
-    "modelCount": 1,
-    "patternCount": 1
-  },
-  {
     "id": "tavria",
     "name": "Таврия",
     "modelCount": 3,

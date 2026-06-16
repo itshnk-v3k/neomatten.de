@@ -10,11 +10,12 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MediaService } from '@core/services/media.service';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
+import { ImagePlaceholderComponent } from '@shared/components/image-placeholder/image-placeholder.component';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 
 @Component({
   selector: 'nm-eva-bags-page',
-  imports: [RouterLink, BreadcrumbComponent, TranslatePipe],
+  imports: [RouterLink, BreadcrumbComponent, ImagePlaceholderComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './eva-bags-page.component.html',
   styleUrl: './eva-bags-page.component.scss',

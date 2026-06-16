@@ -13,10 +13,10 @@
 import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { CartService } from '@core/services/cart.service';
-import { MediaService } from '@core/services/media.service';
 import { ProductService } from '@core/services/product.service';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 import { ButtonDirective } from '@shared/components/button/button.directive';
+import { ImagePlaceholderComponent } from '@shared/components/image-placeholder/image-placeholder.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { ToastService } from '@shared/services/toast.service';
@@ -28,6 +28,7 @@ import { createAsyncAction } from '@shared/utils/async-action.util';
     NgOptimizedImage,
     BreadcrumbComponent,
     ButtonDirective,
+    ImagePlaceholderComponent,
     SkeletonComponent,
     TranslatePipe,
   ],
@@ -38,7 +39,6 @@ export class ProductDetailPageComponent {
   protected readonly products = inject(ProductService);
   private readonly cart = inject(CartService);
   private readonly toast = inject(ToastService);
-  private readonly media = inject(MediaService);
 
   /** Product id, bound from the route param. */
   readonly id = input.required<string>();
@@ -48,14 +48,11 @@ export class ProductDetailPageComponent {
   /**
    * Active gallery image. Product images come from ProductDTO.images.
    * TODO(admin)/TODO(backend): those are admin-managed CDN URLs via `GET /api/products`.
-   * Falls back to a MediaService placeholder if a product has no images.
+   * Null (product has no images) → the template renders nm-image-placeholder.
    */
   protected readonly activeIndex = signal(0);
-  protected readonly activeImage = computed(
-    () =>
-      this.product()?.images[this.activeIndex()] ??
-      this.product()?.images[0] ??
-      this.media.getPlaceholder(640, 640, 'product-' + this.id())
+  protected readonly activeImage = computed<string | null>(
+    () => this.product()?.images[this.activeIndex()] ?? this.product()?.images[0] ?? null
   );
 
   protected select(index: number): void {

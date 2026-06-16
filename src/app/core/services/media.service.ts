@@ -1,16 +1,16 @@
 /*
  * EN: Media service — the single seam for every admin-managed image. Today it
- *     returns placeholder URLs (picsum) and null for not-yet-uploaded assets so
- *     components fall back to their built-in placeholders (BrandLogoComponent
+ *     returns null for not-yet-uploaded assets so components fall back to their
+ *     built-in placeholders (the nm-image-placeholder component, BrandLogoComponent
  *     initials, the CSS mat preview). When the backend lands, each method body
  *     swaps to a real `GET /api/media` lookup / CDN URL — a one-line change per
  *     method, with no call-site changes.
  * RU: Медиа-сервис — единая точка для всех управляемых из админки изображений.
- *     Сейчас отдаёт URL-заглушки (picsum) и null для ещё не загруженных ресурсов,
- *     чтобы компоненты использовали свои фолбэки (инициалы BrandLogoComponent,
- *     CSS-превью коврика). С появлением бэкенда тело каждого метода меняется на
- *     реальный запрос `GET /api/media` / URL CDN — по одной строке на метод, без
- *     изменения мест вызова.
+ *     Сейчас отдаёт null для ещё не загруженных ресурсов, чтобы компоненты
+ *     использовали свои фолбэки (компонент nm-image-placeholder, инициалы
+ *     BrandLogoComponent, CSS-превью коврика). С появлением бэкенда тело каждого
+ *     метода меняется на реальный запрос `GET /api/media` / URL CDN — по одной
+ *     строке на метод, без изменения мест вызова.
  */
 import { inject, Injectable, signal } from '@angular/core';
 import { ApiService } from '@core/http/api.service';
@@ -35,14 +35,17 @@ export class MediaService {
   }
 
   /**
-   * Stable placeholder image URL. `seed` keeps the same random image across
-   * reloads (per content slot). TODO(admin): every caller of this is a slot the
-   * admin will fill with a real uploaded image; remove the placeholder then.
+   * Returns null for an as-yet-unfilled image slot so callers render the local
+   * nm-image-placeholder. The width/height/seed params are kept for the call
+   * sites (a future media API will use them to resolve a real CDN URL).
+   * TODO(admin): every caller of this is a slot the admin will fill with a real
+   * uploaded image; return the uploaded URL from the media API then.
    */
-  getPlaceholder(width: number, height: number, seed?: string): string {
-    return seed
-      ? `https://picsum.photos/seed/${seed}/${width}/${height}`
-      : `https://picsum.photos/${width}/${height}`;
+  getPlaceholder(width: number, height: number, seed?: string): null {
+    void width;
+    void height;
+    void seed;
+    return null;
   }
 
   /**

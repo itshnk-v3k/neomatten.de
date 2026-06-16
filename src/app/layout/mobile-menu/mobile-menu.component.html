@@ -8,14 +8,18 @@
       закрывают меню.
 -->
 <nm-sheet side="right" [open]="open()" (openChange)="open.set($event)">
-  <!-- Brand header: NM logo + DE/EN switcher (replaces the wordmark) -->
-  <div class="mb-2 flex items-center justify-between gap-2 border-b border-border pb-4">
+  <!--
+    Brand header: NM logo + DE/EN switcher grouped on the LEFT so they never
+    collide with the sheet's ✕ close button (absolute right-4 top-4). pr-12
+    reserves space for that button and keeps ≥16px clearance.
+  -->
+  <div class="mb-2 flex items-center justify-start gap-3 border-b border-border pb-4 pr-12">
     <img
       ngSrc="assets/logo/neomat_nm_transparent.png"
       width="517"
       height="300"
       alt="NEOMATTEN"
-      class="h-8 w-auto" />
+      class="h-8 w-auto shrink-0" />
     <nm-language-switcher />
   </div>
 

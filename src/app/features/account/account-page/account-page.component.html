@@ -104,12 +104,18 @@
             </ul>
             <p class="mt-3 text-right text-lg font-extrabold">{{ order.total }} &euro;</p>
             @if (order.status === 'review') {
-              <div class="mt-3 rounded-md border border-info/20 bg-info/10 p-3 text-sm text-info">
+              <div
+                class="mt-3 rounded-md border border-border bg-surface-subtle p-3 text-sm text-content-secondary">
                 {{ 'order_review_notice' | translate }}
               </div>
             } @else if (order.status === 'pending') {
               <div class="mt-3 rounded-md border border-info/20 bg-info/10 p-3 text-sm text-info">
                 {{ 'order_production_notice' | translate }}
+              </div>
+            } @else if (order.status === 'completed') {
+              <div
+                class="mt-3 rounded-md border border-success/20 bg-success/10 p-3 text-sm text-success">
+                {{ 'order_completed_notice' | translate }}
               </div>
             }
           </li>

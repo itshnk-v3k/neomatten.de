@@ -92,7 +92,6 @@
   "form_submit": "Send",
   "form_error_required_fields": "Please fill in all required fields.",
   "error_generic": "An error occurred. Please try again.",
-  "form_required_fields_note": "Required fields",
   "home_hero_eyebrow": "Premium Car Mats",
   "home_hero_title": "EVA car mats of a new generation",
   "home_hero_subtitle": "Full visualisation of mats, fixings and colour options for your vehicle model.",
@@ -461,6 +460,10 @@
   "auth_or_continue_with": "Or continue with",
   "auth_google": "Continue with Google",
   "auth_facebook": "Continue with Facebook",
+  "auth_social_coming_soon": "Social login will be available after backend integration.",
+  "auth_locked_title": "Too many failed attempts",
+  "auth_locked_body": "You have entered the wrong password too many times. Please try again later.",
+  "auth_locked_hint": "Contact us if you need assistance.",
   "auth_register_success": "Account created — welcome!",
   "auth_error_invalid_credentials": "Invalid email or password.",
   "auth_error_email_taken": "An account with this email already exists.",
@@ -513,6 +516,7 @@
   "order_status_cancelled": "Cancelled",
   "order_review_notice": "Your order is under review. We will be in touch soon.",
   "order_production_notice": "Your order will be manufactured within 2–3 business days.",
+  "order_completed_notice": "Thank you! Your order has been completed successfully.",
   "order_confirmed_title": "Order confirmed!",
   "order_confirmed_body": "Thank you for your order. Manufacturing your mats takes 2–3 business days after payment confirmation.",
   "order_view_orders": "View my orders",
@@ -678,5 +682,6 @@
   "phone_country_select_label": "Select country",
   "phone_search_placeholder": "Search country…",
   "phone_search_empty": "No countries found",
-  "account_delete_account": "Delete account"
+  "account_delete_account": "Delete account",
+  "account_danger_zone": "Danger zone"
 }

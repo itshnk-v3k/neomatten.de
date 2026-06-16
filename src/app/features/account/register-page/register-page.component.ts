@@ -86,9 +86,4 @@ export class RegisterPageComponent {
       this.submitting.set(false);
     }
   }
-
-  /** After a successful social login, go to the account dashboard. */
-  protected onSocialAuth(): void {
-    void this.router.navigateByUrl('/account');
-  }
 }

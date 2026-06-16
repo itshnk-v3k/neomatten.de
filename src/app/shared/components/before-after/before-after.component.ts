@@ -18,19 +18,20 @@ import {
   viewChild,
 } from '@angular/core';
 import { LucideMoveHorizontal } from '@lucide/angular';
+import { ImagePlaceholderComponent } from '@shared/components/image-placeholder/image-placeholder.component';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 
 @Component({
   selector: 'nm-before-after',
-  imports: [NgOptimizedImage, LucideMoveHorizontal, TranslatePipe],
+  imports: [NgOptimizedImage, LucideMoveHorizontal, ImagePlaceholderComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './before-after.component.html',
   styleUrl: './before-after.component.scss',
 })
 export class BeforeAfterComponent {
-  /** Image sources. */
-  readonly beforeSrc = input.required<string>();
-  readonly afterSrc = input.required<string>();
+  /** Image sources (null → render the local nm-image-placeholder). */
+  readonly beforeSrc = input<string | null>(null);
+  readonly afterSrc = input<string | null>(null);
 
   /** Alt text + label translation keys. */
   readonly beforeAlt = input<string>('home_comparison_before_alt');

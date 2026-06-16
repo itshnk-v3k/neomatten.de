@@ -10,7 +10,6 @@
  */
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { CarDiagramComponent } from '@features/configurator/car-diagram/car-diagram.component';
-import { MatPreviewComponent } from '@features/configurator/mat-preview/mat-preview.component';
 import type {
   CarZone,
   HeelPadAccessory,
@@ -18,6 +17,7 @@ import type {
   Mounting,
   Texture,
 } from '@features/configurator/configurator.service';
+import { MatPreviewComponent } from '@features/configurator/mat-preview/mat-preview.component';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 
 @Component({

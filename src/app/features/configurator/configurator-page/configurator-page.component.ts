@@ -43,6 +43,7 @@ import { AuthDialogComponent } from '@shared/components/auth-dialog/auth-dialog.
 import { BadgeComponent } from '@shared/components/badge/badge.component';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 import { ButtonDirective } from '@shared/components/button/button.directive';
+import { ImagePlaceholderComponent } from '@shared/components/image-placeholder/image-placeholder.component';
 import { PaymentDialogComponent } from '@shared/components/payment-dialog/payment-dialog.component';
 import { SelectComponent } from '@shared/components/select/select.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
@@ -52,8 +53,6 @@ import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { ToastService } from '@shared/services/toast.service';
 import { createAsyncAction } from '@shared/utils/async-action.util';
 
-import { ConfiguratorInfoDialogsComponent } from '../configurator-info-dialogs/configurator-info-dialogs.component';
-import { ConfiguratorPreviewComponent } from '../configurator-preview/configurator-preview.component';
 import {
   type Accessories,
   type CarZone,
@@ -69,6 +68,8 @@ import {
   type Texture,
   TEXTURES,
 } from '../configurator.service';
+import { ConfiguratorInfoDialogsComponent } from '../configurator-info-dialogs/configurator-info-dialogs.component';
+import { ConfiguratorPreviewComponent } from '../configurator-preview/configurator-preview.component';
 
 @Component({
   selector: 'nm-configurator-page',
@@ -86,6 +87,7 @@ import {
     ConfiguratorInfoDialogsComponent,
     SkeletonComponent,
     TooltipDirective,
+    ImagePlaceholderComponent,
     LucideInfo,
     TranslatePipe,
   ],
@@ -105,10 +107,10 @@ export class ConfiguratorPageComponent {
   private readonly media = inject(MediaService);
 
   /**
-   * Texture swatch thumbnail (placeholder, routed through MediaService).
+   * Texture swatch thumbnail, or null → the template renders nm-image-placeholder.
    * TODO(admin): real texture swatch image comes from the media API once uploaded.
    */
-  protected textureImage(texture: string): string {
+  protected textureImage(texture: string): string | null {
     return this.media.getPlaceholder(200, 140, `nm-tex-${texture}`);
   }
 

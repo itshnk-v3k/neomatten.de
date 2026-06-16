@@ -129,6 +129,28 @@
     height: auto;
   }
 
+  /* Prevent media from being ghost-dragged out of the page or accidentally
+     text-selected. Icons live inside buttons/links, so pointer-events is dropped
+     on the media itself (the click falls through to the interactive host) and
+     re-enabled for genuinely interactive images and the Leaflet map below. */
+  img,
+  svg,
+  video {
+    -webkit-user-drag: none;
+    user-drag: none;
+    -webkit-user-select: none;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  a img,
+  button img,
+  [role='button'] img,
+  .leaflet-container img,
+  .leaflet-container svg {
+    pointer-events: auto;
+  }
+
   ::selection {
     background-color: theme('colors.primary.DEFAULT');
     color: theme('colors.content.inverse');
@@ -276,21 +298,27 @@ a[nmButton][aria-busy='true']::after {
 }
 
 /* Built-in close button (enabled via [closeButton]) restyled to the design:
-   vertically centered on the right edge of the card (next to the text), small,
-   muted with an ink hover. The message content reserves right padding so the
-   text never sits under the ✕. */
-[data-sonner-toast] [data-content] {
-  padding-right: 2rem;
+   placed INSIDE the toast card, vertically centered on its right edge next to
+   the text. ngx-sonner's default rules float it at the top-left corner (it
+   positions against the toaster container), so the toast must be the positioned
+   ancestor (`position: relative`) and the overrides need `!important` to win.
+   `padding-right` on the toast reserves room so the text never sits under the ✕. */
+[data-sonner-toast] {
+  position: relative;
+  padding-right: 2.5rem !important;
 }
 
 [data-sonner-toast] [data-close-button] {
-  position: absolute;
-  top: 50%;
-  right: 0.75rem;
-  left: auto;
-  width: 1rem;
-  height: 1rem;
-  transform: translateY(-50%);
+  position: absolute !important;
+  right: 0.75rem !important;
+  top: 50% !important;
+  left: auto !important;
+  transform: translateY(-50%) !important;
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 0;
   border-radius: 0.25rem;
   background: transparent;

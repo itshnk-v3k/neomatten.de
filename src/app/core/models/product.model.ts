@@ -39,7 +39,8 @@ export interface ProductDTO {
   readonly stockQuantity: number;
   /**
    * Image URLs for the detail-page carousel (first is the listing thumbnail).
-   * Currently placeholder (picsum) URLs from the mock JSON.
+   * Empty in the mock JSON today, so call sites render the local
+   * nm-image-placeholder.
    * TODO(admin)/TODO(backend): these become admin-managed CDN URLs (MediaAsset)
    * served by `GET /api/products`; no call-site changes needed (kept as URL strings).
    */
@@ -69,6 +70,6 @@ export function productToCartItem(product: ProductDTO, id: string): CartItem {
     name: product.name,
     quantity: 1,
     unitPrice: product.price,
-    thumbnailUrl: product.images[0],
+    thumbnailUrl: product.images[0] ?? undefined,
   };
 }

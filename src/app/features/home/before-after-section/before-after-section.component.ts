@@ -20,8 +20,8 @@ import { TranslatePipe } from '@shared/pipes/translate.pipe';
 export class BeforeAfterSectionComponent {
   private readonly media = inject(MediaService);
 
-  // TODO(admin): placeholders routed through MediaService until real photos land.
-  /** Before/after comparison images. */
+  // TODO(admin): null until real photos land → the slider shows nm-image-placeholder.
+  /** Before/after comparison images (null → local placeholder via MediaService). */
   protected readonly beforeImage = this.media.getPlaceholder(900, 506, 'neomatten-before');
   protected readonly afterImage = this.media.getPlaceholder(900, 506, 'neomatten-after');
 }

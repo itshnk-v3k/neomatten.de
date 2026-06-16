@@ -8,6 +8,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { afterNextRender, ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MediaService } from '@core/services/media.service';
+import { ImagePlaceholderComponent } from '@shared/components/image-placeholder/image-placeholder.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
 import { RevealOnScrollDirective } from '@shared/directives/reveal-on-scroll.directive';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
@@ -17,7 +18,7 @@ interface CategoryCard {
   readonly titleKey: string;
   readonly linkKey: string;
   readonly altKey: string;
-  readonly image: string;
+  readonly image: string | null;
   readonly route: string;
 }
 
@@ -29,6 +30,7 @@ interface CategoryCard {
     TranslatePipe,
     RevealOnScrollDirective,
     SkeletonComponent,
+    ImagePlaceholderComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './categories.component.html',

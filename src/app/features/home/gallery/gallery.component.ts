@@ -10,14 +10,18 @@
 import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, signal, viewChild } from '@angular/core';
 import { LucideChevronLeft, LucideChevronRight } from '@lucide/angular';
+import { ImagePlaceholderComponent } from '@shared/components/image-placeholder/image-placeholder.component';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import type { EmblaOptionsType } from 'embla-carousel';
 import { EmblaCarouselDirective } from 'embla-carousel-angular';
 import AutoplayPlugin from 'embla-carousel-autoplay';
 
-/** A single gallery slide. `caption` is a brand/model label (kept as-is, not translated). */
+/**
+ * A single gallery slide. `caption` is a brand/model label (kept as-is, not
+ * translated). `src` null → the slide renders the local nm-image-placeholder.
+ */
 export interface GallerySlide {
-  readonly src: string;
+  readonly src: string | null;
   readonly caption: string;
 }
 
@@ -28,6 +32,7 @@ export interface GallerySlide {
     EmblaCarouselDirective,
     LucideChevronLeft,
     LucideChevronRight,
+    ImagePlaceholderComponent,
     TranslatePipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -92,7 +92,6 @@
   "form_submit": "Absenden",
   "form_error_required_fields": "Bitte füllen Sie alle Pflichtfelder aus.",
   "error_generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
-  "form_required_fields_note": "Pflichtfelder",
   "home_hero_eyebrow": "Premium Auto Fußmatten",
   "home_hero_title": "EVA-Automatten der neuen Generation",
   "home_hero_subtitle": "Vollständige Visualisierung der Matten, Befestigungen und Farbvarianten für Ihr Fahrzeugmodell.",
@@ -461,6 +460,10 @@
   "auth_or_continue_with": "Oder weiter mit",
   "auth_google": "Mit Google fortfahren",
   "auth_facebook": "Mit Facebook fortfahren",
+  "auth_social_coming_soon": "Social Login wird nach der Backend-Integration verfügbar.",
+  "auth_locked_title": "Zu viele Fehlversuche",
+  "auth_locked_body": "Sie haben zu viele falsche Passwörter eingegeben. Bitte versuchen Sie es später erneut.",
+  "auth_locked_hint": "Kontaktieren Sie uns, wenn Sie Hilfe benötigen.",
   "auth_register_success": "Konto erstellt — willkommen!",
   "auth_error_invalid_credentials": "Ungültige E-Mail oder Passwort.",
   "auth_error_email_taken": "Ein Konto mit dieser E-Mail existiert bereits.",
@@ -513,6 +516,7 @@
   "order_status_cancelled": "Storniert",
   "order_review_notice": "Ihre Bestellung wird geprüft. Wir melden uns bald.",
   "order_production_notice": "Ihre Bestellung wird innerhalb von 2–3 Werktagen gefertigt.",
+  "order_completed_notice": "Vielen Dank! Ihr Auftrag wurde erfolgreich abgeschlossen.",
   "order_confirmed_title": "Bestellung bestätigt!",
   "order_confirmed_body": "Vielen Dank für Ihre Bestellung. Die Anfertigung Ihrer Matten dauert 2–3 Werktage nach Zahlungseingang.",
   "order_view_orders": "Zu meinen Bestellungen",
@@ -678,5 +682,6 @@
   "phone_country_select_label": "Land auswählen",
   "phone_search_placeholder": "Land suchen…",
   "phone_search_empty": "Keine Länder gefunden",
-  "account_delete_account": "Konto löschen"
+  "account_delete_account": "Konto löschen",
+  "account_danger_zone": "Gefahrenzone"
 }

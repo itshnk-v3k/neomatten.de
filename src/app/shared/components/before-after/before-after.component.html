@@ -13,13 +13,17 @@
   (pointerdown)="onContainerPointerDown($event)">
   <!-- Before (full) -->
   <div class="absolute inset-0">
-    <img
-      [ngSrc]="beforeSrc()"
-      fill
-      [alt]="beforeAlt() | translate"
-      sizes="100vw"
-      priority
-      class="object-cover" />
+    @if (beforeSrc(); as src) {
+      <img
+        [ngSrc]="src"
+        fill
+        [alt]="beforeAlt() | translate"
+        sizes="100vw"
+        priority
+        class="object-cover" />
+    } @else {
+      <nm-image-placeholder class="size-full" />
+    }
     <span
       class="pointer-events-none absolute bottom-4 left-4 rounded-full bg-black/60 px-3.5 py-1 text-xs font-semibold text-white">
       {{ beforeLabelKey() | translate }}
@@ -28,12 +32,11 @@
 
   <!-- After (clipped to the divider) -->
   <div class="absolute inset-0" [style.clip-path]="'inset(0 0 0 ' + position() + '%)'">
-    <img
-      [ngSrc]="afterSrc()"
-      fill
-      [alt]="afterAlt() | translate"
-      sizes="100vw"
-      class="object-cover" />
+    @if (afterSrc(); as src) {
+      <img [ngSrc]="src" fill [alt]="afterAlt() | translate" sizes="100vw" class="object-cover" />
+    } @else {
+      <nm-image-placeholder class="size-full" />
+    }
     <span
       class="pointer-events-none absolute bottom-4 right-4 rounded-full bg-black/60 px-3.5 py-1 text-xs font-semibold text-white">
       {{ afterLabelKey() | translate }}

@@ -9,17 +9,21 @@
   <a
     [routerLink]="detailLink()"
     class="relative block aspect-square overflow-hidden bg-surface-subtle">
-    <img
-      [ngSrc]="product().images[0]"
-      width="640"
-      height="640"
-      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-      [alt]="product().name"
-      (load)="imageLoaded.set(true)"
-      class="size-full object-cover transition-opacity"
-      [class.opacity-0]="!imageLoaded()" />
-    @if (!imageLoaded()) {
-      <nm-skeleton variant="image" class="absolute inset-0 rounded-none" />
+    @if (product().images[0]; as img) {
+      <img
+        [ngSrc]="img"
+        width="640"
+        height="640"
+        sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+        [alt]="product().name"
+        (load)="imageLoaded.set(true)"
+        class="size-full object-cover transition-opacity"
+        [class.opacity-0]="!imageLoaded()" />
+      @if (!imageLoaded()) {
+        <nm-skeleton variant="image" class="absolute inset-0 rounded-none" />
+      }
+    } @else {
+      <nm-image-placeholder class="size-full rounded-none" />
     }
   </a>
   <div class="flex flex-1 flex-col p-5">

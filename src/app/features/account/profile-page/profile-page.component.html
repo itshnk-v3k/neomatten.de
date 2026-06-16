@@ -30,7 +30,6 @@
         formControlName="address"
         label="footer_address_label"
         autocomplete="street-address" />
-      <p class="text-sm text-content-muted">* {{ 'form_required_fields_note' | translate }}</p>
       <button
         nmButton
         type="submit"
@@ -41,32 +40,27 @@
     </form>
   }
 
-  <!-- Sign out of this session (confirmed via dialog). -->
+  <!-- Danger zone: sign out + delete account, side by side (each confirmed via dialog). -->
   <div class="mt-8 border-t border-border pt-8">
-    <h2 class="text-base font-bold">{{ 'account_signout_title' | translate }}</h2>
-    <p class="mt-1 text-sm text-content-secondary">{{ 'account_signout_intro' | translate }}</p>
-    <button
-      nmButton
-      variant="outline"
-      type="button"
-      class="mt-4 w-full rounded-full"
-      (click)="logoutOpen.set(true)">
-      <svg lucideLogOut class="size-5 shrink-0"></svg>
-      {{ 'action_logout' | translate }}
-    </button>
-  </div>
-
-  <!-- Danger zone: delete account (confirmed via dialog). -->
-  <div class="mt-8 border-t border-border pt-8">
-    <h2 class="text-base font-bold text-error">{{ 'account_delete_title' | translate }}</h2>
-    <p class="mt-1 text-sm text-content-secondary">{{ 'account_delete_confirm' | translate }}</p>
-    <button
-      type="button"
-      class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-error bg-transparent px-6 py-2.5 font-semibold text-error transition-colors duration-150 hover:bg-error/10"
-      (click)="deleteOpen.set(true)">
-      <svg lucideAlertTriangle class="size-5 shrink-0"></svg>
-      {{ 'account_delete_account' | translate }}
-    </button>
+    <h2 class="text-base font-bold text-error">{{ 'account_danger_zone' | translate }}</h2>
+    <div class="mt-4 flex flex-col gap-4 sm:flex-row">
+      <button
+        nmButton
+        variant="outline"
+        type="button"
+        class="flex-1 rounded-full"
+        (click)="logoutOpen.set(true)">
+        <svg lucideLogOut class="size-5 shrink-0"></svg>
+        {{ 'action_logout' | translate }}
+      </button>
+      <button
+        type="button"
+        class="inline-flex flex-1 items-center justify-center gap-2 rounded-full border-2 border-error bg-transparent px-6 py-2.5 font-semibold text-error transition-colors duration-150 hover:bg-error/10"
+        (click)="deleteOpen.set(true)">
+        <svg lucideAlertTriangle class="size-5 shrink-0"></svg>
+        {{ 'account_delete_account' | translate }}
+      </button>
+    </div>
   </div>
 </div>
 

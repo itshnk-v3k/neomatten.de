@@ -12,6 +12,7 @@ import { RouterLink } from '@angular/router';
 import { productCategoryPath, type ProductDTO } from '@core/models/product.model';
 import { CartService } from '@core/services/cart.service';
 import { ButtonDirective } from '@shared/components/button/button.directive';
+import { ImagePlaceholderComponent } from '@shared/components/image-placeholder/image-placeholder.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { ToastService } from '@shared/services/toast.service';
@@ -19,7 +20,14 @@ import { createAsyncAction } from '@shared/utils/async-action.util';
 
 @Component({
   selector: 'nm-product-card',
-  imports: [RouterLink, NgOptimizedImage, ButtonDirective, SkeletonComponent, TranslatePipe],
+  imports: [
+    RouterLink,
+    NgOptimizedImage,
+    ButtonDirective,
+    ImagePlaceholderComponent,
+    SkeletonComponent,
+    TranslatePipe,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './product-card.component.html',
 })
