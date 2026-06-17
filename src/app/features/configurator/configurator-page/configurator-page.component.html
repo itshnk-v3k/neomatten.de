@@ -417,7 +417,7 @@
               (click)="setHeelPad('none')"
               [attr.aria-pressed]="heelPad() === 'none'"
               [class]="
-                'rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                'flex min-h-20 flex-col justify-center gap-1 rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
                 (heelPad() === 'none'
                   ? 'border-primary bg-primary-50'
                   : 'border-border hover:border-primary')
@@ -431,22 +431,22 @@
                 (click)="setHeelPad('standard')"
                 [attr.aria-pressed]="heelPad() === 'standard'"
                 [class]="
-                  'flex items-center justify-between rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                  'flex min-h-20 flex-col justify-center gap-1 rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
                   (heelPad() === 'standard'
                     ? 'border-primary bg-primary-50'
                     : 'border-border hover:border-primary')
                 ">
-                {{ 'configurator_heel_standard' | translate }}
-                <span class="text-sm text-primary">+5.00 &euro;</span>
+                <span>{{ 'configurator_heel_standard' | translate }}</span>
+                <span class="text-sm font-semibold text-primary">+5.00 &euro;</span>
               </button>
             } @else {
               <div
                 [nmTooltip]="heelPadUnavailableKey('standard')"
                 tone="error"
                 aria-disabled="true"
-                class="flex cursor-not-allowed items-center justify-between rounded-xl border-2 border-border p-4 text-left font-semibold opacity-40">
-                {{ 'configurator_heel_standard' | translate }}
-                <span class="text-sm text-primary">+5.00 &euro;</span>
+                class="flex min-h-20 cursor-not-allowed flex-col justify-center gap-1 rounded-xl border-2 border-border p-4 text-left font-semibold opacity-40">
+                <span>{{ 'configurator_heel_standard' | translate }}</span>
+                <span class="text-sm font-semibold text-primary">+5.00 &euro;</span>
               </div>
             }
 
@@ -456,22 +456,22 @@
                 (click)="setHeelPad('3d')"
                 [attr.aria-pressed]="heelPad() === '3d'"
                 [class]="
-                  'flex items-center justify-between rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                  'flex min-h-20 flex-col justify-center gap-1 rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
                   (heelPad() === '3d'
                     ? 'border-primary bg-primary-50'
                     : 'border-border hover:border-primary')
                 ">
-                {{ 'configurator_heel_3d' | translate }}
-                <span class="text-sm text-primary">+10.00 &euro;</span>
+                <span>{{ 'configurator_heel_3d' | translate }}</span>
+                <span class="text-sm font-semibold text-primary">+10.00 &euro;</span>
               </button>
             } @else {
               <div
                 [nmTooltip]="heelPadUnavailableKey('3d')"
                 tone="error"
                 aria-disabled="true"
-                class="flex cursor-not-allowed items-center justify-between rounded-xl border-2 border-border p-4 text-left font-semibold opacity-40">
-                {{ 'configurator_heel_3d' | translate }}
-                <span class="text-sm text-primary">+10.00 &euro;</span>
+                class="flex min-h-20 cursor-not-allowed flex-col justify-center gap-1 rounded-xl border-2 border-border p-4 text-left font-semibold opacity-40">
+                <span>{{ 'configurator_heel_3d' | translate }}</span>
+                <span class="text-sm font-semibold text-primary">+10.00 &euro;</span>
               </div>
             }
           </div>
@@ -499,7 +499,7 @@
               (click)="setHeelRest('none')"
               [attr.aria-pressed]="heelRest() === 'none'"
               [class]="
-                'rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                'flex min-h-20 flex-col justify-center gap-1 rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
                 (heelRest() === 'none'
                   ? 'border-primary bg-primary-50'
                   : 'border-border hover:border-primary')
@@ -511,26 +511,26 @@
               (click)="setHeelRest('metal')"
               [attr.aria-pressed]="heelRest() === 'metal'"
               [class]="
-                'flex items-center justify-between rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                'flex min-h-20 flex-col justify-center gap-1 rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
                 (heelRest() === 'metal'
                   ? 'border-primary bg-primary-50'
                   : 'border-border hover:border-primary')
               ">
-              {{ 'heel_rest_metal' | translate }}
-              <span class="text-sm text-primary">+20.00 &euro;</span>
+              <span>{{ 'heel_rest_metal' | translate }}</span>
+              <span class="text-sm font-semibold text-primary">+20.00 &euro;</span>
             </button>
             <button
               type="button"
               (click)="setHeelRest('rubber')"
               [attr.aria-pressed]="heelRest() === 'rubber'"
               [class]="
-                'flex items-center justify-between rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                'flex min-h-20 flex-col justify-center gap-1 rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
                 (heelRest() === 'rubber'
                   ? 'border-primary bg-primary-50'
                   : 'border-border hover:border-primary')
               ">
-              {{ 'heel_rest_rubber' | translate }}
-              <span class="text-sm text-primary">+15.00 &euro;</span>
+              <span>{{ 'heel_rest_rubber' | translate }}</span>
+              <span class="text-sm font-semibold text-primary">+15.00 &euro;</span>
             </button>
           </div>
 
