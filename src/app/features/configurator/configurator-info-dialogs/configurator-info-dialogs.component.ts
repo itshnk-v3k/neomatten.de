@@ -20,7 +20,10 @@ import { TranslatePipe } from '@shared/pipes/translate.pipe';
 export class ConfiguratorInfoDialogsComponent {
   readonly materialInfoOpen = model<boolean>(false);
   readonly textureInfoOpen = model<boolean>(false);
+  readonly mountingInfoOpen = model<boolean>(false);
   readonly kitInfoOpen = model<boolean>(false);
   readonly accessoriesInfoOpen = model<boolean>(false);
   readonly heelInfoOpen = model<boolean>(false);
+  readonly heelRestInfoOpen = model<boolean>(false);
+  readonly deliveryInfoOpen = model<boolean>(false);
 }

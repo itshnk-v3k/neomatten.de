@@ -169,9 +169,12 @@ export class ConfiguratorPageComponent {
   protected readonly materialInfoOpen = signal(false);
   // Per-step explanation dialogs (opened from the ℹ️ icon next to each title).
   protected readonly textureInfoOpen = signal(false);
+  protected readonly mountingInfoOpen = signal(false);
+  protected readonly heelRestInfoOpen = signal(false);
   protected readonly kitInfoOpen = signal(false);
   protected readonly accessoriesInfoOpen = signal(false);
   protected readonly heelInfoOpen = signal(false);
+  protected readonly deliveryInfoOpen = signal(false);
   protected readonly authOpen = signal(false);
   protected readonly paymentOpen = signal(false);
   private readonly pendingAction = signal<'pay' | 'manager' | null>(null);

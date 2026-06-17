@@ -432,6 +432,8 @@
   "heel_rest_none": "Without heel rest",
   "heel_rest_metal": "Metal",
   "heel_rest_rubber": "Rubber",
+  "heel_rest_info_metal": "A brushed-metal heel plate that resists scuffing from your shoe heel — the most hard-wearing option for high-mileage driver mats.",
+  "heel_rest_info_rubber": "A textured rubber heel pad that adds grip and quiet underfoot, protecting the mat where your heel rests while driving.",
   "configurator_step_heel": "Heel pad",
   "configurator_heel_none": "Without heel pad",
   "configurator_heel_standard": "Standard heel pad",

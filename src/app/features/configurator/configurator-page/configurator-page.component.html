@@ -332,9 +332,8 @@
             <button
               type="button"
               class="ml-auto text-content-muted transition-colors hover:text-primary"
-              [nmTooltip]="'mounting_info_3d'"
-              position="left"
-              [attr.aria-label]="'configurator_info_label' | translate">
+              [attr.aria-label]="'configurator_info_label' | translate"
+              (click)="mountingInfoOpen.set(true)">
               <svg lucideInfo class="size-5"></svg>
             </button>
           </h2>
@@ -463,6 +462,13 @@
               9
             </span>
             {{ 'heel_rest_title' | translate }}
+            <button
+              type="button"
+              class="ml-auto text-content-muted transition-colors hover:text-primary"
+              [attr.aria-label]="'configurator_info_label' | translate"
+              (click)="heelRestInfoOpen.set(true)">
+              <svg lucideInfo class="size-5"></svg>
+            </button>
           </h2>
           <div class="mt-4 grid gap-3 sm:grid-cols-3">
             <button
@@ -642,9 +648,8 @@
             <button
               type="button"
               class="ml-auto text-content-muted transition-colors hover:text-primary"
-              [nmTooltip]="'configurator_delivery_threshold_info'"
-              position="left"
-              [attr.aria-label]="'configurator_info_label' | translate">
+              [attr.aria-label]="'configurator_info_label' | translate"
+              (click)="deliveryInfoOpen.set(true)">
               <svg lucideInfo class="size-5"></svg>
             </button>
           </h2>
@@ -824,9 +829,12 @@
 <nm-configurator-info-dialogs
   [(materialInfoOpen)]="materialInfoOpen"
   [(textureInfoOpen)]="textureInfoOpen"
+  [(mountingInfoOpen)]="mountingInfoOpen"
   [(kitInfoOpen)]="kitInfoOpen"
   [(accessoriesInfoOpen)]="accessoriesInfoOpen"
-  [(heelInfoOpen)]="heelInfoOpen" />
+  [(heelInfoOpen)]="heelInfoOpen"
+  [(heelRestInfoOpen)]="heelRestInfoOpen"
+  [(deliveryInfoOpen)]="deliveryInfoOpen" />
 
 <!-- Auth + payment dialogs -->
 <nm-auth-dialog [(open)]="authOpen" (authenticated)="onAuthenticated()" />
