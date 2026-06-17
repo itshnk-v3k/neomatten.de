@@ -34,6 +34,7 @@
         [formControl]="sortControl"
         label="account_filter_sort"
         [options]="sortOptions()" />
+      <nm-date-range-picker [(value)]="dateRange" [isDesktop]="isDesktop()" />
     </ng-template>
 
     @if (orders.loading()) {
@@ -57,36 +58,42 @@
         </a>
       </div>
     } @else {
-      <!-- Filter & sort bar -->
-      @if (isDesktop()) {
-        <div class="mt-4 flex items-end gap-3">
-          <div class="grid flex-1 grid-cols-3 gap-3">
-            <ng-container [ngTemplateOutlet]="filterControls" />
+      <!-- Filter & sort bar — sticky directly below the site header; its measured
+           height (filtersBarHeight) offsets the date group headers beneath it. -->
+      <div
+        #filtersBar
+        class="sticky z-20 mt-4 bg-surface/95 py-3 backdrop-blur"
+        [style.top.px]="headerHeight">
+        @if (isDesktop()) {
+          <div class="flex items-end gap-3">
+            <div class="grid flex-1 grid-cols-2 gap-3 lg:grid-cols-4">
+              <ng-container [ngTemplateOutlet]="filterControls" />
+            </div>
+            @if (activeFilterCount() > 0) {
+              <button
+                type="button"
+                class="mb-1 shrink-0 text-sm font-medium text-content-secondary transition-colors hover:text-primary"
+                (click)="clearFilters()">
+                {{ 'account_filters_clear' | translate }}
+              </button>
+            }
           </div>
-          @if (activeFilterCount() > 0) {
-            <button
-              type="button"
-              class="mb-1 shrink-0 text-sm font-medium text-content-secondary transition-colors hover:text-primary"
-              (click)="clearFilters()">
-              {{ 'account_filters_clear' | translate }}
-            </button>
-          }
-        </div>
-      } @else {
-        <button
-          type="button"
-          class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 py-3 text-sm font-semibold text-content shadow-soft transition-colors hover:border-primary"
-          (click)="filtersOpen.set(true)">
-          <svg lucideSlidersHorizontal class="size-4" aria-hidden="true"></svg>
-          {{ 'account_filters_button' | translate }}
-          @if (activeFilterCount() > 0) {
-            <span
-              class="inline-flex size-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
-              {{ activeFilterCount() }}
-            </span>
-          }
-        </button>
-      }
+        } @else {
+          <button
+            type="button"
+            class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-surface px-4 py-3 text-sm font-semibold text-content shadow-soft transition-colors hover:border-primary"
+            (click)="filtersOpen.set(true)">
+            <svg lucideSlidersHorizontal class="size-4" aria-hidden="true"></svg>
+            {{ 'account_filters_button' | translate }}
+            @if (activeFilterCount() > 0) {
+              <span
+                class="inline-flex size-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
+                {{ activeFilterCount() }}
+              </span>
+            }
+          </button>
+        }
+      </div>
 
       @if (filteredOrders().length === 0) {
         <!-- Empty state when filters exclude everything (orders DO exist). -->
@@ -106,8 +113,19 @@
       } @else if (isGrouped()) {
         @for (group of orderGroups(); track group.key) {
           <h3
-            class="sticky top-0 z-10 my-6 bg-surface-subtle/95 px-1 py-2 text-sm font-bold uppercase tracking-wide text-content-secondary backdrop-blur first:mt-4">
-            {{ group.label }}
+            class="sticky z-10 my-4 flex items-center justify-between gap-3 border-b border-border bg-surface/95 py-2.5 backdrop-blur first:mt-3"
+            [style.top.px]="headerHeight + filtersBarHeight()">
+            <span class="flex items-center gap-2.5">
+              <span class="h-5 w-1 shrink-0 rounded-full bg-primary"></span>
+              <span class="text-base font-bold text-content">{{ group.label }}</span>
+            </span>
+            <span class="shrink-0 text-xs text-content-secondary">
+              {{ group.orders.length }}
+              {{
+                (group.orders.length === 1 ? 'account_order_singular' : 'account_orders_plural')
+                  | translate
+              }}
+            </span>
           </h3>
           <div class="flex flex-col gap-4">
             @for (order of group.orders; track order.id) {

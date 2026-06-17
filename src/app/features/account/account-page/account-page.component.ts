@@ -16,8 +16,11 @@ import {
   Component,
   computed,
   DestroyRef,
+  effect,
+  type ElementRef,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -44,6 +47,10 @@ import {
   LucideStore,
 } from '@lucide/angular';
 import { ButtonDirective } from '@shared/components/button/button.directive';
+import {
+  type DateRange,
+  DateRangePickerComponent,
+} from '@shared/components/date-range-picker/date-range-picker.component';
 import { SelectComponent } from '@shared/components/select/select.component';
 import { SheetComponent } from '@shared/components/sheet/sheet.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
@@ -92,6 +99,7 @@ const SORT_OPTIONS: readonly SortOption[] = ['newest', 'oldest', 'price_high', '
     RouterLink,
     ReactiveFormsModule,
     ButtonDirective,
+    DateRangePickerComponent,
     SelectComponent,
     SheetComponent,
     SkeletonComponent,
@@ -147,8 +155,19 @@ export class AccountPageComponent {
     initialValue: this.sortControl.value,
   });
 
+  /** Selected order-date range (null = no date filter). */
+  protected readonly dateRange = signal<DateRange | null>(null);
+
   /** Whether the mobile "Filter & Sort" bottom sheet is open. */
   protected readonly filtersOpen = signal(false);
+
+  /** Site-header height (px) — the sticky filters bar offsets below it. */
+  protected readonly headerHeight = 72;
+
+  /** The sticky filters bar; its measured height offsets the date group headers below it. */
+  private readonly filtersBar = viewChild<ElementRef<HTMLElement>>('filtersBar');
+  /** Measured filters-bar height (px) so date headers stick directly beneath it. */
+  protected readonly filtersBarHeight = signal(0);
 
   /**
    * lg breakpoint gate: at lg+ the filters render as an inline row, below it
@@ -171,6 +190,21 @@ export class AccountPageComponent {
       mq.addEventListener('change', onChange);
       this.destroyRef.onDestroy(() => mq.removeEventListener('change', onChange));
     }
+
+    // Keep the date-group headers stacked directly below the (variable-height,
+    // breakpoint-dependent) sticky filters bar by measuring it live.
+    let observer: ResizeObserver | undefined;
+    effect(() => {
+      const el = this.filtersBar()?.nativeElement;
+      observer?.disconnect();
+      if (!el || typeof ResizeObserver === 'undefined') {
+        this.filtersBarHeight.set(0);
+        return;
+      }
+      observer = new ResizeObserver(() => this.filtersBarHeight.set(el.offsetHeight));
+      observer.observe(el);
+    });
+    this.destroyRef.onDestroy(() => observer?.disconnect());
   }
 
   /** Select options (labels re-resolve on language change). */
@@ -209,10 +243,12 @@ export class AccountPageComponent {
     const status = this.status();
     const category = this.category();
     const sort = this.sort();
+    const range = this.dateRange();
     const matched = this.orderList().filter(
       order =>
         (status === 'all' || order.status === status) &&
-        (category === 'all' || order.items.some(item => item.category === category))
+        (category === 'all' || order.items.some(item => item.category === category)) &&
+        (range === null || this.withinRange(order.createdAt, range))
     );
     return matched.sort((a, b) => {
       switch (sort) {
@@ -261,6 +297,7 @@ export class AccountPageComponent {
     if (this.status() !== 'all') count++;
     if (this.category() !== 'all') count++;
     if (this.sort() !== 'newest') count++;
+    if (this.dateRange() !== null) count++;
     return count;
   });
 
@@ -269,6 +306,13 @@ export class AccountPageComponent {
     this.statusControl.setValue('all');
     this.categoryControl.setValue('all');
     this.sortControl.setValue('newest');
+    this.dateRange.set(null);
+  }
+
+  /** Whether an order's ISO `createdAt` falls within the inclusive date range. */
+  private withinRange(createdAt: string, range: DateRange): boolean {
+    const t = new Date(createdAt).getTime();
+    return t >= range.start.getTime() && t <= range.end.getTime();
   }
 
   // --- Expand / collapse ----------------------------------------------------
