@@ -28,7 +28,14 @@ import {
   type HeelPadAccessory,
   type HeelRest,
 } from '@features/configurator/configurator.service';
-import { LucideCheck, LucideCopy, LucideMinus, LucidePlus, LucideTrash2 } from '@lucide/angular';
+import {
+  LucideCheck,
+  LucideChevronDown,
+  LucideCopy,
+  LucideMinus,
+  LucidePlus,
+  LucideTrash2,
+} from '@lucide/angular';
 import { AuthDialogComponent } from '@shared/components/auth-dialog/auth-dialog.component';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 import { ButtonDirective } from '@shared/components/button/button.directive';
@@ -46,6 +53,7 @@ import { ToastService } from '@shared/services/toast.service';
     LucideTrash2,
     LucideCopy,
     LucideCheck,
+    LucideChevronDown,
     BreadcrumbComponent,
     ButtonDirective,
     AuthDialogComponent,
@@ -65,6 +73,55 @@ export class CartPageComponent {
   private readonly config = inject(ConfiguratorService);
   private readonly translation = inject(TranslationService);
   private readonly toast = inject(ToastService);
+
+  /** Cart line ids whose configuration details are currently expanded (collapsed by default). */
+  private readonly expandedIds = signal(new Set<string>());
+
+  protected isExpanded(id: string): boolean {
+    return this.expandedIds().has(id);
+  }
+
+  protected toggleExpanded(id: string): void {
+    this.expandedIds.update(set => {
+      const next = new Set(set);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }
+
+  /**
+   * One-line collapsed preview — a few key highlights (texture · colour · heel rest
+   * · positions) joined by "·". Positions collapse to the matching preset name
+   * (e.g. "Front row") when they form one, else a "N×" mat count.
+   */
+  protected configPreview(item: CartItem): string {
+    const lang = this.translation.currentLanguage();
+    const t = (key: string): string => this.translation.translate(key);
+    const parts: string[] = [];
+    if (item.texture) parts.push(t(`configurator_texture_${item.texture}`));
+    if (item.materialColour) parts.push(this.config.matColourName(item.materialColour, lang));
+    if (item.heelRest && item.heelRest !== 'none') parts.push(t(`heel_rest_${item.heelRest}`));
+    const presetKey = this.positionsPresetKey(item.kitPieces ?? []);
+    if (presetKey) parts.push(t(presetKey));
+    else if (item.kitPieces?.length) parts.push(`${item.kitPieces.length}×`);
+    return parts.join(' · ');
+  }
+
+  /** Maps a set of selected positions to its preset i18n key, or null if it isn't one. */
+  private positionsPresetKey(pieces: readonly string[]): string | null {
+    const set = new Set(pieces);
+    const matches = (zones: readonly string[]): boolean =>
+      zones.length === set.size && zones.every(z => set.has(z));
+    if (matches(['front_left', 'front_right'])) return 'configurator_preset_front_row';
+    if (matches(['rear_left', 'rear_right'])) return 'configurator_preset_rear_row';
+    if (matches(['front_left', 'front_right', 'rear_left', 'rear_right'])) {
+      return 'configurator_preset_full_interior';
+    }
+    if (matches(['front_left', 'front_right', 'rear_left', 'rear_right', 'trunk'])) {
+      return 'configurator_preset_premium';
+    }
+    return null;
+  }
 
   /**
    * Resolves a configured-mat cart line into the shared summary view-model, so the

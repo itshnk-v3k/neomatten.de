@@ -580,6 +580,8 @@
   "cart_total": "Gesamt",
   "cart_qty": "Menge",
   "cart_remove": "Position entfernen",
+  "cart_show_details": "Details anzeigen",
+  "cart_hide_details": "Details ausblenden",
   "cart_item_kit": "Set",
   "cart_brand_model": "Marke / Modell",
   "cart_year_range": "Baujahr",

@@ -580,6 +580,8 @@
   "cart_total": "Total",
   "cart_qty": "Quantity",
   "cart_remove": "Remove item",
+  "cart_show_details": "Show details",
+  "cart_hide_details": "Hide details",
   "cart_item_kit": "Kit",
   "cart_brand_model": "Brand / Model",
   "cart_year_range": "Year range",
