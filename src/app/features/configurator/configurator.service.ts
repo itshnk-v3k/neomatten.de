@@ -15,12 +15,14 @@
  */
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
+import { PRICING } from '@core/config/pricing.config';
 import type { Language } from '@core/i18n/language.model';
 import type { CartItem } from '@core/models/cart-item.model';
 import type { MatColour, MatColoursData, TextureColours } from '@core/models/mat-colour.model';
 import type { OrderItemDTO } from '@core/models/order.model';
 import type { VehiclePattern } from '@core/models/vehicle.model';
 import type { SelectOption } from '@shared/models/select-option.model';
+import { round2 } from '@shared/utils/money.util';
 
 export type Texture = 'rhombus' | 'honeycomb' | 'drop';
 export type MaterialType = 'eva' | 'ecoskin';
@@ -96,25 +98,10 @@ export function colourName(colour: MatColour, lang: Language): string {
 }
 
 // --- mock pricing -----------------------------------------------------------
-// TODO(admin)/TODO(backend): all prices below (tier base prices, add-on prices
-// and shipping tiers) are a mock. They should be admin-managed and/or computed
-// by the backend (e.g. `POST /api/configurator/price`); swap `price()`/`shipping()`
-// to call the API — the call sites stay the same.
-
-const BASE_BY_TIER = { economy: 89, standard: 119, premium: 159 } as const;
-const EXTRA_MAT_PRICE = 15;
-// Heel-pad (step 08) upgrade prices. TODO(admin): GET /api/settings/prices.
-const HEEL_PAD_STANDARD_PRICE = 5;
-const HEEL_PAD_3D_PRICE = 10;
-// Heel-rest pad (step 09) accessory prices. TODO(admin): GET /api/settings/prices.
-const HEEL_METAL_PRICE = 20;
-const HEEL_RUBBER_PRICE = 15;
-
-/** Shipping tiers (EUR) matching the step-11 delivery table. */
-export const SHIPPING_SINGLE = 4.99;
-export const SHIPPING_PAIR = 6.99;
-export const SHIPPING_FULL = 9.99;
-export const SHIPPING_PREMIUM = 12.99;
+// All prices (tier base prices, add-on prices and shipping tiers) come from the
+// injected `PRICING` config — a single source of truth shared with the cart and
+// checkout. TODO(admin)/TODO(backend): provide `PRICING` from a settings API
+// (e.g. `POST /api/configurator/price`); the call sites stay the same.
 
 /** The full configuration state used by pricing + builders. */
 export interface ConfigState {
@@ -141,6 +128,7 @@ export type PricingTier = 'economy' | 'standard' | 'premium';
 @Injectable({ providedIn: 'root' })
 export class ConfiguratorService {
   private readonly http = inject(HttpClient);
+  private readonly pricing = inject(PRICING);
 
   private readonly loadingSignal = signal(true);
   /** True while configurator data initializes; flips false once colours load. */
@@ -261,15 +249,15 @@ export class ConfiguratorService {
 
   /** Heel-pad (step 08) upgrade price for the chosen option, in EUR. */
   heelPadPrice(heelPad: HeelPadAccessory): number {
-    if (heelPad === 'standard') return HEEL_PAD_STANDARD_PRICE;
-    if (heelPad === '3d') return HEEL_PAD_3D_PRICE;
+    if (heelPad === 'standard') return this.pricing.heelPad.standard;
+    if (heelPad === '3d') return this.pricing.heelPad.threeD;
     return 0;
   }
 
   /** Heel-rest pad (step 09) accessory price for the chosen option, in EUR. */
   heelRestPrice(heelRest: HeelRest): number {
-    if (heelRest === 'metal') return HEEL_METAL_PRICE;
-    if (heelRest === 'rubber') return HEEL_RUBBER_PRICE;
+    if (heelRest === 'metal') return this.pricing.heelRest.metal;
+    if (heelRest === 'rubber') return this.pricing.heelRest.rubber;
     return 0;
   }
 
@@ -310,8 +298,8 @@ export class ConfiguratorService {
     const extras = Math.max(0, floors - 2); // beyond the front pair
     // Mounting (3D) is Coming Soon — not charged. Heel-pad + heel-rest are add-ons.
     const total =
-      BASE_BY_TIER[tier] +
-      extras * EXTRA_MAT_PRICE +
+      this.pricing.tierBasePrices[tier] +
+      extras * this.pricing.extraMatPrice +
       this.heelPadPrice(state.heelPad) +
       this.heelRestPrice(state.heelRest);
     return round2(total);
@@ -321,8 +309,7 @@ export class ConfiguratorService {
   deliveryTierKey(zones: ReadonlySet<CarZone>): string {
     const floors = FLOOR_ZONES.filter(z => zones.has(z)).length;
     if (zones.has('trunk')) return 'configurator_delivery_premium';
-    if (floors >= 4) return 'configurator_delivery_full';
-    if (floors === 3) return 'configurator_delivery_full';
+    if (floors >= 3) return 'configurator_delivery_full';
     if (floors === 2) return 'configurator_delivery_pair';
     return 'configurator_delivery_single';
   }
@@ -332,9 +319,10 @@ export class ConfiguratorService {
     const floors = FLOOR_ZONES.filter(z => zones.has(z)).length;
     if (zones.has('trunk')) return 0; // premium set → free to Germany
     if (floors >= 4) return 0; // full interior → free to Germany
-    if (floors <= 1) return SHIPPING_SINGLE;
-    if (floors === 2) return SHIPPING_PAIR;
-    return SHIPPING_FULL;
+    const tiers = this.pricing.shipping;
+    if (floors <= 1) return tiers.single;
+    if (floors === 2) return tiers.pair;
+    return tiers.full;
   }
 
   /** Builds the cart line for a finished configuration. `id` must be unique. */
@@ -372,10 +360,6 @@ export class ConfiguratorService {
       unitPrice: this.price(state),
     };
   }
-}
-
-function round2(value: number): number {
-  return Math.round(value * 100) / 100;
 }
 
 /**

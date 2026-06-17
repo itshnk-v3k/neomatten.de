@@ -1,15 +1,15 @@
 /*
  * EN: Home work-gallery section. The embla carousel (nm-gallery) is heavy, so it
- *     only mounts once the section is scrolled near (nmLazySection); a skeleton
- *     grid stands in until then. Slides show real customer-mat photos served from
- *     src/assets/images/gallery.
+ *     is code-split and only loaded once scrolled into view (@defer on viewport);
+ *     a skeleton grid stands in until then. Slides show real customer-mat photos
+ *     served from src/assets/images/gallery.
  * RU: Секция галереи работ главной. Карусель embla (nm-gallery) тяжёлая, поэтому
- *     монтируется только при приближении прокрутки (nmLazySection); до этого —
- *     скелетон-сетка. На слайдах — реальные фото ковриков из src/assets/images/gallery.
+ *     выносится в отдельный чанк и грузится при попадании в видимую область
+ *     (@defer on viewport); до этого — скелетон-сетка. На слайдах — реальные фото
+ *     ковриков из src/assets/images/gallery.
  */
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
-import { LazySectionDirective } from '@shared/directives/lazy-section.directive';
 import { RevealOnScrollDirective } from '@shared/directives/reveal-on-scroll.directive';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 
@@ -140,21 +140,12 @@ function buildAlbum(source: (typeof ALBUM_SOURCES)[number]): GalleryAlbum {
 
 @Component({
   selector: 'nm-home-gallery',
-  imports: [
-    TranslatePipe,
-    RevealOnScrollDirective,
-    LazySectionDirective,
-    SkeletonComponent,
-    GalleryComponent,
-  ],
+  imports: [TranslatePipe, RevealOnScrollDirective, SkeletonComponent, GalleryComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './gallery-section.component.html',
   styleUrl: './gallery-section.component.scss',
 })
 export class GallerySectionComponent {
-  /** Heavy carousel defers instantiation until scrolled near (nmLazySection). */
-  protected readonly galleryVisible = signal(false);
-
   /**
    * Work gallery albums built from src/assets/images/gallery. Each carousel slide shows
    * an album cover; clicking it opens a dialog with all of the album's photos.

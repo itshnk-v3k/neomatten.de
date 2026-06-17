@@ -54,6 +54,7 @@ import { EuroPipe } from '@shared/pipes/euro.pipe';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { ToastService } from '@shared/services/toast.service';
 import { createAsyncAction } from '@shared/utils/async-action.util';
+import { round2 } from '@shared/utils/money.util';
 
 import {
   ConfigDetailsComponent,
@@ -651,8 +652,4 @@ export class ConfiguratorPageComponent {
   private cartLineId(): string {
     return `cfg-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
   }
-}
-
-function round2(value: number): number {
-  return Math.round(value * 100) / 100;
 }

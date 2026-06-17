@@ -13,21 +13,18 @@
  *     подмены под будущий API корзины.
  */
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { PRICING, type PricingConfig } from '@core/config/pricing.config';
 import type { CartItem } from '@core/models/cart-item.model';
 import { type ProductDTO, productToCartItem } from '@core/models/product.model';
 import { AuthService } from '@core/services/auth.service';
+import { computeTotals } from '@shared/utils/money.util';
 
 const CART_STORAGE_KEY = 'neomatten_cart';
-
-/** Welcome discount rate applied to the first order (10%). */
-export const FIRST_ORDER_DISCOUNT_RATE = 0.1;
-
-/** Free-shipping threshold in EUR. */
-export const FREE_SHIPPING_THRESHOLD = 100;
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
   private readonly auth = inject(AuthService);
+  private readonly pricing = inject(PRICING);
 
   private readonly itemsSignal = signal<CartItem[]>(this.restore());
 
@@ -43,20 +40,28 @@ export class CartService {
   );
 
   /** Auto-determined shipping cost for the current cart contents (EUR). */
-  readonly shipping = computed(() => computeShipping(this.itemsSignal(), this.subtotal()));
+  readonly shipping = computed(() =>
+    computeShipping(this.itemsSignal(), this.subtotal(), this.pricing)
+  );
 
-  /** Whether the 10% welcome discount currently applies. */
+  /** Whether the welcome discount currently applies. */
   readonly discountApplies = computed(() => this.auth.user()?.firstOrderDiscount === true);
 
-  /** Discount amount in EUR (10% of subtotal when it applies). */
-  readonly discount = computed(() =>
-    this.discountApplies() ? round2(this.subtotal() * FIRST_ORDER_DISCOUNT_RATE) : 0
+  /** Discount + grand total (single shared formula, see {@link computeTotals}). */
+  private readonly totals = computed(() =>
+    computeTotals({
+      subtotal: this.subtotal(),
+      shipping: this.shipping(),
+      discountApplies: this.discountApplies(),
+      discountRate: this.pricing.firstOrderDiscountRate,
+    })
   );
 
+  /** Discount amount in EUR (welcome discount off the subtotal when it applies). */
+  readonly discount = computed(() => this.totals().discount);
+
   /** Grand total: subtotal − discount + shipping. */
-  readonly total = computed(() =>
-    round2(Math.max(0, this.subtotal() - this.discount()) + this.shipping())
-  );
+  readonly total = computed(() => this.totals().total);
 
   private readonly loadingSignal = signal(true);
   /** True while the cart loads; flips false after a short delay (mock). */
@@ -225,22 +230,21 @@ function sameKitPieces(a?: readonly string[], b?: readonly string[]): boolean {
   return sortedA.every((piece, i) => piece === sortedB[i]);
 }
 
-/** Rounds to 2 decimal places (avoids float drift in money math). */
-function round2(value: number): number {
-  return Math.round(value * 100) / 100;
-}
-
 /**
  * Shipping cost for a set of items. Free when the order qualifies for free
- * shipping (≥ €100, or it contains a full-interior / premium mat set shipping to
- * Germany); otherwise the most expensive single line's shipping tier (one
- * shipment per order). Pure so the configurator can reuse it for one item.
+ * shipping (≥ threshold, or it contains a full-interior / premium mat set
+ * shipping to Germany); otherwise the most expensive single line's shipping tier
+ * (one shipment per order). Pure so the configurator can reuse it for one item.
  */
-export function computeShipping(items: readonly CartItem[], subtotal: number): number {
+export function computeShipping(
+  items: readonly CartItem[],
+  subtotal: number,
+  pricing: PricingConfig
+): number {
   if (items.length === 0) return 0;
-  if (subtotal >= FREE_SHIPPING_THRESHOLD) return 0;
+  if (subtotal >= pricing.freeShippingThreshold) return 0;
   if (items.some(isFreeShippingItem)) return 0;
-  return items.reduce((max, item) => Math.max(max, itemShippingTier(item)), 0);
+  return items.reduce((max, item) => Math.max(max, itemShippingTier(item, pricing)), 0);
 }
 
 /** Full-interior (4 mats) or premium (with trunk) sets ship free to Germany. */
@@ -251,13 +255,14 @@ function isFreeShippingItem(item: CartItem): boolean {
 }
 
 /** Per-line shipping tier (matches the configurator delivery table). */
-function itemShippingTier(item: CartItem): number {
+function itemShippingTier(item: CartItem, pricing: PricingConfig): number {
+  const tiers = pricing.shipping;
   if (item.category === 'mats') {
     const pieces = item.kitPieces?.length ?? 1;
-    if (pieces <= 1) return 4.99; // single mat
-    if (pieces === 2) return 6.99; // pair
-    return 9.99; // full set
+    if (pieces <= 1) return tiers.single; // single mat
+    if (pieces === 2) return tiers.pair; // pair
+    return tiers.full; // full set
   }
   // Simple products (cushions, bags): single-mat rate.
-  return 4.99;
+  return tiers.single;
 }

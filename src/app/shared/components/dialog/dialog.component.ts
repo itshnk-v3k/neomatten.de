@@ -6,7 +6,6 @@
  *     поверх затемнённого фона, проецирует тело и необязательный [dialogFooter],
  *     и (если dismissible) закрывается по X, клику по фону или Escape.
  */
-import { NgClass } from '@angular/common';
 import type { OnDestroy } from '@angular/core';
 import {
   ChangeDetectionStrategy,
@@ -26,7 +25,7 @@ let uid = 0;
 
 @Component({
   selector: 'nm-dialog',
-  imports: [NgClass, TranslatePipe, LucideX],
+  imports: [TranslatePipe, LucideX],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dialog.component.html',
   styleUrl: './dialog.component.scss',
