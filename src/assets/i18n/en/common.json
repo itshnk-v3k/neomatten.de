@@ -369,6 +369,8 @@
   "configurator_submit_error": "Something went wrong. Please try again.",
   "configurator_diagram_title": "Your car",
   "configurator_diagram_hint": "Tap a zone to add or remove that mat.",
+  "mat_preview_title": "Your mat",
+  "mat_preview_subtitle": "Preview of your current configuration.",
   "configurator_total": "Total",
   "configurator_step_vehicle": "Vehicle information",
   "configurator_select_vehicle_hint": "Select model and year to see your vehicle.",

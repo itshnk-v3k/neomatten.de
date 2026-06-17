@@ -12,7 +12,7 @@
  *     • `car` — только компактная схема авто (встроенный слот на мобиле).
  *     Всё состояние приходит входами; единственный выход — переключение зоны.
  */
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { CarDiagramComponent } from '@features/configurator/car-diagram/car-diagram.component';
 import type {
   CarZone,
@@ -59,4 +59,8 @@ export class ConfiguratorPreviewComponent {
   readonly total = input.required<number>();
 
   readonly zoneToggle = output<CarZone>();
+
+  /** Desktop `full` mode swap: mat preview for steps ≤10, car diagram from step 11. */
+  protected readonly showCarDiagram = computed(() => this.activeStep() >= 11);
+  protected readonly showMatPreview = computed(() => !this.showCarDiagram());
 }

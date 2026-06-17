@@ -240,16 +240,21 @@
                     : 'ring-1 ring-border hover:ring-primary')
                 ">
                 <!-- Cropped swatch: zoom into the mat photo centre to show only the
-                     texture pattern detail, not the whole mat. -->
+                     texture pattern detail, not the whole mat. WebP primary, PNG
+                     fallback via <picture>. -->
                 <div class="relative aspect-[4/3] w-full overflow-hidden rounded-lg">
                   @if (!textureFailed().has(tex)) {
-                    <img
-                      [ngSrc]="'assets/images/mats/' + tex + '-mat.png'"
-                      fill
-                      sizes="(min-width: 1024px) 15vw, 30vw"
-                      [alt]="'configurator_texture_' + tex | translate"
-                      class="scale-150 object-cover object-center"
-                      (error)="onTextureError(tex)" />
+                    <picture>
+                      <source
+                        [attr.srcset]="'assets/images/mats/' + tex + '-mat.webp'"
+                        type="image/webp" />
+                      <img
+                        [src]="'assets/images/mats/' + tex + '-mat.png'"
+                        [alt]="'configurator_texture_' + tex | translate"
+                        loading="lazy"
+                        class="absolute inset-0 size-full scale-150 object-cover object-center"
+                        (error)="onTextureError(tex)" />
+                    </picture>
                   } @else {
                     <nm-image-placeholder class="size-full rounded-none" />
                   }
@@ -695,7 +700,11 @@
         </section>
 
         <!-- 13 Summary + CTA -->
-        <section #stepCard class="rounded-2xl border-2 border-primary bg-surface p-6 shadow-soft">
+        <section
+          #stepCard
+          #summaryCard
+          data-step="13"
+          class="rounded-2xl border-2 border-primary bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
             <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
               13

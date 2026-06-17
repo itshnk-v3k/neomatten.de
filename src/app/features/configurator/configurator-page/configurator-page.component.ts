@@ -14,7 +14,6 @@
  *     «Связаться с менеджером» — за авторизацией: для гостя открывают диалог
  *     входа и повторяют отложенное действие после входа.
  */
-import { NgOptimizedImage } from '@angular/common';
 import type { ElementRef } from '@angular/core';
 import {
   ChangeDetectionStrategy,
@@ -26,6 +25,7 @@ import {
   input,
   signal,
   untracked,
+  viewChild,
   viewChildren,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
@@ -74,7 +74,6 @@ import { ConfiguratorPreviewComponent } from '../configurator-preview/configurat
   selector: 'nm-configurator-page',
   imports: [
     ReactiveFormsModule,
-    NgOptimizedImage,
     BreadcrumbComponent,
     SelectComponent,
     ButtonDirective,
@@ -338,12 +337,17 @@ export class ConfiguratorPageComponent {
   /** Step currently in the viewport's active band (1–13). */
   protected readonly activeStep = signal(1);
 
+  /** The Summary card (step 13); observed directly to toggle the sticky bar. */
+  private readonly summaryCard = viewChild<ElementRef<HTMLElement>>('summaryCard');
+  /** True once the Summary card enters the viewport (≥10% visible). */
+  protected readonly summaryVisible = signal(false);
+
   /**
-   * Mobile sticky bottom bar visibility. Hidden on the Summary step (13), whose
-   * card already carries the full total + "Add to cart" / "Pay now" CTAs, so the
-   * bar would be redundant there.
+   * Mobile sticky bottom bar visibility. Hidden once the Summary card is in view —
+   * its own card already carries the full total + "Add to cart" / "Pay now" CTAs,
+   * so the bar would be redundant there. Reappears when scrolled back up.
    */
-  protected readonly showStickyBar = computed(() => this.activeStep() < 13);
+  protected readonly showStickyBar = computed(() => !this.summaryVisible());
 
   constructor() {
     const destroyRef = inject(DestroyRef);
@@ -374,6 +378,19 @@ export class ConfiguratorPageComponent {
         { threshold: 0, rootMargin: '-20% 0px -60% 0px' }
       );
       cards.forEach(c => observer.observe(c.nativeElement));
+      onCleanup(() => observer.disconnect());
+    });
+
+    // Toggle the mobile sticky bar by observing the Summary card directly (rather
+    // than the activeStep band) so it hides exactly when Summary scrolls into view.
+    effect(onCleanup => {
+      const card = this.summaryCard();
+      if (!card || typeof IntersectionObserver === 'undefined') return;
+      const observer = new IntersectionObserver(
+        ([entry]) => this.summaryVisible.set(entry.isIntersecting),
+        { threshold: 0.1 }
+      );
+      observer.observe(card.nativeElement);
       onCleanup(() => observer.disconnect());
     });
 

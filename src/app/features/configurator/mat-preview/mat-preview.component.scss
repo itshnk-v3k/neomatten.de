@@ -5,8 +5,8 @@
  *     рамку. Корневой абсолютный URL не обрабатывается сборщиком ассетов.
  */
 .mat-edge-mask {
-  -webkit-mask-image: url('/assets/images/mats/edging.png');
-  mask-image: url('/assets/images/mats/edging.png');
+  -webkit-mask-image: url('/assets/images/mats/edging.webp');
+  mask-image: url('/assets/images/mats/edging.webp');
   -webkit-mask-size: cover;
   mask-size: cover;
   -webkit-mask-repeat: no-repeat;

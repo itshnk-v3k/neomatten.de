@@ -369,6 +369,8 @@
   "configurator_submit_error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
   "configurator_diagram_title": "Ihr Fahrzeug",
   "configurator_diagram_hint": "Tippen Sie auf eine Zone, um die Matte hinzuzufügen oder zu entfernen.",
+  "mat_preview_title": "Ihr Teppich",
+  "mat_preview_subtitle": "Vorschau Ihrer aktuellen Konfiguration.",
   "configurator_total": "Gesamt",
   "configurator_step_vehicle": "Fahrzeuginformationen",
   "configurator_select_vehicle_hint": "Wählen Sie Modell und Baujahr, um Ihr Fahrzeug zu sehen.",

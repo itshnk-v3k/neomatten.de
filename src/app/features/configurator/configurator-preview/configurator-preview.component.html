@@ -7,42 +7,52 @@
       мобильного слота (всегда виден, без перехода).
 -->
 @if (mode() === 'full') {
-  <!-- Mat preview: desktop steps 1–10; collapses from step 11. -->
-  <div
-    [class]="
-      'ease-out-brand mx-auto w-full max-w-[240px] transition-all duration-300 lg:max-w-full ' +
-      (activeStep() >= 11
-        ? 'lg:pointer-events-none lg:max-h-0 lg:scale-95 lg:overflow-hidden lg:opacity-0'
-        : 'lg:max-h-[640px] lg:scale-100 lg:opacity-100')
-    ">
-    <nm-mat-preview
-      [texture]="texture()"
-      [materialHex]="materialHex()"
-      [edgeHex]="edgeHex()"
-      [mounting]="mounting()"
-      [heelPad]="heelPad()"
-      [heelRest]="heelRest()"
-      [caption]="caption()"
-      [sku]="sku()"
-      [colorId]="colorId()" />
-  </div>
+  <!-- Mat preview (steps ≤10) and car diagram (≥11) swap IN PLACE: the car card
+       stays in normal flow and sets the shared height (it's the taller of the
+       two); the mat card overlays it absolutely. Only opacity changes between
+       them, so there is no layout jump. -->
+  <div class="relative w-full">
+    <!-- Mat preview card — absolute overlay; fills the car card's footprint. -->
+    <div
+      [class]="
+        'absolute inset-0 rounded-2xl border border-border bg-surface p-4 shadow-soft transition-opacity duration-300 lg:p-5 ' +
+        (showMatPreview() ? 'opacity-100' : 'pointer-events-none opacity-0')
+      ">
+      <h2 class="text-sm font-semibold text-content-secondary">
+        {{ 'mat_preview_title' | translate }}
+      </h2>
+      <p class="mt-1 text-xs text-content-muted">
+        {{ 'mat_preview_subtitle' | translate }}
+      </p>
+      <div class="mx-auto mt-3 w-full max-w-[240px] lg:max-w-full">
+        <nm-mat-preview
+          [texture]="texture()"
+          [materialHex]="materialHex()"
+          [edgeHex]="edgeHex()"
+          [mounting]="mounting()"
+          [heelPad]="heelPad()"
+          [heelRest]="heelRest()"
+          [caption]="caption()"
+          [sku]="sku()"
+          [colorId]="colorId()" />
+      </div>
+    </div>
 
-  <!-- Car diagram: desktop from step 11; collapsed on steps 1–10. -->
-  <div
-    [class]="
-      'ease-out-brand rounded-2xl border border-border bg-surface p-4 shadow-soft transition-all duration-300 lg:p-5 ' +
-      (activeStep() >= 11
-        ? 'lg:max-h-[720px] lg:scale-100 lg:opacity-100'
-        : 'lg:pointer-events-none lg:max-h-0 lg:scale-95 lg:overflow-hidden lg:border-0 lg:p-0 lg:opacity-0')
-    ">
-    <h2 class="text-sm font-semibold text-content-secondary">
-      {{ 'configurator_diagram_title' | translate }}
-    </h2>
-    <p class="mt-1 text-xs text-content-muted">
-      {{ 'configurator_diagram_hint' | translate }}
-    </p>
-    <div class="mx-auto mt-3 max-w-[150px] lg:max-w-full">
-      <nm-car-diagram [zones]="zones()" (zoneToggle)="zoneToggle.emit($event)" />
+    <!-- Car diagram card — in normal flow; defines the container height. -->
+    <div
+      [class]="
+        'rounded-2xl border border-border bg-surface p-4 shadow-soft transition-opacity duration-300 lg:p-5 ' +
+        (showCarDiagram() ? 'opacity-100' : 'pointer-events-none opacity-0')
+      ">
+      <h2 class="text-sm font-semibold text-content-secondary">
+        {{ 'configurator_diagram_title' | translate }}
+      </h2>
+      <p class="mt-1 text-xs text-content-muted">
+        {{ 'configurator_diagram_hint' | translate }}
+      </p>
+      <div class="mx-auto mt-3 max-w-[150px] lg:max-w-full">
+        <nm-car-diagram [zones]="zones()" (zoneToggle)="zoneToggle.emit($event)" />
+      </div>
     </div>
   </div>
 
@@ -54,7 +64,13 @@
 } @else if (mode() === 'mat') {
   <!-- Compact inline mat preview (mobile, after Refine). -->
   <div class="rounded-2xl border border-border bg-surface p-4 shadow-soft">
-    <div class="mx-auto max-w-[260px]">
+    <h2 class="text-sm font-semibold text-content-secondary">
+      {{ 'mat_preview_title' | translate }}
+    </h2>
+    <p class="mt-1 text-xs text-content-muted">
+      {{ 'mat_preview_subtitle' | translate }}
+    </p>
+    <div class="mx-auto mt-3 max-w-[260px]">
       <nm-mat-preview
         [texture]="texture()"
         [materialHex]="materialHex()"

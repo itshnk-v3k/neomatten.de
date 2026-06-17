@@ -67,9 +67,9 @@ export class MatPreviewComponent {
     this.imageFailed.set(true);
   }
 
-  /** Base mat texture photo for the selected texture (rhombus / honeycomb / drop). */
+  /** Base mat texture photo (WebP) for the selected texture (rhombus / honeycomb / drop). */
   protected readonly textureImageSrc = computed(
-    () => `assets/images/mats/${this.texture()}-mat.png`
+    () => `assets/images/mats/${this.texture()}-mat.webp`
   );
 
   protected readonly heelPadLabelKey = computed(() => `configurator_heel_${this.heelPad()}`);
