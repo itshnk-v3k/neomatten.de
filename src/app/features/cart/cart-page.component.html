@@ -43,19 +43,20 @@
     </div>
   } @else {
     <div class="grid gap-8 lg:grid-cols-[1fr_340px]">
-      <!-- Line items -->
-      <ul class="flex flex-col gap-4">
+      <!-- Line items. min-w-0 lets the 1fr grid track shrink below its content
+           (grid items default to min-width:auto), so the card's truncate works. -->
+      <ul class="flex min-w-0 flex-col gap-4">
         @for (item of items(); track item.id) {
           <li
             class="flex flex-col gap-3 rounded-xl border border-border bg-surface p-5 shadow-soft">
             <!-- Top row: name + SKU (left), line total (right). -->
-            <div class="flex items-start justify-between gap-4">
+            <div class="flex min-w-0 items-start justify-between gap-4">
               <div class="min-w-0 flex-1">
                 <h2 class="truncate font-bold">{{ item.name }}</h2>
                 @if (item.sku; as sku) {
-                  <p class="mt-0.5 flex items-center gap-1 text-xs text-content-muted">
-                    <span class="font-medium">{{ 'order_sku_label' | translate }}:</span>
-                    <span class="font-mono">{{ sku }}</span>
+                  <p class="mt-0.5 flex min-w-0 items-center gap-1 text-xs text-content-muted">
+                    <span class="shrink-0 font-medium">{{ 'order_sku_label' | translate }}:</span>
+                    <span class="font-mono truncate">{{ sku }}</span>
                     <button
                       type="button"
                       class="transition-colors hover:text-primary"

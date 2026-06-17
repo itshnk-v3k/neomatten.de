@@ -59,9 +59,11 @@
                 <div class="min-w-0 flex-[0_0_100%] pr-5 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%]">
                   <article
                     class="flex h-full flex-col rounded-lg border border-border bg-surface p-6">
-                    <div class="mb-2 flex items-center justify-between">
-                      <span class="text-sm font-bold">{{ review.name }}</span>
-                      <span class="text-xs text-content-secondary">{{ review.date }}</span>
+                    <div class="mb-2 flex min-w-0 items-center justify-between gap-3">
+                      <span class="min-w-0 truncate text-sm font-bold">{{ review.name }}</span>
+                      <span class="shrink-0 whitespace-nowrap text-xs text-content-secondary">
+                        {{ review.date }}
+                      </span>
                     </div>
                     <div
                       class="mb-2 text-sm tracking-wide text-[#F4A800]"

@@ -32,7 +32,7 @@
     }
   </a>
   <div class="flex flex-1 flex-col p-5">
-    <h3 class="font-bold">
+    <h3 class="line-clamp-2 font-bold">
       <a [routerLink]="detailLink()" class="transition-colors hover:text-primary">
         {{ product().name }}
       </a>
@@ -63,11 +63,12 @@
       </p>
     }
     <div class="mt-4 flex items-center justify-between gap-3">
-      <span class="text-xl font-extrabold">{{ product().price | euro }}</span>
+      <span class="whitespace-nowrap text-xl font-extrabold">{{ product().price | euro }}</span>
       <button
         nmButton
         size="sm"
         type="button"
+        class="shrink-0 whitespace-nowrap"
         [disabled]="!product().madeToOrder && product().stockQuantity === 0"
         [loading]="addToCartAction.pending()"
         (click)="addToCartAction.execute()">

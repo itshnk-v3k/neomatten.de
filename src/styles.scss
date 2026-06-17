@@ -170,6 +170,34 @@
     outline: 2px solid theme('colors.primary.DEFAULT');
     outline-offset: 2px;
   }
+
+  /* German long-compound overflow guard. The i18n service sets `lang` on
+     <html> (de|en), so :lang(de) hyphenation uses the German dictionary.
+     `hyphens` inherits, so this cascades to every descendant. It lives in
+     @layer base, so the Tailwind utilities layer still wins — `truncate`
+     (white-space:nowrap) and `whitespace-nowrap` keep prices/badges that
+     must stay on one line unaffected (nowrap suppresses wrapping entirely). */
+  html,
+  [lang='de'],
+  :lang(de) {
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /* Explicitly hyphenate text inside constrained-width UI (option cards, chips,
+     badges, buttons, select options, step labels). Already inherited from
+     <html>, but stated so a component reset can never silently drop it. */
+  button,
+  nm-badge,
+  nm-select,
+  [role='option'],
+  [role='tab'] {
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    overflow-wrap: break-word;
+  }
 }
 
 /* =====================================================================

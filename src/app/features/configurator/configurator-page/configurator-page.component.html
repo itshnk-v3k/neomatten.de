@@ -60,7 +60,8 @@
         <!-- 01 Vehicle information -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               1
             </span>
             {{ 'configurator_step_vehicle' | translate }}
@@ -99,7 +100,8 @@
         <!-- 02 Refine specification -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               2
             </span>
             {{ 'configurator_step_refine' | translate }}
@@ -145,6 +147,7 @@
           [mounting]="mounting()"
           [heelPad]="heelPad()"
           [heelRest]="heelRest()"
+          [heelRestOverlaySrc]="heelRestOverlaySrc()"
           [caption]="caption()"
           [sku]="activePattern()?.sku ?? ''"
           [colorId]="materialColor()"
@@ -156,7 +159,8 @@
         <!-- 03 Material type -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               3
             </span>
             {{ 'configurator_step_material' | translate }}
@@ -214,7 +218,8 @@
         <!-- 04 Texture -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               4
             </span>
             {{ 'configurator_step_texture' | translate }}
@@ -262,7 +267,8 @@
         <!-- 05 Material colour -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               5
             </span>
             {{ 'configurator_step_material_color' | translate }}
@@ -293,7 +299,8 @@
         <!-- 06 Edge colour -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               6
             </span>
             {{ 'configurator_step_edge_color' | translate }}
@@ -324,7 +331,8 @@
         <!-- 07 Mounting -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               7
             </span>
             {{ 'configurator_step_mounting' | translate }}
@@ -367,7 +375,8 @@
         <!-- 08 Heel pad -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               8
             </span>
             {{ 'configurator_step_heel' | translate }}
@@ -457,7 +466,8 @@
         <!-- 09 Fersenpolster (heel rest pad) -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               9
             </span>
             {{ 'heel_rest_title' | translate }}
@@ -538,7 +548,8 @@
         <!-- 10 Accessories -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               10
             </span>
             {{ 'configurator_step_accessories' | translate }}
@@ -608,7 +619,8 @@
         <!-- 11 Build your set -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               11
             </span>
             {{ 'configurator_step_kit' | translate }}
@@ -664,7 +676,8 @@
         <!-- 12 Delivery -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               12
             </span>
             {{ 'configurator_step_delivery' | translate }}
@@ -727,7 +740,8 @@
           data-step="13"
           class="rounded-2xl border-2 border-primary bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               13
             </span>
             {{ 'configurator_step_summary' | translate }}
