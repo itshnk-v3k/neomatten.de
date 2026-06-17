@@ -11,6 +11,7 @@
  *     подставляет названия/hex цветов и цены в VM.
  */
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { LucideCar, LucideLayers, LucidePackage, LucideSettings } from '@lucide/angular';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 
 /** Resolved configuration view-model rendered by {@link ConfigDetailsComponent}. */
@@ -44,7 +45,7 @@ export interface ConfigDetailsVM {
 
 @Component({
   selector: 'nm-config-details',
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, LucideCar, LucideLayers, LucideSettings, LucidePackage],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './config-details.component.html',
 })
