@@ -41,6 +41,7 @@ import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.co
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import { PaymentDialogComponent } from '@shared/components/payment-dialog/payment-dialog.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
+import { EuroPipe } from '@shared/pipes/euro.pipe';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { ToastService } from '@shared/services/toast.service';
 
@@ -61,6 +62,7 @@ import { ToastService } from '@shared/services/toast.service';
     SkeletonComponent,
     ConfigDetailsComponent,
     TranslatePipe,
+    EuroPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './cart-page.component.html',

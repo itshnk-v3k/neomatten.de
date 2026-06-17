@@ -60,7 +60,7 @@
   <!-- Total (desktop only; mobile uses the sticky bottom bar) -->
   <div class="hidden items-center justify-between rounded-2xl bg-ink p-5 text-white lg:flex">
     <span class="text-sm text-white/75">{{ 'configurator_total' | translate }}</span>
-    <span class="text-2xl font-extrabold">{{ total() }} &euro;</span>
+    <span class="text-2xl font-extrabold">{{ total() | euro }}</span>
   </div>
 } @else if (mode() === 'mat') {
   <!-- Compact inline mat preview (mobile, after Refine). -->

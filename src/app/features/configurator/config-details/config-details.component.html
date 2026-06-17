@@ -147,7 +147,7 @@
           <dd class="text-right font-semibold text-content">
             {{ 'configurator_heel_' + d.heelPad | translate }}
             @if (d.heelPadPrice) {
-              <span class="text-primary">+{{ d.heelPadPrice }} &euro;</span>
+              <span class="text-primary">+{{ d.heelPadPrice | euro }}</span>
             }
           </dd>
         } @else {
@@ -160,7 +160,7 @@
           <dd class="text-right font-semibold text-content">
             {{ 'heel_rest_' + d.heelRest | translate }}
             @if (d.heelRestPrice) {
-              <span class="text-primary">+{{ d.heelRestPrice }} &euro;</span>
+              <span class="text-primary">+{{ d.heelRestPrice | euro }}</span>
             }
           </dd>
         } @else {
@@ -207,7 +207,7 @@
           <dd class="text-right font-semibold text-content">
             {{ d.deliveryTierKey | translate }}
             @if (d.deliveryCost) {
-              <span class="text-content-secondary">&middot; {{ d.deliveryCost }} &euro;</span>
+              <span class="text-content-secondary">&middot; {{ d.deliveryCost | euro }}</span>
             } @else {
               <span class="text-success">
                 &middot; {{ 'configurator_delivery_free' | translate }}

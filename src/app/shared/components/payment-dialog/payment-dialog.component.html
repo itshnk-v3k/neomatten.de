@@ -11,7 +11,7 @@
 <nm-dialog [(open)]="open" titleKey="payment_dialog_title">
   <p class="mb-4 text-sm text-content-secondary">
     {{ 'payment_dialog_amount' | translate }}:
-    <span class="font-bold text-content">{{ amount() }} &euro;</span>
+    <span class="font-bold text-content">{{ amount() | euro }}</span>
   </p>
 
   <div

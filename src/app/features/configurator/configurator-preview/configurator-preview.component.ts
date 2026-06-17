@@ -22,11 +22,12 @@ import type {
   Texture,
 } from '@features/configurator/configurator.service';
 import { MatPreviewComponent } from '@features/configurator/mat-preview/mat-preview.component';
+import { EuroPipe } from '@shared/pipes/euro.pipe';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 
 @Component({
   selector: 'nm-configurator-preview',
-  imports: [MatPreviewComponent, CarDiagramComponent, TranslatePipe],
+  imports: [MatPreviewComponent, CarDiagramComponent, TranslatePipe, EuroPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './configurator-preview.component.html',
   // The host IS the left flex child, so the sticky/width/self-start layout lives

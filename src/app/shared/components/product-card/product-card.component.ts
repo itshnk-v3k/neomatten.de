@@ -15,6 +15,7 @@ import { BadgeComponent } from '@shared/components/badge/badge.component';
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import { ImagePlaceholderComponent } from '@shared/components/image-placeholder/image-placeholder.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
+import { EuroPipe } from '@shared/pipes/euro.pipe';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { ToastService } from '@shared/services/toast.service';
 import { createAsyncAction } from '@shared/utils/async-action.util';
@@ -29,6 +30,7 @@ import { createAsyncAction } from '@shared/utils/async-action.util';
     ImagePlaceholderComponent,
     SkeletonComponent,
     TranslatePipe,
+    EuroPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './product-card.component.html',

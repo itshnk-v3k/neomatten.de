@@ -50,6 +50,7 @@ import { SelectComponent } from '@shared/components/select/select.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
 import { TooltipDirective } from '@shared/components/tooltip/tooltip.directive';
 import type { SelectOption } from '@shared/models/select-option.model';
+import { EuroPipe } from '@shared/pipes/euro.pipe';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { ToastService } from '@shared/services/toast.service';
 import { createAsyncAction } from '@shared/utils/async-action.util';
@@ -95,6 +96,7 @@ import { ConfiguratorPreviewComponent } from '../configurator-preview/configurat
     TooltipDirective,
     LucideInfo,
     TranslatePipe,
+    EuroPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './configurator-page.component.html',

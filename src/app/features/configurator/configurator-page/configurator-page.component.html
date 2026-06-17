@@ -413,7 +413,7 @@
                     : 'border-border hover:border-primary')
                 ">
                 {{ 'configurator_heel_standard' | translate }}
-                <span class="text-sm text-primary">+5 &euro;</span>
+                <span class="text-sm text-primary">+5.00 &euro;</span>
               </button>
             } @else {
               <div
@@ -422,7 +422,7 @@
                 aria-disabled="true"
                 class="flex cursor-not-allowed items-center justify-between rounded-xl border-2 border-border p-4 text-left font-semibold opacity-40">
                 {{ 'configurator_heel_standard' | translate }}
-                <span class="text-sm text-primary">+5 &euro;</span>
+                <span class="text-sm text-primary">+5.00 &euro;</span>
               </div>
             }
 
@@ -438,7 +438,7 @@
                     : 'border-border hover:border-primary')
                 ">
                 {{ 'configurator_heel_3d' | translate }}
-                <span class="text-sm text-primary">+10 &euro;</span>
+                <span class="text-sm text-primary">+10.00 &euro;</span>
               </button>
             } @else {
               <div
@@ -447,7 +447,7 @@
                 aria-disabled="true"
                 class="flex cursor-not-allowed items-center justify-between rounded-xl border-2 border-border p-4 text-left font-semibold opacity-40">
                 {{ 'configurator_heel_3d' | translate }}
-                <span class="text-sm text-primary">+10 &euro;</span>
+                <span class="text-sm text-primary">+10.00 &euro;</span>
               </div>
             }
           </div>
@@ -492,7 +492,7 @@
                   : 'border-border hover:border-primary')
               ">
               {{ 'heel_rest_metal' | translate }}
-              <span class="text-sm text-primary">+20 &euro;</span>
+              <span class="text-sm text-primary">+20.00 &euro;</span>
             </button>
             <button
               type="button"
@@ -505,7 +505,7 @@
                   : 'border-border hover:border-primary')
               ">
               {{ 'heel_rest_rubber' | translate }}
-              <span class="text-sm text-primary">+15 &euro;</span>
+              <span class="text-sm text-primary">+15.00 &euro;</span>
             </button>
           </div>
         </section>
@@ -690,7 +690,7 @@
             @if (freeShipping()) {
               <span class="text-success">{{ 'configurator_delivery_free' | translate }}</span>
             } @else {
-              {{ shipping() }} &euro;
+              {{ shipping() | euro }}
             }
           </p>
         </section>
@@ -715,7 +715,7 @@
           <dl class="mt-4 space-y-1.5 border-t border-border pt-4 text-sm">
             <div class="flex justify-between">
               <dt class="text-content-secondary">{{ 'configurator_summary_mats' | translate }}</dt>
-              <dd class="font-medium">{{ price() }} &euro;</dd>
+              <dd class="font-medium">{{ price() | euro }}</dd>
             </div>
             @if (heelPad() !== 'none') {
               <div class="flex justify-between">
@@ -723,7 +723,7 @@
                   {{ 'configurator_step_heel' | translate }}:
                   {{ 'configurator_heel_' + heelPad() | translate }}
                 </dt>
-                <dd class="font-medium">+{{ heelPadPrice() }} &euro;</dd>
+                <dd class="font-medium">+{{ heelPadPrice() | euro }}</dd>
               </div>
             }
             @if (heelRest() !== 'none') {
@@ -731,7 +731,7 @@
                 <dt class="text-content-secondary">
                   {{ 'heel_rest_title' | translate }}: {{ 'heel_rest_' + heelRest() | translate }}
                 </dt>
-                <dd class="font-medium">+{{ heelRestPrice() }} &euro;</dd>
+                <dd class="font-medium">+{{ heelRestPrice() | euro }}</dd>
               </div>
             }
             <div class="flex justify-between">
@@ -740,13 +740,13 @@
                 @if (freeShipping()) {
                   {{ 'configurator_delivery_free' | translate }}
                 } @else {
-                  {{ shipping() }} &euro;
+                  {{ shipping() | euro }}
                 }
               </dd>
             </div>
             <div class="flex justify-between border-t border-border pt-2 text-base font-extrabold">
               <dt>{{ 'configurator_total' | translate }}</dt>
-              <dd>{{ total() }} &euro;</dd>
+              <dd>{{ total() | euro }}</dd>
             </div>
           </dl>
 
@@ -802,7 +802,7 @@
       <span class="block text-xs text-content-secondary">
         {{ 'configurator_total' | translate }}
       </span>
-      <span class="text-lg font-extrabold">{{ total() }} &euro;</span>
+      <span class="text-lg font-extrabold">{{ total() | euro }}</span>
     </div>
     <button
       nmButton

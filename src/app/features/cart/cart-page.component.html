@@ -71,7 +71,7 @@
                 }
               </div>
               <span class="shrink-0 text-lg font-extrabold">
-                {{ item.unitPrice * item.quantity }} &euro;
+                {{ item.unitPrice * item.quantity | euro }}
               </span>
             </div>
 
@@ -137,12 +137,12 @@
           <dl class="mt-4 space-y-2 text-sm">
             <div class="flex justify-between">
               <dt class="text-content-secondary">{{ 'cart_subtotal' | translate }}</dt>
-              <dd class="font-medium">{{ subtotal() }} &euro;</dd>
+              <dd class="font-medium">{{ subtotal() | euro }}</dd>
             </div>
             @if (discountApplies()) {
               <div class="flex justify-between text-success">
                 <dt>{{ 'cart_discount' | translate }}</dt>
-                <dd class="font-medium">−{{ discount() }} &euro;</dd>
+                <dd class="font-medium">−{{ discount() | euro }}</dd>
               </div>
             }
             <div class="flex justify-between">
@@ -151,13 +151,13 @@
                 @if (shipping() === 0) {
                   {{ 'configurator_delivery_free' | translate }}
                 } @else {
-                  {{ shipping() }} &euro;
+                  +{{ shipping() | euro }}
                 }
               </dd>
             </div>
             <div class="flex justify-between border-t border-border pt-3 text-base font-extrabold">
               <dt>{{ 'cart_total' | translate }}</dt>
-              <dd>{{ total() }} &euro;</dd>
+              <dd>{{ total() | euro }}</dd>
             </div>
           </dl>
 
