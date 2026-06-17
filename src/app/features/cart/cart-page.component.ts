@@ -19,13 +19,14 @@ import { AuthService } from '@core/services/auth.service';
 import { CartService } from '@core/services/cart.service';
 import { CheckoutService } from '@core/services/checkout.service';
 import { ConfiguratorService } from '@features/configurator/configurator.service';
-import { LucideMinus, LucidePlus, LucideTrash2 } from '@lucide/angular';
+import { LucideCheck, LucideCopy, LucideMinus, LucidePlus, LucideTrash2 } from '@lucide/angular';
 import { AuthDialogComponent } from '@shared/components/auth-dialog/auth-dialog.component';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import { PaymentDialogComponent } from '@shared/components/payment-dialog/payment-dialog.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
+import { ToastService } from '@shared/services/toast.service';
 
 @Component({
   selector: 'nm-cart-page',
@@ -34,6 +35,8 @@ import { TranslatePipe } from '@shared/pipes/translate.pipe';
     LucidePlus,
     LucideMinus,
     LucideTrash2,
+    LucideCopy,
+    LucideCheck,
     BreadcrumbComponent,
     ButtonDirective,
     AuthDialogComponent,
@@ -51,6 +54,7 @@ export class CartPageComponent {
   private readonly auth = inject(AuthService);
   private readonly config = inject(ConfiguratorService);
   private readonly translation = inject(TranslationService);
+  private readonly toast = inject(ToastService);
 
   /** Localized mat/edge colour names for a configured line (falls back to the id). */
   protected matColourName(id: string): string {
@@ -58,6 +62,40 @@ export class CartPageComponent {
   }
   protected edgeColourName(id: string): string {
     return this.config.edgeColourName(id, this.translation.currentLanguage());
+  }
+  /** Hex values for the mat/edge colour swatches (falls back to '' if unknown). */
+  protected matColourHex(id: string): string {
+    return this.config.matColourHex(id);
+  }
+  protected edgeColourHex(id: string): string {
+    return this.config.edgeColourHex(id);
+  }
+
+  /** SKUs currently flashing the "copied" checkmark; each flips back after 1.5s. */
+  private readonly copiedSkus = signal(new Set<string>());
+
+  protected isCopied(sku: string): boolean {
+    return this.copiedSkus().has(sku);
+  }
+
+  /** Copy a line SKU to the clipboard, toast, and briefly show a checkmark. */
+  protected copySku(sku: string): void {
+    navigator.clipboard
+      .writeText(sku)
+      .then(() => {
+        this.copiedSkus.update(set => new Set(set).add(sku));
+        this.toast.success('order_copy_sku');
+        setTimeout(() => {
+          this.copiedSkus.update(set => {
+            const next = new Set(set);
+            next.delete(sku);
+            return next;
+          });
+        }, 1500);
+      })
+      .catch(() => {
+        this.toast.error('error_generic');
+      });
   }
 
   protected readonly items = this.cart.items;

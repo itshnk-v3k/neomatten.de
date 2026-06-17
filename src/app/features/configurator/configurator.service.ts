@@ -176,6 +176,16 @@ export class ConfiguratorService {
     return colour ? colourName(colour, lang) : id;
   }
 
+  /** Hex for a stored mat-colour id (for cart/order swatches); '' if unknown. */
+  matColourHex(id: string): string {
+    return this.allMatColours().find(c => c.id === id)?.hex ?? '';
+  }
+
+  /** Hex for a stored edge-colour id (for cart/order swatches); '' if unknown. */
+  edgeColourHex(id: string): string {
+    return this.edgeColours().find(c => c.id === id)?.hex ?? '';
+  }
+
   // Static refine-spec options (step 02). Informational only — they don't filter
   // patterns or affect pricing; they ride along into the OrderItemDTO for the
   // admin. `label` is an i18n key (rendered via the translate pipe in the pills).

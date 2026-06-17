@@ -13,9 +13,11 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslationService } from '@core/i18n/translation.service';
 import type { OrderRecord, OrderStatus, PaymentMethod } from '@core/models/order.model';
 import { AuthService } from '@core/services/auth.service';
 import { OrderService } from '@core/services/order.service';
+import { ConfiguratorService } from '@features/configurator/configurator.service';
 import {
   LucideCheck,
   LucideCopy,
@@ -53,10 +55,27 @@ import { ToastService } from '@shared/services/toast.service';
 export class AccountPageComponent {
   private readonly auth = inject(AuthService);
   private readonly toast = inject(ToastService);
+  private readonly config = inject(ConfiguratorService);
+  private readonly translation = inject(TranslationService);
   protected readonly orders = inject(OrderService);
 
   protected readonly user = this.auth.user;
   protected readonly orderList = this.orders.orders;
+
+  /** Localized mat/edge colour names for a configured order line (falls back to the id). */
+  protected matColourName(id: string): string {
+    return this.config.matColourName(id, this.translation.currentLanguage());
+  }
+  protected edgeColourName(id: string): string {
+    return this.config.edgeColourName(id, this.translation.currentLanguage());
+  }
+  /** Hex values for the mat/edge colour swatches (falls back to '' if unknown). */
+  protected matColourHex(id: string): string {
+    return this.config.matColourHex(id);
+  }
+  protected edgeColourHex(id: string): string {
+    return this.config.edgeColourHex(id);
+  }
 
   /**
    * Values (order IDs / SKUs) currently showing the "copied" checkmark. Keyed by

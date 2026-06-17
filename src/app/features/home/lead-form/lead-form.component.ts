@@ -11,6 +11,7 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { CONTACT_TOPICS } from '@core/config/contact-topics';
 import { TranslationService } from '@core/i18n/translation.service';
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import { CheckboxComponent } from '@shared/components/checkbox/checkbox.component';
@@ -22,9 +23,6 @@ import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { ToastService } from '@shared/services/toast.service';
 import { createAsyncAction } from '@shared/utils/async-action.util';
 import { phoneValidator } from '@shared/validators/phone.validator';
-
-/** Allowed contact topics shown in the optional topic dropdown. */
-const LEAD_TOPICS = ['lockout', 'order_status', 'other'] as const;
 
 @Component({
   selector: 'nm-lead-form',
@@ -61,7 +59,7 @@ export class LeadFormComponent {
   /** Topic options (labels re-resolve on language change). */
   protected readonly topicOptions = computed<SelectOption[]>(() => {
     this.translation.currentLanguage();
-    return LEAD_TOPICS.map(value => ({
+    return CONTACT_TOPICS.map(value => ({
       value,
       label: this.translation.translate(`contact_topic_${value}`),
     }));

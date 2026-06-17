@@ -19,6 +19,7 @@ import {
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { COMPANY_INFO, COMPANY_MAPS_URL, COMPANY_PHONE_HREF } from '@core/config/company-info';
+import { CONTACT_TOPICS } from '@core/config/contact-topics';
 import { TranslationService } from '@core/i18n/translation.service';
 import { BrandIconComponent } from '@shared/components/brand-icon/brand-icon.component';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
@@ -36,9 +37,6 @@ import { ToastService } from '@shared/services/toast.service';
 import { createAsyncAction } from '@shared/utils/async-action.util';
 import { phoneValidator } from '@shared/validators/phone.validator';
 import { siTelegram, siWhatsapp } from 'simple-icons';
-
-/** Allowed contact topics (also the query-param values accepted on /contact). */
-const CONTACT_TOPICS = ['lockout', 'order_status', 'account_deletion', 'other'] as const;
 
 @Component({
   selector: 'nm-contact-page',

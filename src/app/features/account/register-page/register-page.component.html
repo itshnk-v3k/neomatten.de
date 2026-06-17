@@ -9,11 +9,17 @@
   <div class="mx-auto max-w-md rounded-2xl border border-border bg-surface p-8 shadow-soft">
     <h1 class="text-2xl font-bold">{{ 'action_register' | translate }}</h1>
     <form [formGroup]="form" (ngSubmit)="submit()" class="mt-6 flex flex-col gap-4">
-      <nm-input formControlName="name" label="form_name" autocomplete="name" [required]="true" />
+      <nm-input
+        formControlName="name"
+        label="form_name"
+        placeholder="form_name_placeholder"
+        autocomplete="name"
+        [required]="true" />
       <nm-input
         formControlName="email"
         type="email"
         label="form_email"
+        placeholder="form_email_placeholder"
         autocomplete="email"
         [required]="true" />
       <nm-phone-input formControlName="phone" label="form_phone" />
