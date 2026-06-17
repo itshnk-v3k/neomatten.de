@@ -238,7 +238,7 @@
                      (WebP only). Selected ring mirrors the colour swatches. -->
                 <span
                   [class]="
-                    'block aspect-square w-16 overflow-hidden rounded-full ring-2 ring-offset-2 ring-offset-surface transition-all ' +
+                    'block aspect-square w-20 overflow-hidden rounded-full ring-2 ring-offset-2 ring-offset-surface transition-all sm:w-32 ' +
                     (texture() === tex ? 'ring-primary' : 'ring-transparent hover:ring-border')
                   ">
                   @if (!textureFailed().has(tex)) {
@@ -246,7 +246,7 @@
                       [src]="'assets/images/texture/' + tex + '.webp'"
                       [alt]="'configurator_texture_' + tex | translate"
                       loading="lazy"
-                      class="size-full object-cover object-center"
+                      class="size-full object-none object-center"
                       (error)="onTextureError(tex)" />
                   } @else {
                     <nm-image-placeholder class="size-full rounded-none" />
