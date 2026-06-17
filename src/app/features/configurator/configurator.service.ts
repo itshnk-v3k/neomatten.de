@@ -68,73 +68,6 @@ export function colourName(colour: MatColour, lang: Language): string {
   return lang === 'de' ? colour.name_de : colour.name_en;
 }
 
-/**
- * Per-brand trim levels (keyed by brand id slug). Values are proper nouns shown
- * as-is — the translate pipe falls back to the literal string for unknown keys,
- * so no i18n entries are needed. Brands without an entry use `default`.
- */
-export const BRAND_TRIMS: Readonly<Record<string, readonly string[]>> = {
-  audi: [
-    'Base',
-    'Sport',
-    'S-Line',
-    'S-Line Plus',
-    'Black Edition',
-    'Quattro',
-    'RS',
-    'S',
-    'Edition 1',
-  ],
-  bmw: [
-    'Base',
-    'M Sport',
-    'M Sport Pro',
-    'xDrive',
-    'Sport Line',
-    'Luxury Line',
-    'M Performance',
-    'Alpina',
-  ],
-  'mercedes-benz': [
-    'Base',
-    'AMG Line',
-    'AMG',
-    'Exclusive',
-    'Avantgarde',
-    'Elegance',
-    'Night Edition',
-    'Edition 1',
-  ],
-  volkswagen: [
-    'Base',
-    'Life',
-    'Style',
-    'R-Line',
-    'GTI',
-    'R',
-    'Highline',
-    'Comfortline',
-    'Trendline',
-  ],
-  toyota: ['Base', 'Comfort', 'Executive', 'GR Sport', 'Hybrid', 'Lounge'],
-  ford: ['Base', 'Trend', 'Titanium', 'ST-Line', 'ST', 'Vignale'],
-  skoda: ['Active', 'Ambition', 'Style', 'Sportline', 'RS', 'Scout', 'L&K'],
-  seat: ['Reference', 'Style', 'FR', 'Xcellence', 'Cupra'],
-  hyundai: ['Classic', 'Comfort', 'Smart', 'Premium', 'N-Line', 'N'],
-  kia: ['Concept', 'Dream-Team', 'Spirit', 'GT-Line', 'GT'],
-  porsche: ['Base', 'S', 'GTS', 'Turbo', 'Turbo S', 'Carrera', 'Targa', '4S'],
-  renault: ['Life', 'Zen', 'Intens', 'Techno', 'RS Line', 'RS'],
-  peugeot: ['Active', 'Allure', 'GT', 'GT Premium', 'e-GT'],
-  opel: ['Edition', 'Elegance', 'GS', 'GS Line', 'OPC'],
-  volvo: ['Core', 'Plus', 'Ultra', 'Black Edition', 'Polestar'],
-  mazda: ['Prime-Line', 'Exclusive-Line', 'Homura', 'Takumi'],
-  subaru: ['Active', 'Comfort', 'Trend', 'STI Sport'],
-  mitsubishi: ['Inform', 'Plus', 'Top', 'Instyle', 'Ralliart'],
-  nissan: ['Visia', 'Acenta', 'N-Connecta', 'Tekna', 'N-Sport'],
-  honda: ['Comfort', 'Elegance', 'Sport', 'Executive', 'Type R'],
-  default: ['Base', 'Comfort', 'Sport', 'Premium', 'Luxury', 'Limited Edition'],
-};
-
 // --- mock pricing -----------------------------------------------------------
 // TODO(admin)/TODO(backend): all prices below (tier base prices, add-on prices
 // and shipping tiers) are a mock. They should be admin-managed and/or computed
@@ -167,6 +100,11 @@ export interface ConfigState {
   readonly mounting: Mounting;
   readonly heelPad: HeelPadAccessory;
   readonly heelRest: HeelRest;
+  // Step-02 refine spec — optional/informational (don't affect pricing).
+  readonly transmission: string | null;
+  readonly year: number | null;
+  readonly drive: string | null;
+  readonly engine: string | null;
 }
 
 export type PricingTier = 'economy' | 'standard' | 'premium';
@@ -238,31 +176,28 @@ export class ConfiguratorService {
     return colour ? colourName(colour, lang) : id;
   }
 
-  // Static refine-spec options (no such columns in the dataset — informational).
+  // Static refine-spec options (step 02). Informational only — they don't filter
+  // patterns or affect pricing; they ride along into the OrderItemDTO for the
+  // admin. `label` is an i18n key (rendered via the translate pipe in the pills).
   readonly transmissionOptions: SelectOption[] = [
-    { value: 'automatic', label: 'configurator_transmission_automatic' },
-    { value: 'manual', label: 'configurator_transmission_manual' },
+    { value: 'automatic', label: 'refine_transmission_automatic' },
+    { value: 'manual', label: 'refine_transmission_manual' },
+    { value: 'robot', label: 'refine_transmission_robot' },
   ];
   readonly driveOptions: SelectOption[] = [
-    { value: 'awd', label: 'configurator_drive_awd' },
-    { value: 'front', label: 'configurator_drive_front' },
-    { value: 'rear', label: 'configurator_drive_rear' },
+    { value: 'rear', label: 'refine_drive_rear' },
+    { value: 'front', label: 'refine_drive_front' },
+    { value: 'all', label: 'refine_drive_all' },
   ];
   readonly engineOptions: SelectOption[] = [
-    { value: '1.6', label: '1.6 L' },
-    { value: '2.0', label: '2.0 L' },
-    { value: '2.5', label: '2.5 L' },
-    { value: '3.0', label: '3.0 L' },
-    { value: 'electric', label: 'configurator_engine_electric' },
+    { value: 'petrol', label: 'refine_engine_petrol' },
+    { value: 'diesel', label: 'refine_engine_diesel' },
+    { value: 'petrol-gas', label: 'refine_engine_petrol_gas' },
+    { value: 'gas', label: 'refine_engine_gas' },
+    { value: 'electric', label: 'refine_engine_electric' },
+    { value: 'hybrid', label: 'refine_engine_hybrid' },
+    { value: 'unknown', label: 'refine_engine_unknown' },
   ];
-  /**
-   * Trim-level options for a brand (by id slug). Falls back to `default` for
-   * brands without a curated list. Values are proper nouns shown as-is.
-   */
-  trimsFor(brandId: string): SelectOption[] {
-    const trims = BRAND_TRIMS[brandId] ?? BRAND_TRIMS['default'];
-    return trims.map(t => ({ value: t, label: t }));
-  }
 
   /** Zones selected by a step-07 preset shortcut. */
   presetZones(preset: KitPreset): CarZone[] {
@@ -348,6 +283,11 @@ export class ConfiguratorService {
       heelRest: state.heelRest,
       mounting: state.mounting,
       accessories: state.accessories,
+      // Step-02 refine spec (informational, for the admin fulfilling the order).
+      transmission: state.transmission ?? undefined,
+      yearOfManufacture: state.year ?? undefined,
+      drive: state.drive ?? undefined,
+      engine: state.engine ?? undefined,
       quantity: 1,
       unitPrice: this.price(state),
     };

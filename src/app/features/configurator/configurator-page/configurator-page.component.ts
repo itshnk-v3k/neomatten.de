@@ -14,7 +14,7 @@
  *     «Связаться с менеджером» — за авторизацией: для гостя открывают диалог
  *     входа и повторяют отложенное действие после входа.
  */
-import type { ElementRef } from '@angular/core';
+import type { ElementRef, WritableSignal } from '@angular/core';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -126,17 +126,11 @@ export class ConfiguratorPageComponent {
   protected readonly driveOptions = this.config.driveOptions;
   protected readonly engineOptions = this.config.engineOptions;
 
-  // --- vehicle + refine form -------------------------------------------------
+  // --- vehicle selection form (step 01) --------------------------------------
   protected readonly form = this.fb.nonNullable.group({
     brandId: [''],
     model: [''],
     yearLabel: [''],
-    // Refine (optional / informational).
-    yearOfManufacture: [''],
-    transmission: [''],
-    drive: [''],
-    engine: [''],
-    trim: [''],
   });
   private readonly values = toSignal(this.form.valueChanges, {
     initialValue: this.form.getRawValue(),
@@ -158,6 +152,23 @@ export class ConfiguratorPageComponent {
   protected readonly mounting = signal<Mounting>('none');
   protected readonly heelPad = signal<HeelPadAccessory>('none');
   protected readonly heelRest = signal<HeelRest>('none');
+
+  // --- step 02 refine spec (optional/informational; into the OrderItemDTO) ----
+  protected readonly transmission = signal<string | null>(null);
+  protected readonly year = signal<number | null>(null);
+  protected readonly drive = signal<string | null>(null);
+  protected readonly engine = signal<string | null>(null);
+
+  /** Radio-pill toggle: re-selecting the active value clears it (optional field). */
+  protected toggleRefine(field: WritableSignal<string | null>, value: string): void {
+    field.update(current => (current === value ? null : value));
+  }
+
+  /** Year-of-manufacture change from the select/number input ('' → null). */
+  protected setYear(value: string): void {
+    const n = Number(value);
+    this.year.set(value !== '' && Number.isFinite(n) ? n : null);
+  }
 
   /** Texture ids whose thumbnail photo failed to load → render the placeholder. */
   protected readonly textureFailed = signal<ReadonlySet<string>>(new Set());
@@ -210,11 +221,6 @@ export class ConfiguratorPageComponent {
       ? this.vehicles.yearOptionsFor(brandId, model).map(y => ({ value: y.label, label: y.label }))
       : [];
   });
-
-  /** Trim-level options for the selected brand (per-brand, falls back to default). */
-  protected readonly trimOptions = computed<SelectOption[]>(() =>
-    this.config.trimsFor(this.values().brandId ?? '')
-  );
 
   private readonly matchingPatterns = computed(() => {
     const { brandId, model, yearLabel } = this.values();
@@ -290,6 +296,10 @@ export class ConfiguratorPageComponent {
     mounting: this.mounting(),
     heelPad: this.heelPad(),
     heelRest: this.heelRest(),
+    transmission: this.transmission(),
+    year: this.year(),
+    drive: this.drive(),
+    engine: this.engine(),
   }));
   protected readonly price = computed(() => this.config.price(this.state()));
   protected readonly shipping = computed(() => this.config.shipping(this.zones()));
@@ -407,11 +417,10 @@ export class ConfiguratorPageComponent {
       onCleanup(() => observer.disconnect());
     });
 
-    // Reset downstream selections when an upstream one changes (trim too — its
-    // options are per-brand, so a stale value from another brand must clear).
+    // Reset downstream selections when an upstream one changes.
     this.form.controls.brandId.valueChanges
       .pipe(takeUntilDestroyed(destroyRef))
-      .subscribe(() => this.form.patchValue({ model: '', yearLabel: '', trim: '' }));
+      .subscribe(() => this.form.patchValue({ model: '', yearLabel: '' }));
     this.form.controls.model.valueChanges
       .pipe(takeUntilDestroyed(destroyRef))
       .subscribe(() => this.form.patchValue({ yearLabel: '' }));

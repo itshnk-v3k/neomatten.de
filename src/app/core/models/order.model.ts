@@ -72,6 +72,11 @@ export interface OrderItemDTO {
   readonly heelRest?: string;
   readonly mounting?: string;
   readonly accessories?: string;
+  // --- Step-02 refine spec (optional/informational, for order fulfilment) ---
+  readonly transmission?: string;
+  readonly yearOfManufacture?: number;
+  readonly drive?: string;
+  readonly engine?: string;
   // --- Common ---
   readonly quantity: number;
   readonly unitPrice: number;
