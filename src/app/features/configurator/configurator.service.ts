@@ -62,6 +62,13 @@ export const HEEL_REST_RUBBER_COLOURS: readonly HeelRestColour[] = [
     swatch: 'linear-gradient(135deg, #1a1a1a 0 50%, #c81e1e 50% 100%)',
   },
   { id: 'grey', file: 'grey.webp', labelKey: 'heel_rest_rubber_grey', swatch: '#9ca3af' },
+  {
+    id: 'black-grey',
+    file: 'black-grey.webp',
+    labelKey: 'heel_rest_rubber_black_grey',
+    swatch: 'linear-gradient(135deg, #1a1a1a 0 50%, #6b7280 50% 100%)',
+  },
+  { id: 'black', file: 'black.webp', labelKey: 'heel_rest_rubber_black', swatch: '#1a1a1a' },
 ];
 export type Accessories = 'with_clips' | 'without_clips';
 /** Clickable car-diagram zones = step-07 kit pieces. */
