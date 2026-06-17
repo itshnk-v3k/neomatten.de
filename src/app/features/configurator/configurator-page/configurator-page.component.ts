@@ -55,7 +55,12 @@ import { ToastService } from '@shared/services/toast.service';
 import { createAsyncAction } from '@shared/utils/async-action.util';
 
 import {
+  ConfigDetailsComponent,
+  type ConfigDetailsVM,
+} from '../config-details/config-details.component';
+import {
   type Accessories,
+  CAR_ZONES,
   type CarZone,
   type ConfigState,
   ConfiguratorService,
@@ -84,6 +89,7 @@ import { ConfiguratorPreviewComponent } from '../configurator-preview/configurat
     AuthDialogComponent,
     PaymentDialogComponent,
     ConfiguratorPreviewComponent,
+    ConfigDetailsComponent,
     ConfiguratorInfoDialogsComponent,
     SkeletonComponent,
     TooltipDirective,
@@ -322,6 +328,41 @@ export class ConfiguratorPageComponent {
   protected readonly edgeColourName = computed(() =>
     this.config.edgeColourName(this.edgeColor(), this.translation.currentLanguage())
   );
+
+  /** Vehicle line for the summary, e.g. "Acura MDX 2014–2020" (null if unresolved). */
+  protected readonly vehicleSummary = computed(() => {
+    const p = this.activePattern();
+    if (!p) return null;
+    return p.yearLabel ? `${p.brandName} ${p.model} ${p.yearLabel}` : `${p.brandName} ${p.model}`;
+  });
+
+  /** Full configuration view-model for the shared step-13 summary list. */
+  protected readonly configDetails = computed<ConfigDetailsVM>(() => {
+    const zones = this.zones();
+    const ship = this.shipping();
+    return {
+      vehicle: this.vehicleSummary(),
+      transmission: this.values().transmission || null,
+      year: this.values().yearOfManufacture ? Number(this.values().yearOfManufacture) : null,
+      drive: this.values().drive || null,
+      engine: this.values().engine || null,
+      material: this.material(),
+      texture: this.texture(),
+      materialColour: this.materialColourName(),
+      materialColourHex: this.materialHex(),
+      edgeColour: this.edgeColourName(),
+      edgeColourHex: this.edgeHex(),
+      mounting: this.mounting(),
+      heelPad: this.heelPad(),
+      heelPadPrice: this.heelPadPrice(),
+      heelRest: this.heelRest(),
+      heelRestPrice: this.heelRestPrice(),
+      accessories: this.accessories(),
+      positions: CAR_ZONES.filter(z => zones.has(z)),
+      deliveryTierKey: zones.size > 0 ? this.config.deliveryTierKey(zones) : null,
+      deliveryCost: ship === 0 ? null : ship,
+    };
+  });
 
   /** Colour display name in the active language (DE → name_de, else name_en). */
   protected colourName(colour: MatColour): string {

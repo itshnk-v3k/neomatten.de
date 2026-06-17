@@ -707,22 +707,15 @@
             </span>
             {{ 'configurator_step_summary' | translate }}
           </h2>
-          <dl class="mt-4 space-y-1.5 text-sm">
+
+          <!-- Every configuration step with its selected value (or "—" if skipped). -->
+          <nm-config-details [details]="configDetails()" class="mt-4 block" />
+
+          <!-- Price breakdown -->
+          <dl class="mt-4 space-y-1.5 border-t border-border pt-4 text-sm">
             <div class="flex justify-between">
               <dt class="text-content-secondary">{{ 'configurator_summary_mats' | translate }}</dt>
               <dd class="font-medium">{{ price() }} &euro;</dd>
-            </div>
-            <div class="flex justify-between">
-              <dt class="text-content-secondary">
-                {{ 'configurator_step_material_color' | translate }}
-              </dt>
-              <dd class="font-medium">{{ materialColourName() }}</dd>
-            </div>
-            <div class="flex justify-between">
-              <dt class="text-content-secondary">
-                {{ 'configurator_step_edge_color' | translate }}
-              </dt>
-              <dd class="font-medium">{{ edgeColourName() }}</dd>
             </div>
             @if (heelPad() !== 'none') {
               <div class="flex justify-between">

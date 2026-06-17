@@ -18,7 +18,16 @@ import type { PaymentMethod } from '@core/models/order.model';
 import { AuthService } from '@core/services/auth.service';
 import { CartService } from '@core/services/cart.service';
 import { CheckoutService } from '@core/services/checkout.service';
-import { ConfiguratorService } from '@features/configurator/configurator.service';
+import {
+  ConfigDetailsComponent,
+  type ConfigDetailsVM,
+} from '@features/configurator/config-details/config-details.component';
+import {
+  type CarZone,
+  ConfiguratorService,
+  type HeelPadAccessory,
+  type HeelRest,
+} from '@features/configurator/configurator.service';
 import { LucideCheck, LucideCopy, LucideMinus, LucidePlus, LucideTrash2 } from '@lucide/angular';
 import { AuthDialogComponent } from '@shared/components/auth-dialog/auth-dialog.component';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
@@ -42,6 +51,7 @@ import { ToastService } from '@shared/services/toast.service';
     AuthDialogComponent,
     PaymentDialogComponent,
     SkeletonComponent,
+    ConfigDetailsComponent,
     TranslatePipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,19 +66,42 @@ export class CartPageComponent {
   private readonly translation = inject(TranslationService);
   private readonly toast = inject(ToastService);
 
-  /** Localized mat/edge colour names for a configured line (falls back to the id). */
-  protected matColourName(id: string): string {
-    return this.config.matColourName(id, this.translation.currentLanguage());
-  }
-  protected edgeColourName(id: string): string {
-    return this.config.edgeColourName(id, this.translation.currentLanguage());
-  }
-  /** Hex values for the mat/edge colour swatches (falls back to '' if unknown). */
-  protected matColourHex(id: string): string {
-    return this.config.matColourHex(id);
-  }
-  protected edgeColourHex(id: string): string {
-    return this.config.edgeColourHex(id);
+  /**
+   * Resolves a configured-mat cart line into the shared summary view-model, so the
+   * cart shows the same full configuration list as the configurator's step-13
+   * summary. Colour ids → localized names/hex; delivery tier/cost are recomputed
+   * from the line's kit pieces. Optional/skipped fields stay null → render "—".
+   */
+  protected configDetails(item: CartItem): ConfigDetailsVM {
+    const lang = this.translation.currentLanguage();
+    const zones = new Set((item.kitPieces ?? []) as CarZone[]);
+    const ship = this.config.shipping(zones);
+    return {
+      vehicle: item.brand
+        ? `${item.brand} ${item.model ?? ''}${item.yearRange ? ` ${item.yearRange}` : ''}`.trim()
+        : null,
+      transmission: item.transmission ?? null,
+      year: item.yearOfManufacture ?? null,
+      drive: item.drive ?? null,
+      engine: item.engine ?? null,
+      material: item.material ?? null,
+      texture: item.texture ?? null,
+      materialColour: item.materialColour
+        ? this.config.matColourName(item.materialColour, lang)
+        : null,
+      materialColourHex: item.materialColour ? this.config.matColourHex(item.materialColour) : null,
+      edgeColour: item.edgeColour ? this.config.edgeColourName(item.edgeColour, lang) : null,
+      edgeColourHex: item.edgeColour ? this.config.edgeColourHex(item.edgeColour) : null,
+      mounting: item.mounting ?? null,
+      heelPad: item.heelPad ?? null,
+      heelPadPrice: this.config.heelPadPrice((item.heelPad ?? 'none') as HeelPadAccessory),
+      heelRest: item.heelRest ?? null,
+      heelRestPrice: this.config.heelRestPrice((item.heelRest ?? 'none') as HeelRest),
+      accessories: item.accessories ?? null,
+      positions: item.kitPieces ?? [],
+      deliveryTierKey: zones.size > 0 ? this.config.deliveryTierKey(zones) : null,
+      deliveryCost: ship === 0 ? null : ship,
+    };
   }
 
   /** SKUs currently flashing the "copied" checkmark; each flips back after 1.5s. */

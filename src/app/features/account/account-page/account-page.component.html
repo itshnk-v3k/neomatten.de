@@ -125,7 +125,9 @@
                       @if (item.sku) {
                         @let sku = item.orderItemSku ?? item.sku;
                         <div class="flex gap-2">
-                          <dt class="font-medium text-content">SKU:</dt>
+                          <dt class="font-medium text-content">
+                            {{ 'order_sku_label' | translate }}:
+                          </dt>
                           <dd class="font-mono flex items-center gap-1">
                             {{ sku }}
                             <button

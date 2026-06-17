@@ -49,79 +49,28 @@
           <li class="flex gap-4 rounded-xl border border-border bg-surface p-5 shadow-soft">
             <div class="min-w-0 flex-1">
               <h2 class="font-bold">{{ item.name }}</h2>
-              <dl class="mt-2 space-y-0.5 text-sm text-content-secondary">
-                @if (item.brand || item.model) {
-                  <div class="flex gap-2">
-                    <dt class="font-medium text-content">{{ 'cart_brand_model' | translate }}:</dt>
-                    <dd>{{ item.brand }} {{ item.model }}</dd>
-                  </div>
-                }
-                @if (item.yearRange) {
-                  <div class="flex gap-2">
-                    <dt class="font-medium text-content">{{ 'cart_year_range' | translate }}:</dt>
-                    <dd>{{ item.yearRange }}</dd>
-                  </div>
-                }
-                @if (item.sku; as sku) {
-                  <div class="flex gap-2">
-                    <dt class="font-medium text-content">SKU:</dt>
-                    <dd class="font-mono flex items-center gap-1">
-                      {{ sku }}
-                      <button
-                        type="button"
-                        class="text-content-muted transition-colors hover:text-primary"
-                        [attr.aria-label]="'order_copy_sku' | translate"
-                        (click)="copySku(sku)">
-                        @if (isCopied(sku)) {
-                          <svg lucideCheck class="size-3.5 text-success" aria-hidden="true"></svg>
-                        } @else {
-                          <svg lucideCopy class="size-3.5" aria-hidden="true"></svg>
-                        }
-                      </button>
-                    </dd>
-                  </div>
-                }
-                @if (item.tier) {
-                  <div class="flex gap-2">
-                    <dt class="font-medium text-content">{{ 'cart_tier' | translate }}:</dt>
-                    <dd>{{ 'mat_kit_tier_' + item.tier | translate }}</dd>
-                  </div>
-                }
-                @if (item.materialColour) {
-                  <div class="flex gap-2">
-                    <dt class="font-medium text-content">
-                      {{ 'cart_material_colour' | translate }}:
-                    </dt>
-                    <dd class="flex items-center gap-1">
-                      <span
-                        class="inline-block size-3 rounded-full border border-border"
-                        [style.background-color]="matColourHex(item.materialColour)"></span>
-                      {{ matColourName(item.materialColour) }}
-                    </dd>
-                  </div>
-                }
-                @if (item.edgeColour) {
-                  <div class="flex gap-2">
-                    <dt class="font-medium text-content">{{ 'cart_edge_colour' | translate }}:</dt>
-                    <dd class="flex items-center gap-1">
-                      <span
-                        class="inline-block size-3 rounded-full border border-border"
-                        [style.background-color]="edgeColourHex(item.edgeColour)"></span>
-                      {{ edgeColourName(item.edgeColour) }}
-                    </dd>
-                  </div>
-                }
-                @if (item.kitPieces?.length) {
-                  <div class="flex gap-2">
-                    <dt class="font-medium text-content">{{ 'cart_kit' | translate }}:</dt>
-                    <dd>
-                      @for (piece of item.kitPieces; track piece; let last = $last) {
-                        {{ 'kit_piece_' + piece | translate }}{{ last ? '' : ', ' }}
-                      }
-                    </dd>
-                  </div>
-                }
-              </dl>
+              @if (item.sku; as sku) {
+                <p class="mt-1 flex items-center gap-1 text-sm text-content-secondary">
+                  <span class="font-medium text-content">{{ 'order_sku_label' | translate }}:</span>
+                  <span class="font-mono">{{ sku }}</span>
+                  <button
+                    type="button"
+                    class="text-content-muted transition-colors hover:text-primary"
+                    [attr.aria-label]="'order_copy_sku' | translate"
+                    (click)="copySku(sku)">
+                    @if (isCopied(sku)) {
+                      <svg lucideCheck class="size-3.5 text-success" aria-hidden="true"></svg>
+                    } @else {
+                      <svg lucideCopy class="size-3.5" aria-hidden="true"></svg>
+                    }
+                  </button>
+                </p>
+              }
+              <!-- Configured-mat lines show the full selected configuration; simple
+                   product lines have none, so the details block is mats-only. -->
+              @if (item.category === 'mats') {
+                <nm-config-details [details]="configDetails(item)" class="mt-2 block" />
+              }
 
               <div class="mt-3 flex items-center gap-3">
                 <div class="inline-flex items-center rounded-lg border border-border">

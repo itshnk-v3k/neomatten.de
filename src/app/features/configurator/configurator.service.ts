@@ -259,6 +259,16 @@ export class ConfiguratorService {
     return round2(total);
   }
 
+  /** Delivery-tier i18n key implied by the kit (mirrors `shipping()` thresholds). */
+  deliveryTierKey(zones: ReadonlySet<CarZone>): string {
+    const floors = FLOOR_ZONES.filter(z => zones.has(z)).length;
+    if (zones.has('trunk')) return 'configurator_delivery_premium';
+    if (floors >= 4) return 'configurator_delivery_full';
+    if (floors === 3) return 'configurator_delivery_full';
+    if (floors === 2) return 'configurator_delivery_pair';
+    return 'configurator_delivery_single';
+  }
+
   /** Shipping cost for the kit (EUR). Free for full interior / premium sets. */
   shipping(zones: ReadonlySet<CarZone>): number {
     const floors = FLOOR_ZONES.filter(z => zones.has(z)).length;
@@ -286,6 +296,7 @@ export class ConfiguratorService {
       yearRange: pattern.yearLabel ?? undefined,
       tier: this.tierFor(state.zones),
       kitPieces: CAR_ZONES.filter(z => state.zones.has(z)),
+      material: state.material,
       texture: state.texture,
       materialColour: state.materialColor,
       edgeColour: state.edgeColor,

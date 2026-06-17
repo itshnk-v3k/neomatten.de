@@ -340,6 +340,7 @@
   "mat_color_red": "Red",
   "mat_color_blue": "Blue",
   "form_label_sku": "SKU",
+  "order_sku_label": "SKU",
   "configurator_eyebrow": "Mat configurator",
   "configurator_intro": "Select your vehicle to build a tailored EVA mat set.",
   "configurator_brand_title": "Choose your brand",

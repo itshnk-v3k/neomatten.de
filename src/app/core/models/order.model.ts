@@ -64,6 +64,8 @@ export interface OrderItemDTO {
   readonly yearRange?: string;
   readonly tier?: string;
   readonly kitPieces?: readonly string[];
+  /** Material type: 'eva' | 'ecoskin'. */
+  readonly material?: string;
   readonly texture?: string;
   readonly materialColour?: string;
   readonly edgeColour?: string;

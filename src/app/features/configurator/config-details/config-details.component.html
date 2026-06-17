@@ -1,0 +1,191 @@
+<!--
+  EN: One labelled row per configuration step; "—" when a field was skipped.
+  RU: По строке «метка — значение» на каждый шаг; «—», если поле пропущено.
+-->
+@let d = details();
+<dl class="space-y-0.5 text-sm">
+  <!-- 1 Vehicle -->
+  <div class="flex justify-between gap-3">
+    <dt class="font-medium text-content">{{ 'configurator_step_vehicle' | translate }}:</dt>
+    <dd class="text-right text-content-secondary">{{ d.vehicle || '—' }}</dd>
+  </div>
+
+  <!-- 2 Specification (optional refine fields) -->
+  <div class="flex justify-between gap-3">
+    <dt class="font-medium text-content">{{ 'refine_transmission' | translate }}:</dt>
+    <dd class="text-right text-content-secondary">
+      @if (d.transmission) {
+        {{ 'refine_transmission_' + d.transmission | translate }}
+      } @else {
+        —
+      }
+    </dd>
+  </div>
+  <div class="flex justify-between gap-3">
+    <dt class="font-medium text-content">{{ 'refine_year' | translate }}:</dt>
+    <dd class="text-right text-content-secondary">{{ d.year || '—' }}</dd>
+  </div>
+  <div class="flex justify-between gap-3">
+    <dt class="font-medium text-content">{{ 'refine_drive' | translate }}:</dt>
+    <dd class="text-right text-content-secondary">
+      @if (d.drive) {
+        {{ 'refine_drive_' + d.drive | translate }}
+      } @else {
+        —
+      }
+    </dd>
+  </div>
+  <div class="flex justify-between gap-3">
+    <dt class="font-medium text-content">{{ 'refine_engine' | translate }}:</dt>
+    <dd class="text-right text-content-secondary">
+      @if (d.engine) {
+        {{ engineKey(d.engine) | translate }}
+      } @else {
+        —
+      }
+    </dd>
+  </div>
+
+  <!-- 3 Material type -->
+  <div class="flex justify-between gap-3">
+    <dt class="font-medium text-content">{{ 'configurator_step_material' | translate }}:</dt>
+    <dd class="text-right text-content-secondary">
+      @if (d.material) {
+        {{ 'configurator_material_' + d.material | translate }}
+      } @else {
+        —
+      }
+    </dd>
+  </div>
+
+  <!-- 4 Texture -->
+  <div class="flex justify-between gap-3">
+    <dt class="font-medium text-content">{{ 'configurator_step_texture' | translate }}:</dt>
+    <dd class="text-right text-content-secondary">
+      @if (d.texture) {
+        {{ 'configurator_texture_' + d.texture | translate }}
+      } @else {
+        —
+      }
+    </dd>
+  </div>
+
+  <!-- 5 Material colour -->
+  <div class="flex justify-between gap-3">
+    <dt class="font-medium text-content">{{ 'configurator_step_material_color' | translate }}:</dt>
+    <dd class="flex items-center justify-end gap-1 text-right text-content-secondary">
+      @if (d.materialColour) {
+        @if (d.materialColourHex) {
+          <span
+            class="inline-block size-3 rounded-full border border-border"
+            [style.background-color]="d.materialColourHex"></span>
+        }
+        {{ d.materialColour }}
+      } @else {
+        —
+      }
+    </dd>
+  </div>
+
+  <!-- 6 Edge colour -->
+  <div class="flex justify-between gap-3">
+    <dt class="font-medium text-content">{{ 'configurator_step_edge_color' | translate }}:</dt>
+    <dd class="flex items-center justify-end gap-1 text-right text-content-secondary">
+      @if (d.edgeColour) {
+        @if (d.edgeColourHex) {
+          <span
+            class="inline-block size-3 rounded-full border border-border"
+            [style.background-color]="d.edgeColourHex"></span>
+        }
+        {{ d.edgeColour }}
+      } @else {
+        —
+      }
+    </dd>
+  </div>
+
+  <!-- 7 Mounting -->
+  <div class="flex justify-between gap-3">
+    <dt class="font-medium text-content">{{ 'configurator_step_mounting' | translate }}:</dt>
+    <dd class="text-right text-content-secondary">
+      @if (d.mounting) {
+        {{ 'configurator_mount_' + d.mounting | translate }}
+      } @else {
+        —
+      }
+    </dd>
+  </div>
+
+  <!-- 8 Heel pad -->
+  <div class="flex justify-between gap-3">
+    <dt class="font-medium text-content">{{ 'configurator_step_heel' | translate }}:</dt>
+    <dd class="text-right text-content-secondary">
+      @if (d.heelPad) {
+        {{ 'configurator_heel_' + d.heelPad | translate }}
+        @if (d.heelPadPrice) {
+          <span class="text-primary">+{{ d.heelPadPrice }} &euro;</span>
+        }
+      } @else {
+        —
+      }
+    </dd>
+  </div>
+
+  <!-- 9 Heel rest pad -->
+  <div class="flex justify-between gap-3">
+    <dt class="font-medium text-content">{{ 'heel_rest_title' | translate }}:</dt>
+    <dd class="text-right text-content-secondary">
+      @if (d.heelRest) {
+        {{ 'heel_rest_' + d.heelRest | translate }}
+        @if (d.heelRestPrice) {
+          <span class="text-primary">+{{ d.heelRestPrice }} &euro;</span>
+        }
+      } @else {
+        —
+      }
+    </dd>
+  </div>
+
+  <!-- 10 Accessories -->
+  <div class="flex justify-between gap-3">
+    <dt class="font-medium text-content">{{ 'configurator_step_accessories' | translate }}:</dt>
+    <dd class="text-right text-content-secondary">
+      @if (d.accessories) {
+        {{ accessoriesKey(d.accessories) | translate }}
+      } @else {
+        —
+      }
+    </dd>
+  </div>
+
+  <!-- 11 Mat positions -->
+  <div class="flex justify-between gap-3">
+    <dt class="font-medium text-content">{{ 'configurator_step_kit' | translate }}:</dt>
+    <dd class="text-right text-content-secondary">
+      @if (d.positions.length) {
+        @for (p of d.positions; track p; let last = $last) {
+          {{ 'kit_piece_' + p | translate }}{{ last ? '' : ', ' }}
+        }
+      } @else {
+        —
+      }
+    </dd>
+  </div>
+
+  <!-- 12 Delivery -->
+  <div class="flex justify-between gap-3">
+    <dt class="font-medium text-content">{{ 'configurator_step_delivery' | translate }}:</dt>
+    <dd class="text-right text-content-secondary">
+      @if (d.deliveryTierKey) {
+        {{ d.deliveryTierKey | translate }}
+        @if (d.deliveryCost) {
+          &middot; {{ d.deliveryCost }} &euro;
+        } @else {
+          &middot; {{ 'configurator_delivery_free' | translate }}
+        }
+      } @else {
+        —
+      }
+    </dd>
+  </div>
+</dl>
