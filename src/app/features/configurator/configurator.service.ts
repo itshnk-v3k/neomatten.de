@@ -14,10 +14,10 @@
  *     цен заменит расчёт с бэкенда — вызовы не изменятся.
  */
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import type { Language } from '@core/i18n/language.model';
 import type { CartItem } from '@core/models/cart-item.model';
-import type { MatColour, MatColoursData } from '@core/models/mat-colour.model';
+import type { MatColour, MatColoursData, TextureColours } from '@core/models/mat-colour.model';
 import type { OrderItemDTO } from '@core/models/order.model';
 import type { VehiclePattern } from '@core/models/vehicle.model';
 import type { SelectOption } from '@shared/models/select-option.model';
@@ -58,9 +58,9 @@ export const FLOOR_ZONES: readonly CarZone[] = [
 
 // TODO(admin): texture options below are static placeholders. They should become
 // admin-managed catalogue data (e.g. `GET /api/configurator/options`) with swatch
-// images via MediaService. Mat + edge colour palettes are now loaded at runtime
-// from mock JSON (see ConfiguratorService.matColours / edgeColours) and will move
-// to `GET /api/settings/colours`.
+// images via MediaService. Mat colours are now per-texture and edge colours a flat
+// palette, both loaded at runtime from mock JSON (see ConfiguratorService
+// .textureColours / .edgeColours) and will move to `GET /api/settings/colours`.
 export const TEXTURES: readonly Texture[] = ['rhombus', 'honeycomb', 'drop'] as const;
 
 /** Localized display name for a colour (German name when DE, English otherwise). */
@@ -179,16 +179,28 @@ export class ConfiguratorService {
   /** True while configurator data initializes; flips false once colours load. */
   readonly loading = this.loadingSignal.asReadonly();
 
-  /** Mat (fill) colour palette, loaded at runtime. Empty until the load resolves. */
-  readonly matColours = signal<MatColour[]>([]);
+  /**
+   * Per-texture mat (fill) colour tables, loaded at runtime (supplier data v2 —
+   * colours differ per texture). Empty until the load resolves.
+   */
+  readonly textureColours = signal<TextureColours[]>([]);
   /** Edge (border) colour palette, loaded at runtime. Empty until the load resolves. */
   readonly edgeColours = signal<MatColour[]>([]);
+
+  /** Every mat colour across all textures, de-duplicated by id (name/hex lookups). */
+  private readonly allMatColours = computed(() => {
+    const byId = new Map<string, MatColour>();
+    for (const t of this.textureColours()) {
+      for (const c of t.colours) if (!byId.has(c.id)) byId.set(c.id, c);
+    }
+    return [...byId.values()];
+  });
 
   constructor() {
     // TODO(backend): GET /api/settings/colours
     this.http.get<MatColoursData>('assets/data/mat-colours.json').subscribe({
       next: data => {
-        this.matColours.set(data.mat_colours ?? []);
+        this.textureColours.set(data.textures ?? []);
         this.edgeColours.set(data.edge_colours ?? []);
         this.loadingSignal.set(false);
       },
@@ -197,9 +209,26 @@ export class ConfiguratorService {
     });
   }
 
+  /**
+   * Mat (fill) colours available for a texture. When `size210` is true, restricts
+   * to the subset offered in the larger 210x140 size (`size_210x140_colours`).
+   */
+  matColoursFor(texture: string, size210 = false): MatColour[] {
+    const entry = this.textureColours().find(t => t.id === texture);
+    if (!entry) return [];
+    if (!size210) return entry.colours;
+    const allowed = new Set(entry.size_210x140_colours);
+    return entry.colours.filter(c => allowed.has(c.id));
+  }
+
+  /** Sizes a texture is produced in, e.g. ["200x120", "210x140"]. */
+  sizesFor(texture: string): string[] {
+    return this.textureColours().find(t => t.id === texture)?.sizes ?? [];
+  }
+
   /** Localized name for a stored mat-colour id (falls back to the id itself). */
   matColourName(id: string, lang: Language): string {
-    const colour = this.matColours().find(c => c.id === id);
+    const colour = this.allMatColours().find(c => c.id === id);
     return colour ? colourName(colour, lang) : id;
   }
 

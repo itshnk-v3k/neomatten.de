@@ -33,71 +33,71 @@ const ALBUM_SOURCES: readonly {
     id: 'audi-a6-c7-2017',
     title: 'Audi A6 C7 2017',
     files: [
-      'audi-a6-c7-2017-back-left.jpg',
-      'audi-a6-c7-2017-back-right.jpg',
-      'audi-a6-c7-2017-front-left.jpg',
-      'audi-a6-c7-2017-front-right.jpg',
+      'audi-a6-c7-2017-back-left.webp',
+      'audi-a6-c7-2017-back-right.webp',
+      'audi-a6-c7-2017-front-left.webp',
+      'audi-a6-c7-2017-front-right.webp',
     ],
   },
   {
     id: 'bmw-e46-cabrio',
     title: 'BMW E46 Cabrio',
     files: [
-      'bmw-e46-cabrio-back-left.jpg',
-      'bmw-e46-cabrio-back-right.jpg',
-      'bmw-e46-cabrio-front-left.jpg',
-      'bmw-e46-cabrio-front-right.jpg',
+      'bmw-e46-cabrio-back-left.webp',
+      'bmw-e46-cabrio-back-right.webp',
+      'bmw-e46-cabrio-front-left.webp',
+      'bmw-e46-cabrio-front-right.webp',
     ],
   },
   {
     id: 'hyundai-i20-2020',
     title: 'Hyundai i20 2020',
     files: [
-      'hyundai-i20-2020-back-left.jpg',
-      'hyundai-i20-2020-back-right.jpg',
-      'hyundai-i20-2020-front-left.jpg',
-      'hyundai-i20-2020-front-right.jpg',
+      'hyundai-i20-2020-back-left.webp',
+      'hyundai-i20-2020-back-right.webp',
+      'hyundai-i20-2020-front-left.webp',
+      'hyundai-i20-2020-front-right.webp',
     ],
   },
   {
     id: 'mercedes-benz-b-class-2018',
     title: 'Mercedes-Benz B-Class 2018',
     files: [
-      'mercedes-benz-b-class-2018-back-right.jpg',
-      'mercedes-benz-b-class-2018-front-left.jpg',
-      'mercedes-benz-b-class-2018-front-right.jpg',
+      'mercedes-benz-b-class-2018-back-right.webp',
+      'mercedes-benz-b-class-2018-front-left.webp',
+      'mercedes-benz-b-class-2018-front-right.webp',
     ],
   },
   {
     id: 'mercedes-benz-ml-2012',
     title: 'Mercedes-Benz ML 2012',
     files: [
-      'mercedes-benz-ml-2012-back-left.jpg',
-      'mercedes-benz-ml-2012-back-right.jpg',
-      'mercedes-benz-ml-2012-front-left.jpg',
-      'mercedes-benz-ml-2012-front-right.jpg',
-      'mercedes-benz-ml-2012-trunk.jpg',
+      'mercedes-benz-ml-2012-back-left.webp',
+      'mercedes-benz-ml-2012-back-right.webp',
+      'mercedes-benz-ml-2012-front-left.webp',
+      'mercedes-benz-ml-2012-front-right.webp',
+      'mercedes-benz-ml-2012-trunk.webp',
     ],
   },
   {
     id: 'mercedes-benz-ml-350-2015',
     title: 'Mercedes-Benz ML 350 2015',
     files: [
-      'mercedes-benz-ml-350-2015-back-right.jpg',
-      'mercedes-benz-ml-350-2015-front-left.jpg',
-      'mercedes-benz-ml-350-2015-front-right.jpg',
-      'mercedes-benz-ml-350-2015-trunk.jpg',
+      'mercedes-benz-ml-350-2015-back-right.webp',
+      'mercedes-benz-ml-350-2015-front-left.webp',
+      'mercedes-benz-ml-350-2015-front-right.webp',
+      'mercedes-benz-ml-350-2015-trunk.webp',
     ],
   },
   {
     id: 'renault-talisman-2017',
     title: 'Renault Talisman 2017',
     files: [
-      'renault-talisman-2017-back-left.jpg',
-      'renault-talisman-2017-back-right.jpg',
-      'renault-talisman-2017-front-left.jpg',
-      'renault-talisman-2017-front-right.jpg',
-      'renault-talisman-2017-trunk.jpg',
+      'renault-talisman-2017-back-left.webp',
+      'renault-talisman-2017-back-right.webp',
+      'renault-talisman-2017-front-left.webp',
+      'renault-talisman-2017-front-right.webp',
+      'renault-talisman-2017-trunk.webp',
     ],
   },
 ];
@@ -105,12 +105,12 @@ const ALBUM_SOURCES: readonly {
 /** Display order within an album: front mats first, then rear, then trunk. */
 const POSITION_ORDER = ['front-left', 'front-right', 'back-left', 'back-right', 'trunk'] as const;
 
-/** Position slug from a filename ('…-front-left.jpg' → 'front-left'). */
+/** Position slug from a filename ('…-front-left.webp' → 'front-left'). */
 function positionSlug(id: string, file: string): string {
   return file.slice(id.length + 1).replace(/\.[^.]+$/, ''); // drop album-id prefix + extension
 }
 
-/** Human-readable position from a filename ('…-front-left.jpg' → 'Front left'). */
+/** Human-readable position from a filename ('…-front-left.webp' → 'Front left'). */
 function positionLabel(id: string, file: string): string {
   const position = positionSlug(id, file).replace(/-/g, ' '); // hyphens → spaces
   return position.charAt(0).toUpperCase() + position.slice(1);

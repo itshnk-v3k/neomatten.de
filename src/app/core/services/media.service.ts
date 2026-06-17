@@ -57,9 +57,7 @@ export class MediaService {
    * return the uploaded logo URL from the media API instead of the bundled asset.
    */
   getBrandLogoUrl(brandSlug: string): string | null {
-    return MediaService.BRAND_LOGO_FILES.has(brandSlug)
-      ? `assets/images/brands/${brandSlug}.png`
-      : null;
+    return MediaService.BRAND_LOGO_FILES.has(brandSlug) ? `assets/images/brands/.webp` : null;
   }
 
   /** Brand ids (brands.json) with a bitmap logo file in `src/assets/images/brands/`. */

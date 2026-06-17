@@ -60,7 +60,7 @@ export class SchemaService {
           '@id': `${SITE}/#organization`,
           name: COMPANY_INFO.brand,
           url: SITE,
-          logo: `${SITE}/assets/images/logo/neomat_full_transparent.png`,
+          logo: `${SITE}/assets/images/logo/neomat_full_transparent.webp`,
           email: COMPANY_INFO.email,
           contactPoint: {
             '@type': 'ContactPoint',

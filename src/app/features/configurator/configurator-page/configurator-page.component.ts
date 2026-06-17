@@ -115,9 +115,13 @@ export class ConfiguratorPageComponent {
 
   // Static option tables (exposed to the template).
   protected readonly textures = TEXTURES;
-  // Colour palettes loaded at runtime by the service (empty until the load resolves).
-  protected readonly matColours = this.config.matColours;
+  // Edge colour palette loaded at runtime (empty until the load resolves). Mat
+  // colours are texture-scoped — see availableMatColours.
   protected readonly edgeColours = this.config.edgeColours;
+  /** Mat (fill) colours available for the current texture (+ size). Step-05 list. */
+  protected readonly availableMatColours = computed(() =>
+    this.config.matColoursFor(this.texture(), this.matSize() === '210x140')
+  );
   protected readonly transmissionOptions = this.config.transmissionOptions;
   protected readonly driveOptions = this.config.driveOptions;
   protected readonly engineOptions = this.config.engineOptions;
@@ -143,6 +147,12 @@ export class ConfiguratorPageComponent {
   protected readonly texture = signal<Texture>('rhombus');
   protected readonly materialColor = signal<string>('black');
   protected readonly edgeColor = signal<string>('black');
+  /**
+   * Selected mat size. Colours offered in the larger 210x140 are a subset, so this
+   * further filters the palette. No size selector exists yet → defaults to the
+   * standard size (all of the texture's colours available).
+   */
+  protected readonly matSize = signal<string>('200x120');
   protected readonly zones = signal<ReadonlySet<CarZone>>(new Set(['front_left', 'front_right']));
   protected readonly accessories = signal<Accessories>('with_clips');
   protected readonly mounting = signal<Mounting>('none');
@@ -297,7 +307,7 @@ export class ConfiguratorPageComponent {
 
   /** Colour hex helpers for the preview. */
   protected readonly materialHex = computed(
-    () => this.matColours().find(c => c.id === this.materialColor())?.hex ?? '#1a1a1a'
+    () => this.availableMatColours().find(c => c.id === this.materialColor())?.hex ?? '#1a1a1a'
   );
   protected readonly edgeHex = computed(
     () => this.edgeColours().find(c => c.id === this.edgeColor())?.hex ?? '#1a1a1a'
@@ -422,12 +432,14 @@ export class ConfiguratorPageComponent {
       }
     });
 
-    // Keep the chosen colours valid once the palettes load (mock default ids may
-    // not exist in the loaded data). Skip while a palette is still empty.
+    // Keep the chosen mat colour valid for the current texture/size. When the
+    // texture changes (step 04) its colour set changes too — if the selected
+    // colour isn't offered, reset to black (always available) or the first option.
     effect(() => {
-      const palette = this.matColours();
-      if (palette.length && !palette.some(c => c.id === untracked(this.materialColor))) {
-        this.materialColor.set(palette[0].id);
+      const available = this.availableMatColours();
+      if (available.length && !available.some(c => c.id === untracked(this.materialColor))) {
+        const fallback = available.find(c => c.id === 'black') ?? available[0];
+        this.materialColor.set(fallback.id);
       }
     });
     effect(() => {

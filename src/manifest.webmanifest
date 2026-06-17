@@ -75,7 +75,7 @@
   ],
   "screenshots": [
     {
-      "src": "assets/images/content/hero-poster.jpg",
+      "src": "assets/images/content/hero-poster.webp",
       "sizes": "1920x1080",
       "type": "image/jpeg",
       "form_factor": "wide",

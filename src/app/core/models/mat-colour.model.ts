@@ -18,8 +18,24 @@ export interface MatColour {
   readonly hex: string;
 }
 
-/** The colour palette payload (mat fills + edge borders). */
+/**
+ * Mat colours available for one texture. Colours now differ per texture (supplier
+ * data v2), and a subset is offered in the larger 210x140 size.
+ */
+export interface TextureColours {
+  readonly id: string;
+  readonly name_en: string;
+  readonly name_de: string;
+  /** Sizes this texture is produced in, e.g. ["200x120", "210x140"]. */
+  readonly sizes: string[];
+  /** Mat (fill) colours available for this texture. */
+  readonly colours: MatColour[];
+  /** Colour ids also available in the 210x140 size (subset of `colours`). */
+  readonly size_210x140_colours: string[];
+}
+
+/** The colour palette payload (per-texture mat fills + edge borders). */
 export interface MatColoursData {
-  readonly mat_colours: MatColour[];
+  readonly textures: TextureColours[];
   readonly edge_colours: MatColour[];
 }

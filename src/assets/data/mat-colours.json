@@ -1,20 +1,59 @@
 {
-  "_comment": "NEOMATTEN colour palette v1.0 — from client HEX data. mat_colours apply to all mat types (will differ per type later). edge_colours apply to all mat types (will differ per type later). TODO(admin): manage via admin panel at GET/PUT /api/settings/colours",
-  "mat_colours": [
-    { "id": "green", "name_en": "Green", "name_de": "Grün", "hex": "#66ce33" },
-    { "id": "khaki", "name_en": "Khaki", "name_de": "Khaki", "hex": "#657550" },
-    { "id": "burgundy", "name_en": "Burgundy", "name_de": "Bordeaux", "hex": "#995459" },
-    { "id": "navy-blue", "name_en": "Navy Blue", "name_de": "Marineblau", "hex": "#314276" },
-    { "id": "blue", "name_en": "Blue", "name_de": "Blau", "hex": "#2492eb" },
-    { "id": "red", "name_en": "Red", "name_de": "Rot", "hex": "#fe534c" },
-    { "id": "orange", "name_en": "Orange", "name_de": "Orange", "hex": "#fc7641" },
-    { "id": "yellow", "name_en": "Yellow", "name_de": "Gelb", "hex": "#feda00" },
-    { "id": "cream", "name_en": "Cream", "name_de": "Creme", "hex": "#e7dbc3" },
-    { "id": "beige", "name_en": "Beige", "name_de": "Beige", "hex": "#d9be93" },
-    { "id": "brown", "name_en": "Brown", "name_de": "Braun", "hex": "#685143" },
-    { "id": "grey", "name_en": "Grey", "name_de": "Grau", "hex": "#454a4e" },
-    { "id": "black", "name_en": "Black", "name_de": "Schwarz", "hex": "#2f3841" }
+  "_comment": "NEOMATTEN colour palette v2.0 — real supplier data. Colours grouped by texture. Size variants noted. Edge colours TBD.",
+
+  "textures": [
+    {
+      "id": "rhombus",
+      "name_en": "Rhombus",
+      "name_de": "Rhombus",
+      "sizes": ["200x120", "210x140"],
+      "colours": [
+        { "id": "black", "name_en": "Black", "name_de": "Schwarz", "hex": "#1a1a1a" },
+        { "id": "grey", "name_en": "Grey", "name_de": "Grau", "hex": "#6b6b6b" },
+        { "id": "brown", "name_en": "Brown", "name_de": "Braun", "hex": "#6b4226" },
+        { "id": "beige", "name_en": "Beige", "name_de": "Beige", "hex": "#c8a97a" },
+        { "id": "cream", "name_en": "Cream", "name_de": "Creme", "hex": "#e8d9b8" },
+        { "id": "orange", "name_en": "Orange", "name_de": "Orange", "hex": "#e06020" },
+        { "id": "yellow", "name_en": "Yellow", "name_de": "Gelb", "hex": "#f5c800" },
+        { "id": "lime", "name_en": "Lime", "name_de": "Hellgrün", "hex": "#7dc930" },
+        { "id": "khaki", "name_en": "Khaki", "name_de": "Khaki", "hex": "#6b6b3a" },
+        { "id": "red", "name_en": "Red", "name_de": "Rot", "hex": "#c0392b" },
+        { "id": "burgundy", "name_en": "Burgundy", "name_de": "Bordeaux", "hex": "#6b1a2a" },
+        { "id": "blue", "name_en": "Blue", "name_de": "Blau", "hex": "#2060c0" },
+        { "id": "navy", "name_en": "Navy Blue", "name_de": "Marineblau", "hex": "#1a2a5a" },
+        { "id": "camel", "name_en": "Camel", "name_de": "Kamel", "hex": "#c19a6b" }
+      ],
+      "size_210x140_colours": ["black", "grey"]
+    },
+    {
+      "id": "honeycomb",
+      "name_en": "Honeycomb",
+      "name_de": "Waben",
+      "sizes": ["200x120", "210x140"],
+      "colours": [
+        { "id": "black", "name_en": "Black", "name_de": "Schwarz", "hex": "#1a1a1a" },
+        { "id": "grey", "name_en": "Grey", "name_de": "Grau", "hex": "#6b6b6b" },
+        { "id": "brown", "name_en": "Brown", "name_de": "Braun", "hex": "#6b4226" },
+        { "id": "beige", "name_en": "Beige", "name_de": "Beige", "hex": "#c8a97a" }
+      ],
+      "size_210x140_colours": ["black"]
+    },
+    {
+      "id": "drop",
+      "name_en": "Drop",
+      "name_de": "Tropfen",
+      "sizes": ["200x120", "210x140"],
+      "colours": [
+        { "id": "pink", "name_en": "Pink", "name_de": "Rosa", "hex": "#e87aa0" },
+        { "id": "black", "name_en": "Black", "name_de": "Schwarz", "hex": "#1a1a1a" },
+        { "id": "nard-grey", "name_en": "Nard Grey", "name_de": "Nardgrau", "hex": "#4a4a52" },
+        { "id": "cognac", "name_en": "Cognac", "name_de": "Cognac", "hex": "#8b4513" },
+        { "id": "grey", "name_en": "Grey", "name_de": "Grau", "hex": "#6b6b6b" }
+      ],
+      "size_210x140_colours": ["black"]
+    }
   ],
+  "_edge_note": "Edge colours TBD — will be added when supplier provides data",
   "edge_colours": [
     { "id": "white", "name_en": "White", "name_de": "Weiß", "hex": "#f4f9fd" },
     { "id": "light-grey", "name_en": "Light Grey", "name_de": "Hellgrau", "hex": "#e6e7ed" },

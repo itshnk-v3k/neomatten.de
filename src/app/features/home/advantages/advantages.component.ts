@@ -40,5 +40,5 @@ import { TranslatePipe } from '@shared/pipes/translate.pipe';
 })
 export class AdvantagesComponent {
   /** Advantages "center" showcase image (real content asset, 1024×1024 square). */
-  protected readonly advantagesImage = 'assets/images/content/carpet.jpg';
+  protected readonly advantagesImage = 'assets/images/content/carpet.webp';
 }

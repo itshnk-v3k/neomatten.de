@@ -239,22 +239,15 @@
                     ? 'ring-2 ring-primary'
                     : 'ring-1 ring-border hover:ring-primary')
                 ">
-                <!-- Cropped swatch: zoom into the mat photo centre to show only the
-                     texture pattern detail, not the whole mat. WebP primary, PNG
-                     fallback via <picture>. -->
+                <!-- Texture pattern swatch from the dedicated texture/ crops (WebP only). -->
                 <div class="relative aspect-[4/3] w-full overflow-hidden rounded-lg">
                   @if (!textureFailed().has(tex)) {
-                    <picture>
-                      <source
-                        [attr.srcset]="'assets/images/mats/' + tex + '-mat.webp'"
-                        type="image/webp" />
-                      <img
-                        [src]="'assets/images/mats/' + tex + '-mat.png'"
-                        [alt]="'configurator_texture_' + tex | translate"
-                        loading="lazy"
-                        class="absolute inset-0 size-full scale-150 object-cover object-center"
-                        (error)="onTextureError(tex)" />
-                    </picture>
+                    <img
+                      [src]="'assets/images/texture/' + tex + '.webp'"
+                      [alt]="'configurator_texture_' + tex | translate"
+                      loading="lazy"
+                      class="absolute inset-0 size-full object-cover object-center"
+                      (error)="onTextureError(tex)" />
                   } @else {
                     <nm-image-placeholder class="size-full rounded-none" />
                   }
@@ -276,7 +269,7 @@
             {{ 'configurator_step_material_color' | translate }}
           </h2>
           <div class="mt-4 flex flex-wrap">
-            @for (c of matColours(); track c.id) {
+            @for (c of availableMatColours(); track c.id) {
               <div class="p-1">
                 <button
                   type="button"

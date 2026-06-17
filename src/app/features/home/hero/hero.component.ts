@@ -37,7 +37,7 @@ export class HeroComponent {
   protected readonly heroVideoWebm = 'assets/images/content/hero-optimized.webm';
   protected readonly heroVideoMp4 = 'assets/images/content/hero-optimized.mp4';
   /** First-frame poster: shown before the video loads, on mobile, and when autoplay is blocked. */
-  protected readonly heroPoster = 'assets/images/content/hero-poster.jpg';
+  protected readonly heroPoster = 'assets/images/content/hero-poster.webp';
 
   /** On small screens show the static poster instead of the heavy video (bandwidth).
    *  Seeded synchronously (CSR — `window` is available) so mobile never flashes the

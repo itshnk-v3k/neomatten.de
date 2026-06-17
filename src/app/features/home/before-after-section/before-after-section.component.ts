@@ -21,7 +21,7 @@ import { TranslatePipe } from '@shared/pipes/translate.pipe';
 export class BeforeAfterSectionComponent {
   /** Before/after comparison photos (worn carpet mat → new EVA mat installed). */
   protected readonly beforeImage =
-    'assets/images/before-after/mercedes-benz-b-class-2018-front-left-before.jpg';
+    'assets/images/before-after/mercedes-benz-b-class-2018-front-left-before.webp';
   protected readonly afterImage =
-    'assets/images/before-after/mercedes-benz-b-class-2018-front-left-after.jpg';
+    'assets/images/before-after/mercedes-benz-b-class-2018-front-left-after.webp';
 }
