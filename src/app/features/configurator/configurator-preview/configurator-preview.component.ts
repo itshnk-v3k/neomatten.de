@@ -1,11 +1,15 @@
 /*
- * EN: Configurator left column (presentational). Shows the mat preview for steps
- *     1–10 and cross-fades to the clickable car diagram from step 11 (Build your
- *     set) onward on desktop; both stack on mobile. Renders the desktop total.
+ * EN: Configurator preview (presentational). Three modes:
+ *     • `full` — desktop left column: mat preview (steps ≤10) cross-fading to the
+ *       car diagram from step 11 (Build your set), plus the desktop total.
+ *     • `mat` — compact mat preview only (inline mobile slot, after Refine).
+ *     • `car` — compact car diagram only (inline mobile slot, before Build your set).
  *     All state is passed in as inputs; the only output is the kit zone toggle.
- * RU: Левая колонка конфигуратора (презентационная). Показывает превью коврика на
- *     шагах 1–10 и плавно переключается на кликабельную схему авто с шага 11
- *     (сборка набора) на десктопе; на мобиле обе видны. Показывает итог (десктоп).
+ * RU: Превью конфигуратора (презентационное). Три режима:
+ *     • `full` — левая колонка десктопа: превью коврика (шаги ≤10) с переходом на
+ *       схему авто с шага 11 (сборка набора) + итог (десктоп).
+ *     • `mat` — только компактное превью коврика (встроенный слот на мобиле).
+ *     • `car` — только компактная схема авто (встроенный слот на мобиле).
  *     Всё состояние приходит входами; единственный выход — переключение зоны.
  */
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
@@ -34,6 +38,12 @@ import { TranslatePipe } from '@shared/pipes/translate.pipe';
   },
 })
 export class ConfiguratorPreviewComponent {
+  /**
+   * `full` (default) = desktop sticky column (mat → car cross-fade + total);
+   * `mat`/`car` = a single compact panel for the inline mobile slots.
+   */
+  readonly mode = input<'full' | 'mat' | 'car'>('full');
+
   readonly texture = input.required<Texture>();
   readonly materialHex = input.required<string>();
   readonly edgeHex = input.required<string>();

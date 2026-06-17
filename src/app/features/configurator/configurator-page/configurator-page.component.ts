@@ -14,6 +14,7 @@
  *     «Связаться с менеджером» — за авторизацией: для гостя открывают диалог
  *     входа и повторяют отложенное действие после входа.
  */
+import { NgOptimizedImage } from '@angular/common';
 import type { ElementRef } from '@angular/core';
 import {
   ChangeDetectionStrategy,
@@ -35,7 +36,6 @@ import type { PaymentMethod } from '@core/models/order.model';
 import { AuthService } from '@core/services/auth.service';
 import { CartService } from '@core/services/cart.service';
 import { CheckoutService } from '@core/services/checkout.service';
-import { MediaService } from '@core/services/media.service';
 import { VehicleService } from '@core/services/vehicle.service';
 import { LucideInfo } from '@lucide/angular';
 import { AccordionComponent } from '@shared/components/accordion/accordion.component';
@@ -74,10 +74,12 @@ import { ConfiguratorPreviewComponent } from '../configurator-preview/configurat
   selector: 'nm-configurator-page',
   imports: [
     ReactiveFormsModule,
+    NgOptimizedImage,
     BreadcrumbComponent,
     SelectComponent,
     ButtonDirective,
     BadgeComponent,
+    ImagePlaceholderComponent,
     AccordionComponent,
     AccordionItemComponent,
     AuthDialogComponent,
@@ -86,7 +88,6 @@ import { ConfiguratorPreviewComponent } from '../configurator-preview/configurat
     ConfiguratorInfoDialogsComponent,
     SkeletonComponent,
     TooltipDirective,
-    ImagePlaceholderComponent,
     LucideInfo,
     TranslatePipe,
   ],
@@ -103,15 +104,6 @@ export class ConfiguratorPageComponent {
   private readonly auth = inject(AuthService);
   private readonly toast = inject(ToastService);
   private readonly translation = inject(TranslationService);
-  private readonly media = inject(MediaService);
-
-  /**
-   * Texture swatch thumbnail, or null → the template renders nm-image-placeholder.
-   * TODO(admin): real texture swatch image comes from the media API once uploaded.
-   */
-  protected textureImage(texture: string): string | null {
-    return this.media.getPlaceholder(200, 140, `nm-tex-${texture}`);
-  }
 
   /** Brand id from `/configurator/:brand`. */
   readonly brand = input<string>('');
@@ -149,7 +141,7 @@ export class ConfiguratorPageComponent {
 
   // --- configuration choices (signals) --------------------------------------
   protected readonly material = signal<MaterialType>('eva');
-  protected readonly texture = signal<Texture>('raute');
+  protected readonly texture = signal<Texture>('rhombus');
   protected readonly materialColor = signal<string>('black');
   protected readonly edgeColor = signal<string>('black');
   protected readonly zones = signal<ReadonlySet<CarZone>>(new Set(['front_left', 'front_right']));
@@ -157,6 +149,12 @@ export class ConfiguratorPageComponent {
   protected readonly mounting = signal<Mounting>('none');
   protected readonly heelPad = signal<HeelPadAccessory>('none');
   protected readonly heelRest = signal<HeelRest>('none');
+
+  /** Texture ids whose thumbnail photo failed to load → render the placeholder. */
+  protected readonly textureFailed = signal<ReadonlySet<string>>(new Set());
+  protected onTextureError(texture: string): void {
+    this.textureFailed.update(failed => new Set(failed).add(texture));
+  }
 
   // --- dialogs / flow --------------------------------------------------------
   protected readonly materialInfoOpen = signal(false);
@@ -320,22 +318,16 @@ export class ConfiguratorPageComponent {
   }
 
   /**
-   * Light/near-white swatches need a faint border so they read as a circle on the
-   * white surface. Uses perceived luminance (Rec. 601) against a high threshold.
+   * Very light/near-white swatches need a faint border so they read as a circle on
+   * the white surface. True when perceived luminance (Rec. 601, normalized 0–1)
+   * exceeds 0.85 — i.e. white, cream, light grey.
    */
-  protected isLightColour(hex: string): boolean {
+  protected needsBorder(hex: string): boolean {
     const value = hex.replace('#', '');
     const r = parseInt(value.slice(0, 2), 16);
     const g = parseInt(value.slice(2, 4), 16);
     const b = parseInt(value.slice(4, 6), 16);
-    return 0.299 * r + 0.587 * g + 0.114 * b > 200;
-  }
-
-  /** Swatch button classes for a colour (size, ring state, light-border). */
-  protected swatchClass(colour: MatColour, selected: boolean): string {
-    const ring = selected ? 'ring-primary scale-110' : 'ring-transparent hover:ring-border';
-    const border = this.isLightColour(colour.hex) ? ' border border-border/50' : '';
-    return `size-8 rounded-full ring-2 ring-offset-2 ring-offset-surface transition-all ${ring}${border}`;
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.85;
   }
 
   protected readonly canCheckout = computed(() => this.vehicleResolved() && this.zones().size > 0);
@@ -345,6 +337,13 @@ export class ConfiguratorPageComponent {
   private readonly stepCards = viewChildren<ElementRef<HTMLElement>>('stepCard');
   /** Step currently in the viewport's active band (1–13). */
   protected readonly activeStep = signal(1);
+
+  /**
+   * Mobile sticky bottom bar visibility. Hidden on the Summary step (13), whose
+   * card already carries the full total + "Add to cart" / "Pay now" CTAs, so the
+   * bar would be redundant there.
+   */
+  protected readonly showStickyBar = computed(() => this.activeStep() < 13);
 
   constructor() {
     const destroyRef = inject(DestroyRef);

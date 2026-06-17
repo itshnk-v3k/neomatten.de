@@ -22,7 +22,7 @@ import type { OrderItemDTO } from '@core/models/order.model';
 import type { VehiclePattern } from '@core/models/vehicle.model';
 import type { SelectOption } from '@shared/models/select-option.model';
 
-export type Texture = 'raute' | 'wabe' | 'tropfen';
+export type Texture = 'rhombus' | 'honeycomb' | 'drop';
 export type MaterialType = 'eva' | 'ecoskin';
 /** Mounting (step 07). `3d` is Coming Soon / disabled — selection stays `none`. */
 export type Mounting = 'none' | '3d';
@@ -61,7 +61,7 @@ export const FLOOR_ZONES: readonly CarZone[] = [
 // images via MediaService. Mat + edge colour palettes are now loaded at runtime
 // from mock JSON (see ConfiguratorService.matColours / edgeColours) and will move
 // to `GET /api/settings/colours`.
-export const TEXTURES: readonly Texture[] = ['raute', 'wabe', 'tropfen'] as const;
+export const TEXTURES: readonly Texture[] = ['rhombus', 'honeycomb', 'drop'] as const;
 
 /** Localized display name for a colour (German name when DE, English otherwise). */
 export function colourName(colour: MatColour, lang: Language): string {

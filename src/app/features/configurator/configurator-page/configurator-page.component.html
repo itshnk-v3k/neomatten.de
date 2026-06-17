@@ -34,8 +34,12 @@
     </div>
   } @else {
     <div class="lg:flex lg:items-start lg:gap-8">
-      <!-- ===================== LEFT COLUMN ===================== -->
+      <!-- ===================== LEFT COLUMN (desktop only) =====================
+           On mobile the preview/diagram are shown inline in the step flow (slots
+           below); the sticky left column is for lg+ only. -->
       <nm-configurator-preview
+        class="hidden lg:flex"
+        mode="full"
         [texture]="texture()"
         [materialHex]="materialHex()"
         [edgeHex]="edgeHex()"
@@ -131,6 +135,25 @@
           </div>
         </section>
 
+        <!-- Mobile preview slot: mat preview, shown after Refine so it's visible
+             while configuring material/texture/colours (lg uses the sticky column). -->
+        <nm-configurator-preview
+          class="lg:hidden"
+          mode="mat"
+          [texture]="texture()"
+          [materialHex]="materialHex()"
+          [edgeHex]="edgeHex()"
+          [mounting]="mounting()"
+          [heelPad]="heelPad()"
+          [heelRest]="heelRest()"
+          [caption]="caption()"
+          [sku]="activePattern()?.sku ?? ''"
+          [colorId]="materialColor()"
+          [zones]="zones()"
+          [activeStep]="activeStep()"
+          [total]="total()"
+          (zoneToggle)="toggleZone($event)" />
+
         <!-- 03 Material type -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
@@ -211,18 +234,26 @@
                 (click)="selectTexture(tex)"
                 [attr.aria-pressed]="texture() === tex"
                 [class]="
-                  'overflow-hidden rounded-xl border-2 text-center transition-colors ' +
-                  (texture() === tex ? 'border-primary' : 'border-border hover:border-primary')
+                  'overflow-hidden rounded-xl text-center transition-all ' +
+                  (texture() === tex
+                    ? 'ring-2 ring-primary'
+                    : 'ring-1 ring-border hover:ring-primary')
                 ">
-                @if (textureImage(tex); as img) {
-                  <img
-                    [src]="img"
-                    [alt]="'configurator_texture_' + tex | translate"
-                    loading="lazy"
-                    class="aspect-[10/7] w-full object-cover" />
-                } @else {
-                  <nm-image-placeholder class="block aspect-[10/7] w-full rounded-none" />
-                }
+                <!-- Cropped swatch: zoom into the mat photo centre to show only the
+                     texture pattern detail, not the whole mat. -->
+                <div class="relative aspect-[4/3] w-full overflow-hidden rounded-lg">
+                  @if (!textureFailed().has(tex)) {
+                    <img
+                      [ngSrc]="'assets/images/mats/' + tex + '-mat.png'"
+                      fill
+                      sizes="(min-width: 1024px) 15vw, 30vw"
+                      [alt]="'configurator_texture_' + tex | translate"
+                      class="scale-150 object-cover object-center"
+                      (error)="onTextureError(tex)" />
+                  } @else {
+                    <nm-image-placeholder class="size-full rounded-none" />
+                  }
+                </div>
                 <span class="block py-2 text-sm font-semibold">
                   {{ 'configurator_texture_' + tex | translate }}
                 </span>
@@ -239,20 +270,27 @@
             </span>
             {{ 'configurator_step_material_color' | translate }}
           </h2>
-          <ul class="mt-4 grid grid-cols-6 gap-3 sm:grid-cols-8">
+          <div class="mt-4 flex flex-wrap">
             @for (c of matColours(); track c.id) {
-              <li class="flex justify-center">
+              <div class="p-1">
                 <button
                   type="button"
-                  (click)="selectMaterialColor(c.id)"
-                  [nmTooltip]="colourName(c)"
+                  class="size-7 rounded-full shadow-md transition-all duration-150 hover:scale-110"
+                  [style.background-color]="c.hex"
+                  [class.ring-2]="materialColor() === c.id"
+                  [class.ring-primary]="materialColor() === c.id"
+                  [class.ring-offset-2]="materialColor() === c.id"
+                  [class.ring-offset-surface]="materialColor() === c.id"
+                  [class.scale-110]="materialColor() === c.id"
+                  [class.border]="needsBorder(c.hex)"
+                  [class.border-border]="needsBorder(c.hex)"
                   [attr.aria-label]="colourName(c)"
                   [attr.aria-pressed]="materialColor() === c.id"
-                  [style.background-color]="c.hex"
-                  [class]="swatchClass(c, materialColor() === c.id)"></button>
-              </li>
+                  [attr.title]="colourName(c)"
+                  (click)="selectMaterialColor(c.id)"></button>
+              </div>
             }
-          </ul>
+          </div>
         </section>
 
         <!-- 06 Edge colour -->
@@ -263,20 +301,27 @@
             </span>
             {{ 'configurator_step_edge_color' | translate }}
           </h2>
-          <ul class="mt-4 grid grid-cols-6 gap-3 sm:grid-cols-8">
+          <div class="mt-4 flex flex-wrap">
             @for (c of edgeColours(); track c.id) {
-              <li class="flex justify-center">
+              <div class="p-1">
                 <button
                   type="button"
-                  (click)="selectEdgeColor(c.id)"
-                  [nmTooltip]="colourName(c)"
+                  class="size-7 rounded-full shadow-md transition-all duration-150 hover:scale-110"
+                  [style.background-color]="c.hex"
+                  [class.ring-2]="edgeColor() === c.id"
+                  [class.ring-primary]="edgeColor() === c.id"
+                  [class.ring-offset-2]="edgeColor() === c.id"
+                  [class.ring-offset-surface]="edgeColor() === c.id"
+                  [class.scale-110]="edgeColor() === c.id"
+                  [class.border]="needsBorder(c.hex)"
+                  [class.border-border]="needsBorder(c.hex)"
                   [attr.aria-label]="colourName(c)"
                   [attr.aria-pressed]="edgeColor() === c.id"
-                  [style.background-color]="c.hex"
-                  [class]="swatchClass(c, edgeColor() === c.id)"></button>
-              </li>
+                  [attr.title]="colourName(c)"
+                  (click)="selectEdgeColor(c.id)"></button>
+              </div>
             }
-          </ul>
+          </div>
         </section>
 
         <!-- 07 Mounting -->
@@ -514,6 +559,25 @@
           </div>
         </section>
 
+        <!-- Mobile preview slot: car diagram, shown right before Build your set so
+             it's visible while placing mats (lg uses the sticky column). -->
+        <nm-configurator-preview
+          class="lg:hidden"
+          mode="car"
+          [texture]="texture()"
+          [materialHex]="materialHex()"
+          [edgeHex]="edgeHex()"
+          [mounting]="mounting()"
+          [heelPad]="heelPad()"
+          [heelRest]="heelRest()"
+          [caption]="caption()"
+          [sku]="activePattern()?.sku ?? ''"
+          [colorId]="materialColor()"
+          [zones]="zones()"
+          [activeStep]="activeStep()"
+          [total]="total()"
+          (zoneToggle)="toggleZone($event)" />
+
         <!-- 11 Build your set -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
@@ -731,8 +795,9 @@
 </section>
 
 <!-- Sticky bottom bar (mobile only): live total + add to cart. Above content,
-     below dialogs (z-popup 2000). -->
-@if (loaded()) {
+     below dialogs (z-popup 2000). Hidden on the Summary step (13) — redundant
+     with that card's own total + CTAs. -->
+@if (loaded() && showStickyBar()) {
   <div
     class="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-border bg-surface px-4 py-3 shadow-elev lg:hidden">
     <div class="min-w-0">

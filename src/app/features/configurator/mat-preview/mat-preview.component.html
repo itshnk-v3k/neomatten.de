@@ -22,7 +22,7 @@
             [ngSrc]="url"
             fill
             [alt]="caption()"
-            sizes="(max-width: 1024px) 90vw, 420px"
+            sizes="(max-width: 1024px) 90vw, 30vw"
             (error)="onImageError()"
             class="object-cover" />
         } @else {
@@ -30,15 +30,35 @@
         }
       </div>
     } @else {
-      <div
-        class="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border-[6px] shadow-soft transition-colors"
-        [style.background-color]="materialHex()"
-        [style.border-color]="edgeHex()">
-        <!-- texture overlay -->
+      <!-- Photo simulation: texture photo + mat-colour tint + edge-colour trim.
+           Blend/opacity are first-pass and tunable — the mat photos are dark, so
+           light colours read subtly under `multiply`. -->
+      <div class="relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-soft">
+        <!-- Base mat texture photo -->
+        <img
+          [ngSrc]="textureImageSrc()"
+          fill
+          [alt]="caption()"
+          sizes="(max-width: 1024px) 90vw, 30vw"
+          class="object-cover" />
+
+        <!-- Mat colour overlay: multiply tints the mat while preserving the texture. -->
         <div
-          class="absolute inset-0"
-          [style.background-image]="patternImage()"
-          [style.background-size]="patternSize()"></div>
+          class="absolute inset-0 opacity-70 mix-blend-multiply"
+          [style.background-color]="materialHex()"></div>
+
+        <!-- Edging outline (defines the trim shape + seam relief). -->
+        <img
+          src="assets/images/mats/edging.png"
+          alt=""
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 h-full w-full object-cover" />
+
+        <!-- Edge colour: a coloured layer masked to the edging outline so only the
+             trim is tinted (a full-rect overlay would tint the whole mat). -->
+        <div
+          class="mat-edge-mask pointer-events-none absolute inset-0 opacity-[0.85]"
+          [style.background-color]="edgeHex()"></div>
       </div>
     }
 
