@@ -33,6 +33,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslationService } from '@core/i18n/translation.service';
 import type { MatColour } from '@core/models/mat-colour.model';
 import type { PaymentMethod } from '@core/models/order.model';
+import { AnalyticsService } from '@core/services/analytics.service';
 import { AuthService } from '@core/services/auth.service';
 import { CartService } from '@core/services/cart.service';
 import { CheckoutService } from '@core/services/checkout.service';
@@ -113,6 +114,7 @@ export class ConfiguratorPageComponent {
   private readonly auth = inject(AuthService);
   private readonly toast = inject(ToastService);
   private readonly translation = inject(TranslationService);
+  private readonly analytics = inject(AnalyticsService);
 
   /** Brand id from `/configurator/:brand`. */
   readonly brand = input<string>('');
@@ -202,9 +204,10 @@ export class ConfiguratorPageComponent {
     () => {
       const pattern = this.activePattern();
       if (!pattern) return;
-      const merged = this.cart.add(
-        this.config.toCartItem(this.cartLineId(), pattern, this.state())
-      );
+      const item = this.config.toCartItem(this.cartLineId(), pattern, this.state());
+      const merged = this.cart.add(item);
+      // Configured mat set finished + added (the cart fires the add_to_cart event).
+      this.analytics.trackConfiguratorCompleted(item);
       this.toast.success(merged ? 'cart_quantity_updated' : 'product_added_to_cart');
     },
     { minDurationMs: 500 }
@@ -423,6 +426,16 @@ export class ConfiguratorPageComponent {
 
   constructor() {
     const destroyRef = inject(DestroyRef);
+
+    // Fire configurator_started once, capturing the resolved :brand route param
+    // (component input binding sets `brand` before the first effect run).
+    let startedTracked = false;
+    effect(() => {
+      const brand = this.brand();
+      if (startedTracked) return;
+      startedTracked = true;
+      this.analytics.trackConfiguratorStarted(brand || undefined);
+    });
 
     // Watch the step cards; the one in the active band (≈20–40% down the
     // viewport) sets activeStep, switching the left column between

@@ -17,6 +17,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { PRICING } from '@core/config/pricing.config';
 import type { OrderItemDTO, OrderRecord, PaymentMethod } from '@core/models/order.model';
+import { AnalyticsService } from '@core/services/analytics.service';
 import { AuthService } from '@core/services/auth.service';
 import { CartService } from '@core/services/cart.service';
 import { EmailService } from '@core/services/email.service';
@@ -38,6 +39,7 @@ export interface CheckoutInput {
 export class CheckoutService {
   private readonly auth = inject(AuthService);
   private readonly pricing = inject(PRICING);
+  private readonly analytics = inject(AnalyticsService);
   private readonly payment = inject(PaymentService);
   private readonly orders = inject(OrderService);
   private readonly cart = inject(CartService);
@@ -91,6 +93,9 @@ export class CheckoutService {
 
     if (input.method === 'contact_manager') {
       await this.email.notifyManager(order.id, total, this.auth.user()?.email);
+    } else {
+      // Online payment (mock) → GA4 purchase. Contact-manager is intent only.
+      this.analytics.trackPurchase(order);
     }
     if (input.clearCart) {
       this.cart.clear();

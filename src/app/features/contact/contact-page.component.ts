@@ -21,6 +21,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { COMPANY_INFO, COMPANY_MAPS_URL, COMPANY_PHONE_HREF } from '@core/config/company-info';
 import { CONTACT_TOPICS } from '@core/config/contact-topics';
 import { TranslationService } from '@core/i18n/translation.service';
+import { AnalyticsService } from '@core/services/analytics.service';
 import { BrandIconComponent } from '@shared/components/brand-icon/brand-icon.component';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 import { ButtonDirective } from '@shared/components/button/button.directive';
@@ -64,6 +65,7 @@ export class ContactPageComponent {
   private readonly toast = inject(ToastService);
   private readonly translation = inject(TranslationService);
   private readonly route = inject(ActivatedRoute);
+  private readonly analytics = inject(AnalyticsService);
 
   /** Topic options (labels re-resolve on language change). */
   protected readonly topicOptions = computed<SelectOption[]>(() => {
@@ -117,6 +119,7 @@ export class ContactPageComponent {
   protected readonly submitAction = createAsyncAction(
     () => {
       // TODO(backend): POST the message via ApiService (e.g. `/contact`) / EmailService.
+      this.analytics.trackContactFormSubmitted('contact_page');
       this.toast.success('contact_success');
       this.form.reset();
     },

@@ -16,6 +16,7 @@ import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { PRICING, type PricingConfig } from '@core/config/pricing.config';
 import type { CartItem } from '@core/models/cart-item.model';
 import { type ProductDTO, productToCartItem } from '@core/models/product.model';
+import { AnalyticsService } from '@core/services/analytics.service';
 import { AuthService } from '@core/services/auth.service';
 import { computeTotals } from '@shared/utils/money.util';
 
@@ -25,6 +26,7 @@ const CART_STORAGE_KEY = 'neomatten_cart';
 export class CartService {
   private readonly auth = inject(AuthService);
   private readonly pricing = inject(PRICING);
+  private readonly analytics = inject(AnalyticsService);
 
   private readonly itemsSignal = signal<CartItem[]>(this.restore());
 
@@ -93,6 +95,8 @@ export class CartService {
   add(item: CartItem): boolean {
     const items = this.itemsSignal();
     const index = items.findIndex(existing => isSameConfiguration(existing, item));
+    // GA4 add_to_cart for every add (mat set or simple product), in one place.
+    this.analytics.trackAddToCart(item);
     if (index >= 0) {
       const next = [...items];
       const existing = next[index];

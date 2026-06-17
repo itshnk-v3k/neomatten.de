@@ -37,8 +37,30 @@
     -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://m.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://cdn.neomatten.de; media-src 'self'; connect-src 'self' ws: wss: https://api.neomatten.de https://*.tile.openstreetmap.org https://api.stripe.com; frame-src https://js.stripe.com https://hooks.stripe.com; base-uri 'self'; form-action 'self'" />
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://m.stripe.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://cdn.neomatten.de https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com; media-src 'self'; connect-src 'self' ws: wss: https://api.neomatten.de https://*.tile.openstreetmap.org https://api.stripe.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com; frame-src https://js.stripe.com https://hooks.stripe.com; base-uri 'self'; form-action 'self'" />
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+
+    <!--
+      Google tag (gtag.js) — GA4 (G-6G3KVDD5GH). Loaded in GDPR consent-mode
+      "denied" by default: no analytics/ad storage and no page_view until the
+      visitor accepts cookies. AnalyticsService flips consent to "granted" once
+      nm-cookie-consent records acceptance (or on load for a returning visitor
+      who already accepted). See src/app/core/services/analytics.service.ts.
+    -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6G3KVDD5GH"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('consent', 'default', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        wait_for_update: 500,
+      });
+      gtag('config', 'G-6G3KVDD5GH', { send_page_view: false });
+    </script>
 
     <!-- Open Graph -->
     <meta property="og:title" content="NEOMATTEN — Premium Auto Fußmatten aus Deutschland" />

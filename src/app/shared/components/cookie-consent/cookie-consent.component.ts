@@ -7,8 +7,9 @@
  *     выбор сохраняется в localStorage, чтобы полоса больше не показывалась.
  *     Монтируется глобально в ShellComponent.
  */
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AnalyticsService } from '@core/services/analytics.service';
 import { LucideCookie } from '@lucide/angular';
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
@@ -22,17 +23,21 @@ const COOKIE_CONSENT_KEY = 'neomatten_cookie_consent';
   templateUrl: './cookie-consent.component.html',
 })
 export class CookieConsentComponent {
+  private readonly analytics = inject(AnalyticsService);
+
   /** Shown only until the visitor makes (and persists) a choice. */
   protected readonly visible = signal<boolean>(this.readConsent() === null);
 
   protected accept(): void {
     this.persist('accepted');
-    // TODO(backend): consent = 'accepted' → initialize analytics / tracking.
+    // Grant GA4 consent and send the initial page view.
+    this.analytics.onConsentAccepted();
   }
 
   protected decline(): void {
     this.persist('declined');
-    // TODO(backend): consent = 'declined' → skip analytics, drop non-essential cookies.
+    // Keep GA4 in denied mode; no analytics/non-essential cookies.
+    this.analytics.onConsentDeclined();
   }
 
   private persist(choice: 'accepted' | 'declined'): void {
