@@ -106,105 +106,30 @@
           <p class="mt-1 text-sm text-content-secondary">
             {{ 'configurator_refine_hint' | translate }}
           </p>
-          <!-- All four fields are optional/informational radio-style pills (re-click
-               to deselect). Year is a select (pattern year range) or free number. -->
-          <div class="mt-4 space-y-5">
-            <!-- Field 1 — Transmission type -->
-            <div>
-              <p class="mb-1.5 text-sm font-medium text-content">
-                {{ 'refine_transmission' | translate }}
-              </p>
-              <div class="flex flex-wrap gap-2">
-                @for (opt of transmissionOptions; track opt.value) {
-                  <button
-                    type="button"
-                    [attr.aria-pressed]="transmission() === opt.value"
-                    (click)="toggleRefine(transmission, opt.value)"
-                    [class]="
-                      'rounded-full border px-4 py-1.5 text-sm transition-colors ' +
-                      (transmission() === opt.value
-                        ? 'border-primary bg-primary/10 font-medium text-primary'
-                        : 'border-border bg-surface text-content hover:border-primary/50')
-                    ">
-                    {{ opt.label | translate }}
-                  </button>
-                }
-              </div>
-            </div>
-
-            <!-- Field 2 — Year of manufacture (select from pattern range, else number) -->
-            <div>
-              <label for="refine-year" class="mb-1.5 block text-sm font-medium text-content">
-                {{ 'refine_year' | translate }}
-              </label>
-              @if (yearOfManufactureOptions().length) {
-                <select
-                  id="refine-year"
-                  [value]="year() ?? ''"
-                  (change)="setYear($any($event.target).value)"
-                  class="h-11 w-full rounded-md border border-border bg-surface-input px-4 text-sm text-content outline-none transition-colors focus:border-primary sm:max-w-xs">
-                  <option value="">{{ 'configurator_optional' | translate }}</option>
-                  @for (y of yearOfManufactureOptions(); track y.value) {
-                    <option [value]="y.value">{{ y.label }}</option>
-                  }
-                </select>
-              } @else {
-                <input
-                  id="refine-year"
-                  type="number"
-                  inputmode="numeric"
-                  [value]="year() ?? ''"
-                  (input)="setYear($any($event.target).value)"
-                  [placeholder]="'configurator_optional' | translate"
-                  class="h-11 w-full rounded-md border border-border bg-surface-input px-4 text-sm text-content outline-none transition-colors placeholder:text-content-muted focus:border-primary sm:max-w-xs" />
-              }
-            </div>
-
-            <!-- Field 3 — Drive type -->
-            <div>
-              <p class="mb-1.5 text-sm font-medium text-content">
-                {{ 'refine_drive' | translate }}
-              </p>
-              <div class="flex flex-wrap gap-2">
-                @for (opt of driveOptions; track opt.value) {
-                  <button
-                    type="button"
-                    [attr.aria-pressed]="drive() === opt.value"
-                    (click)="toggleRefine(drive, opt.value)"
-                    [class]="
-                      'rounded-full border px-4 py-1.5 text-sm transition-colors ' +
-                      (drive() === opt.value
-                        ? 'border-primary bg-primary/10 font-medium text-primary'
-                        : 'border-border bg-surface text-content hover:border-primary/50')
-                    ">
-                    {{ opt.label | translate }}
-                  </button>
-                }
-              </div>
-            </div>
-
-            <!-- Field 4 — Engine type (wraps to multiple rows) -->
-            <div>
-              <p class="mb-1.5 text-sm font-medium text-content">
-                {{ 'refine_engine' | translate }}
-              </p>
-              <div class="flex flex-wrap gap-2">
-                @for (opt of engineOptions; track opt.value) {
-                  <button
-                    type="button"
-                    [attr.aria-pressed]="engine() === opt.value"
-                    (click)="toggleRefine(engine, opt.value)"
-                    [class]="
-                      'rounded-full border px-4 py-1.5 text-sm transition-colors ' +
-                      (engine() === opt.value
-                        ? 'border-primary bg-primary/10 font-medium text-primary'
-                        : 'border-border bg-surface text-content hover:border-primary/50')
-                    ">
-                    {{ opt.label | translate }}
-                  </button>
-                }
-              </div>
-            </div>
+          <!-- All four fields are optional/informational dropdowns. Year-of-manufacture
+               is disabled until the vehicle's year range (step 01) is resolved. -->
+          <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            <nm-select
+              formControlName="transmission"
+              label="refine_transmission"
+              placeholder="configurator_optional"
+              [options]="transmissionOptions" />
+            <nm-select
+              formControlName="yearOfManufacture"
+              label="refine_year"
+              placeholder="configurator_optional"
+              [hint]="yearOfManufactureOptions().length ? '' : 'refine_year_hint'"
+              [options]="yearOfManufactureOptions()" />
+            <nm-select
+              formControlName="drive"
+              label="refine_drive"
+              placeholder="configurator_optional"
+              [options]="driveOptions" />
+            <nm-select
+              formControlName="engine"
+              label="refine_engine"
+              placeholder="configurator_optional"
+              [options]="engineOptions" />
           </div>
         </section>
 

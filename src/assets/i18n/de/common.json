@@ -383,6 +383,7 @@
   "refine_transmission_manual": "Schaltgetriebe",
   "refine_transmission_robot": "Robotergetriebe",
   "refine_year": "Baujahr",
+  "refine_year_hint": "Wählen Sie zuerst den Baujahr-Bereich des Fahrzeugs.",
   "refine_drive": "Antrieb",
   "refine_drive_rear": "Hinterradantrieb",
   "refine_drive_front": "Frontantrieb",

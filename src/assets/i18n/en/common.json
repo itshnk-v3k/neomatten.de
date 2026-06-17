@@ -383,6 +383,7 @@
   "refine_transmission_manual": "Manual",
   "refine_transmission_robot": "Robot",
   "refine_year": "Year of manufacture",
+  "refine_year_hint": "Select the vehicle year range first.",
   "refine_drive": "Drive type",
   "refine_drive_rear": "Rear-wheel drive",
   "refine_drive_front": "Front-wheel drive",

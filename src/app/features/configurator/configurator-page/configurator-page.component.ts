@@ -14,7 +14,7 @@
  *     «Связаться с менеджером» — за авторизацией: для гостя открывают диалог
  *     входа и повторяют отложенное действие после входа.
  */
-import type { ElementRef, WritableSignal } from '@angular/core';
+import type { ElementRef } from '@angular/core';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -126,11 +126,17 @@ export class ConfiguratorPageComponent {
   protected readonly driveOptions = this.config.driveOptions;
   protected readonly engineOptions = this.config.engineOptions;
 
-  // --- vehicle selection form (step 01) --------------------------------------
+  // --- vehicle selection (step 01) + refine spec (step 02) -------------------
   protected readonly form = this.fb.nonNullable.group({
     brandId: [''],
     model: [''],
     yearLabel: [''],
+    // Step-02 refine spec (optional/informational). Year-of-manufacture starts
+    // disabled — it's only choosable once the vehicle's year range is resolved.
+    transmission: [''],
+    yearOfManufacture: [{ value: '', disabled: true }],
+    drive: [''],
+    engine: [''],
   });
   private readonly values = toSignal(this.form.valueChanges, {
     initialValue: this.form.getRawValue(),
@@ -152,23 +158,6 @@ export class ConfiguratorPageComponent {
   protected readonly mounting = signal<Mounting>('none');
   protected readonly heelPad = signal<HeelPadAccessory>('none');
   protected readonly heelRest = signal<HeelRest>('none');
-
-  // --- step 02 refine spec (optional/informational; into the OrderItemDTO) ----
-  protected readonly transmission = signal<string | null>(null);
-  protected readonly year = signal<number | null>(null);
-  protected readonly drive = signal<string | null>(null);
-  protected readonly engine = signal<string | null>(null);
-
-  /** Radio-pill toggle: re-selecting the active value clears it (optional field). */
-  protected toggleRefine(field: WritableSignal<string | null>, value: string): void {
-    field.update(current => (current === value ? null : value));
-  }
-
-  /** Year-of-manufacture change from the select/number input ('' → null). */
-  protected setYear(value: string): void {
-    const n = Number(value);
-    this.year.set(value !== '' && Number.isFinite(n) ? n : null);
-  }
 
   /** Texture ids whose thumbnail photo failed to load → render the placeholder. */
   protected readonly textureFailed = signal<ReadonlySet<string>>(new Set());
@@ -296,10 +285,10 @@ export class ConfiguratorPageComponent {
     mounting: this.mounting(),
     heelPad: this.heelPad(),
     heelRest: this.heelRest(),
-    transmission: this.transmission(),
-    year: this.year(),
-    drive: this.drive(),
-    engine: this.engine(),
+    transmission: this.values().transmission || null,
+    year: this.values().yearOfManufacture ? Number(this.values().yearOfManufacture) : null,
+    drive: this.values().drive || null,
+    engine: this.values().engine || null,
   }));
   protected readonly price = computed(() => this.config.price(this.state()));
   protected readonly shipping = computed(() => this.config.shipping(this.zones()));
@@ -441,6 +430,19 @@ export class ConfiguratorPageComponent {
       const current = untracked(() => this.form.controls.yearLabel.value);
       if (options.length > 0 && !options.some(o => o.value === current)) {
         this.form.controls.yearLabel.setValue(options[0].value);
+      }
+    });
+
+    // Year-of-manufacture (step 02) is gated on the resolved pattern's year range:
+    // enable the dropdown only when that range exists, else clear + disable it.
+    effect(() => {
+      const hasRange = this.yearOfManufactureOptions().length > 0;
+      const control = this.form.controls.yearOfManufacture;
+      if (hasRange) {
+        if (control.disabled) control.enable();
+      } else if (control.enabled) {
+        control.reset('');
+        control.disable();
       }
     });
 
