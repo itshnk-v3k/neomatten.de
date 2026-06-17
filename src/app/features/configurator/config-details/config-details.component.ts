@@ -35,6 +35,8 @@ export interface ConfigDetailsVM {
   readonly heelPad: string | null;
   readonly heelPadPrice: number;
   readonly heelRest: string | null;
+  /** i18n label key for the rubber colour (e.g. 'heel_rest_rubber_grey'); null otherwise. */
+  readonly heelRestColour: string | null;
   readonly heelRestPrice: number;
   readonly accessories: string | null;
   /** Selected mat positions as CarZone codes (empty → "—"). */

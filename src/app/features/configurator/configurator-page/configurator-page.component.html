@@ -46,6 +46,7 @@
         [mounting]="mounting()"
         [heelPad]="heelPad()"
         [heelRest]="heelRest()"
+        [heelRestOverlaySrc]="heelRestOverlaySrc()"
         [caption]="caption()"
         [sku]="activePattern()?.sku ?? ''"
         [colorId]="materialColor()"
@@ -508,6 +509,30 @@
               <span class="text-sm text-primary">+15.00 &euro;</span>
             </button>
           </div>
+
+          <!-- Rubber colour picker — only when Rubber is selected. Same swatch
+               pattern as the mat-colour step; updates the overlay immediately. -->
+          @if (heelRest() === 'rubber') {
+            <div class="mt-4 flex flex-wrap items-center gap-1">
+              @for (c of rubberColours; track c.id) {
+                <div class="p-1">
+                  <button
+                    type="button"
+                    class="size-7 rounded-full border border-border shadow-md transition-all duration-150 hover:scale-110"
+                    [style.background]="c.swatch"
+                    [class.ring-2]="heelRestColour() === c.id"
+                    [class.ring-primary]="heelRestColour() === c.id"
+                    [class.ring-offset-2]="heelRestColour() === c.id"
+                    [class.ring-offset-surface]="heelRestColour() === c.id"
+                    [class.scale-110]="heelRestColour() === c.id"
+                    [attr.aria-label]="c.labelKey | translate"
+                    [attr.aria-pressed]="heelRestColour() === c.id"
+                    [attr.title]="c.labelKey | translate"
+                    (click)="setHeelRestColour(c.id)"></button>
+                </div>
+              }
+            </div>
+          }
         </section>
 
         <!-- 10 Accessories -->
@@ -730,6 +755,9 @@
               <div class="flex justify-between">
                 <dt class="text-content-secondary">
                   {{ 'heel_rest_title' | translate }}: {{ 'heel_rest_' + heelRest() | translate }}
+                  @if (heelRestColourKey(); as colourKey) {
+                    · {{ colourKey | translate }}
+                  }
                 </dt>
                 <dd class="font-medium">+{{ heelRestPrice() | euro }}</dd>
               </div>

@@ -72,6 +72,8 @@ export interface OrderItemDTO {
   readonly heelPad?: string;
   /** Heel-rest pad accessory: 'none' | 'metal' | 'rubber'. */
   readonly heelRest?: string;
+  /** Selected rubber heel-rest colour id (e.g. 'grey'); only when heelRest === 'rubber'. */
+  readonly heelRestColour?: string;
   readonly mounting?: string;
   readonly accessories?: string;
   // --- Step-02 refine spec (optional/informational, for order fulfilment) ---

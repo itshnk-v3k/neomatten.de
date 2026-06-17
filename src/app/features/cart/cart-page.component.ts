@@ -155,6 +155,7 @@ export class CartPageComponent {
       heelPad: item.heelPad ?? null,
       heelPadPrice: this.config.heelPadPrice((item.heelPad ?? 'none') as HeelPadAccessory),
       heelRest: item.heelRest ?? null,
+      heelRestColour: this.config.heelRestColourLabelKey(item.heelRestColour ?? null),
       heelRestPrice: this.config.heelRestPrice((item.heelRest ?? 'none') as HeelRest),
       accessories: item.accessories ?? null,
       positions: item.kitPieces ?? [],

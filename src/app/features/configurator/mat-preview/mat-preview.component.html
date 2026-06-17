@@ -65,12 +65,22 @@
           class="mat-edge-mask pointer-events-none absolute inset-0 opacity-[0.85]"
           [style.background-color]="edgeHex()"></div>
 
-        <!-- Clips overlay — always topmost, rendered as-is (no blend, no tint). -->
+        <!-- Clips overlay — rendered as-is (no blend, no tint). -->
         <img
           src="assets/images/mats/mat-clips.webp"
           alt=""
           aria-hidden="true"
           class="pointer-events-none absolute inset-0 size-full object-contain" />
+
+        <!-- Heel-rest overlay — topmost layer, same size/position as the clips
+             (2077×2077, transparency baked in), rendered as-is (no blend/tint). -->
+        @if (heelRestOverlaySrc(); as heelRestSrc) {
+          <img
+            [src]="heelRestSrc"
+            alt=""
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-0 size-full object-contain" />
+        }
       </div>
     }
 

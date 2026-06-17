@@ -34,6 +34,33 @@ export type Mounting = 'none' | '3d';
 export type HeelPadAccessory = 'none' | 'standard' | '3d';
 /** Heel-rest pad accessory (step 09) — a paid add-on, independent of the dataset. */
 export type HeelRest = 'none' | 'metal' | 'rubber';
+
+/**
+ * A rubber heel-rest colour (step 09): the id stored in state/order, its webp
+ * filename under `heel-rest-pad/heel-rest-rubber/`, an i18n label key and a CSS
+ * background for the picker swatch.
+ */
+export interface HeelRestColour {
+  readonly id: string;
+  readonly file: string;
+  readonly labelKey: string;
+  readonly swatch: string;
+}
+
+/** Root path for the heel-rest overlay assets (2077×2077, aligned to mat-clips). */
+const HEEL_REST_ASSET_BASE = 'assets/images/heel-rest-pad';
+
+/** Rubber colour choices shown below the option cards when Rubber is selected. */
+export const HEEL_REST_RUBBER_COLOURS: readonly HeelRestColour[] = [
+  { id: 'brown', file: 'brown.webp', labelKey: 'heel_rest_rubber_brown', swatch: '#6b4423' },
+  {
+    id: 'black-red',
+    file: 'black-with-red.webp',
+    labelKey: 'heel_rest_rubber_black_red',
+    swatch: 'linear-gradient(135deg, #1a1a1a 0 50%, #c81e1e 50% 100%)',
+  },
+  { id: 'grey', file: 'grey.webp', labelKey: 'heel_rest_rubber_grey', swatch: '#9ca3af' },
+];
 export type Accessories = 'with_clips' | 'without_clips';
 /** Clickable car-diagram zones = step-07 kit pieces. */
 export type CarZone = 'front_left' | 'front_right' | 'rear_left' | 'rear_right' | 'trunk';
@@ -100,6 +127,8 @@ export interface ConfigState {
   readonly mounting: Mounting;
   readonly heelPad: HeelPadAccessory;
   readonly heelRest: HeelRest;
+  /** Selected rubber colour id (step 09); null unless heelRest === 'rubber'. */
+  readonly heelRestColour: string | null;
   // Step-02 refine spec — optional/informational (don't affect pricing).
   readonly transmission: string | null;
   readonly year: number | null;
@@ -244,6 +273,35 @@ export class ConfiguratorService {
     return 0;
   }
 
+  /** Rubber colour id chosen by default when Rubber is first selected. */
+  readonly defaultHeelRestColour = HEEL_REST_RUBBER_COLOURS[0].id;
+
+  /** Rubber colour record for an id (null when unknown / not a rubber colour). */
+  heelRestColour(id: string | null): HeelRestColour | null {
+    return HEEL_REST_RUBBER_COLOURS.find(c => c.id === id) ?? null;
+  }
+
+  /** i18n label key for a rubber colour id (null when none). */
+  heelRestColourLabelKey(id: string | null): string | null {
+    return this.heelRestColour(id)?.labelKey ?? null;
+  }
+
+  /**
+   * Heel-rest overlay image to composite on the mat preview (above the clips
+   * layer, no tint/blend), or null when no heel rest is selected. Metal is a
+   * single image; rubber resolves to the selected colour's webp.
+   */
+  heelRestOverlaySrc(heelRest: HeelRest, colourId: string | null): string | null {
+    if (heelRest === 'metal') {
+      return `${HEEL_REST_ASSET_BASE}/heel-rest-metal/metal.webp`;
+    }
+    if (heelRest === 'rubber') {
+      const colour = this.heelRestColour(colourId) ?? HEEL_REST_RUBBER_COLOURS[0];
+      return `${HEEL_REST_ASSET_BASE}/heel-rest-rubber/${colour.file}`;
+    }
+    return null;
+  }
+
   /** Mock configured-mat price (before shipping/discount), in EUR. */
   price(state: ConfigState): number {
     const floors = FLOOR_ZONES.filter(z => state.zones.has(z)).length;
@@ -302,6 +360,7 @@ export class ConfiguratorService {
       edgeColour: state.edgeColor,
       heelPad: state.heelPad,
       heelRest: state.heelRest,
+      heelRestColour: state.heelRestColour ?? undefined,
       mounting: state.mounting,
       accessories: state.accessories,
       // Step-02 refine spec (informational, for the admin fulfilling the order).

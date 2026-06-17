@@ -159,6 +159,9 @@
         @if (d.heelRest) {
           <dd class="text-right font-semibold text-content">
             {{ 'heel_rest_' + d.heelRest | translate }}
+            @if (d.heelRestColour) {
+              · {{ d.heelRestColour | translate }}
+            }
             @if (d.heelRestPrice) {
               <span class="text-primary">+{{ d.heelRestPrice | euro }}</span>
             }

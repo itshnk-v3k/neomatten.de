@@ -51,6 +51,8 @@ export class ConfiguratorPreviewComponent {
   readonly mounting = input.required<Mounting>();
   readonly heelPad = input.required<HeelPadAccessory>();
   readonly heelRest = input.required<HeelRest>();
+  /** Heel-rest overlay image src for the mat preview (null → no overlay). */
+  readonly heelRestOverlaySrc = input<string | null>(null);
   readonly caption = input.required<string>();
   readonly sku = input<string>('');
   readonly colorId = input<string>('');

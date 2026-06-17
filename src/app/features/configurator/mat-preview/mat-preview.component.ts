@@ -42,6 +42,11 @@ export class MatPreviewComponent {
   readonly mounting = input.required<Mounting>();
   readonly heelPad = input.required<HeelPadAccessory>();
   readonly heelRest = input.required<HeelRest>();
+  /**
+   * Heel-rest overlay image (metal / selected rubber colour), composited above
+   * every other layer with no tint or blend — null when no heel rest is chosen.
+   */
+  readonly heelRestOverlaySrc = input<string | null>(null);
   /** Already-translated caption, e.g. "EVA · Raute". */
   readonly caption = input.required<string>();
   /** Resolved vehicle SKU + colour id, for the admin-managed preview render. */

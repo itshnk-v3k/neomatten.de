@@ -65,6 +65,7 @@ import {
   type CarZone,
   type ConfigState,
   ConfiguratorService,
+  HEEL_REST_RUBBER_COLOURS,
   type HeelPadAccessory,
   type HeelRest,
   type KitPreset,
@@ -166,6 +167,10 @@ export class ConfiguratorPageComponent {
   protected readonly mounting = signal<Mounting>('none');
   protected readonly heelPad = signal<HeelPadAccessory>('none');
   protected readonly heelRest = signal<HeelRest>('none');
+  /** Selected rubber heel-rest colour id (step 09); null unless Rubber is chosen. */
+  protected readonly heelRestColour = signal<string | null>(null);
+  /** Rubber colour choices for the step-09 picker. */
+  protected readonly rubberColours = HEEL_REST_RUBBER_COLOURS;
 
   /** Texture ids whose thumbnail photo failed to load → render the placeholder. */
   protected readonly textureFailed = signal<ReadonlySet<string>>(new Set());
@@ -293,6 +298,7 @@ export class ConfiguratorPageComponent {
     mounting: this.mounting(),
     heelPad: this.heelPad(),
     heelRest: this.heelRest(),
+    heelRestColour: this.heelRestColour(),
     transmission: this.values().transmission || null,
     year: this.values().yearOfManufacture ? Number(this.values().yearOfManufacture) : null,
     drive: this.values().drive || null,
@@ -305,6 +311,15 @@ export class ConfiguratorPageComponent {
   /** Individual add-on prices, surfaced for the summary breakdown (step 13). */
   protected readonly heelPadPrice = computed(() => this.config.heelPadPrice(this.heelPad()));
   protected readonly heelRestPrice = computed(() => this.config.heelRestPrice(this.heelRest()));
+
+  /** Heel-rest overlay image src for the mat preview (null → no overlay). */
+  protected readonly heelRestOverlaySrc = computed(() =>
+    this.config.heelRestOverlaySrc(this.heelRest(), this.heelRestColour())
+  );
+  /** i18n label key for the selected rubber colour (null unless Rubber). */
+  protected readonly heelRestColourKey = computed(() =>
+    this.config.heelRestColourLabelKey(this.heelRestColour())
+  );
 
   /** Free shipping applies (full interior / premium set). */
   protected readonly freeShipping = computed(() => this.shipping() === 0 && this.zones().size > 0);
@@ -358,6 +373,7 @@ export class ConfiguratorPageComponent {
       heelPad: this.heelPad(),
       heelPadPrice: this.heelPadPrice(),
       heelRest: this.heelRest(),
+      heelRestColour: this.heelRestColourKey(),
       heelRestPrice: this.heelRestPrice(),
       accessories: this.accessories(),
       positions: CAR_ZONES.filter(z => zones.has(z)),
@@ -540,6 +556,12 @@ export class ConfiguratorPageComponent {
   }
   protected setHeelRest(value: HeelRest): void {
     this.heelRest.set(value);
+    // Rubber needs a colour (default to the first); clear it for metal/none so
+    // switching away never leaves a stale colour in the state or overlay.
+    this.heelRestColour.set(value === 'rubber' ? this.config.defaultHeelRestColour : null);
+  }
+  protected setHeelRestColour(id: string): void {
+    this.heelRestColour.set(id);
   }
 
   protected isZone(zone: CarZone): boolean {
