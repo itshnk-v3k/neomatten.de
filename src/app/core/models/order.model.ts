@@ -62,6 +62,8 @@ export interface OrderItemDTO {
   readonly brand?: string;
   readonly model?: string;
   readonly yearRange?: string;
+  /** Vehicle body type, read-only from the matched pattern (e.g. 'sedan'). */
+  readonly bodyType?: string;
   readonly tier?: string;
   readonly kitPieces?: readonly string[];
   /** Material type: 'eva' | 'ecoskin'. */

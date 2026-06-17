@@ -19,6 +19,8 @@ import { TranslatePipe } from '@shared/pipes/translate.pipe';
 export interface ConfigDetailsVM {
   /** Vehicle line, e.g. "Acura MDX 2014–2020" (null → "—"). */
   readonly vehicle: string | null;
+  /** Body type, read-only from the matched pattern (raw code e.g. 'sedan'; null → "—"). */
+  readonly bodyType: string | null;
   // Step-02 refine spec (raw codes; null → "—").
   readonly transmission: string | null;
   readonly year: number | null;

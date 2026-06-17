@@ -44,6 +44,7 @@ import { SkeletonComponent } from '@shared/components/skeleton/skeleton.componen
 import { EuroPipe } from '@shared/pipes/euro.pipe';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { ToastService } from '@shared/services/toast.service';
+import { categoryBadge } from '@shared/utils/product-category';
 
 @Component({
   selector: 'nm-cart-page',
@@ -69,6 +70,9 @@ import { ToastService } from '@shared/services/toast.service';
   styleUrl: './cart-page.component.scss',
 })
 export class CartPageComponent {
+  /** Category chip preset (label key + classes) for an item's product category. */
+  protected readonly categoryBadge = categoryBadge;
+
   protected readonly cart = inject(CartService);
   private readonly checkout = inject(CheckoutService);
   private readonly auth = inject(AuthService);
@@ -101,6 +105,7 @@ export class CartPageComponent {
     const t = (key: string): string => this.translation.translate(key);
     const parts: string[] = [];
     if (item.texture) parts.push(t(`configurator_texture_${item.texture}`));
+    if (item.bodyType) parts.push(t(`body_type_${item.bodyType}`));
     if (item.materialColour) parts.push(this.config.matColourName(item.materialColour, lang));
     if (item.heelRest && item.heelRest !== 'none') parts.push(t(`heel_rest_${item.heelRest}`));
     const presetKey = this.positionsPresetKey(item.kitPieces ?? []);
@@ -139,6 +144,7 @@ export class CartPageComponent {
       vehicle: item.brand
         ? `${item.brand} ${item.model ?? ''}${item.yearRange ? ` ${item.yearRange}` : ''}`.trim()
         : null,
+      bodyType: item.bodyType ?? null,
       transmission: item.transmission ?? null,
       year: item.yearOfManufacture ?? null,
       drive: item.drive ?? null,

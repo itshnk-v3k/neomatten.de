@@ -363,6 +363,7 @@ export class ConfiguratorPageComponent {
     const ship = this.shipping();
     return {
       vehicle: this.vehicleSummary(),
+      bodyType: this.activePattern()?.bodyType ?? null,
       transmission: this.values().transmission || null,
       year: this.values().yearOfManufacture ? Number(this.values().yearOfManufacture) : null,
       drive: this.values().drive || null,

@@ -24,6 +24,16 @@
         }
       </div>
       <div class="flex items-start justify-between gap-3">
+        <dt class="text-content-secondary">{{ 'refine_body_type_label' | translate }}</dt>
+        @if (d.bodyType) {
+          <dd class="text-right font-semibold text-content">
+            {{ 'body_type_' + d.bodyType | translate }}
+          </dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+      <div class="flex items-start justify-between gap-3">
         <dt class="text-content-secondary">{{ 'refine_transmission' | translate }}</dt>
         @if (d.transmission) {
           <dd class="text-right font-semibold text-content">

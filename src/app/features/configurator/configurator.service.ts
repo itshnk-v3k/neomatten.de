@@ -347,6 +347,7 @@ export class ConfiguratorService {
       brand: pattern.brandName,
       model: pattern.model,
       yearRange: pattern.yearLabel ?? undefined,
+      bodyType: pattern.bodyType ?? undefined,
       tier: this.tierFor(state.zones),
       kitPieces: CAR_ZONES.filter(z => state.zones.has(z)),
       material: state.material,

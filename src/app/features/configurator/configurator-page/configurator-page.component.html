@@ -133,6 +133,20 @@
               label="refine_engine"
               placeholder="configurator_optional"
               [options]="engineOptions" />
+            <!-- Body type — read-only, auto-filled from the matched pattern (not editable). -->
+            <div>
+              <span class="mb-1.5 block text-sm font-medium text-content">
+                {{ 'refine_body_type_label' | translate }}
+              </span>
+              <div
+                class="flex h-11 w-full items-center rounded-md border border-border bg-surface-input px-4 text-sm text-content opacity-70">
+                @if (activePattern()?.bodyType; as bodyType) {
+                  {{ 'body_type_' + bodyType | translate }}
+                } @else {
+                  <span class="text-content-muted">—</span>
+                }
+              </div>
+            </div>
           </div>
         </section>
 

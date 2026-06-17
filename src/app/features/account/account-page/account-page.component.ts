@@ -51,6 +51,7 @@ import type { SelectOption } from '@shared/models/select-option.model';
 import { EuroPipe } from '@shared/pipes/euro.pipe';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { ToastService } from '@shared/services/toast.service';
+import { categoryBadge } from '@shared/utils/product-category';
 
 /** Filter value = a concrete status/category or the "all" sentinel. */
 type StatusFilter = OrderStatus | 'all';
@@ -113,6 +114,9 @@ const SORT_OPTIONS: readonly SortOption[] = ['newest', 'oldest', 'price_high', '
   styleUrl: './account-page.component.scss',
 })
 export class AccountPageComponent {
+  /** Category chip preset (label key + classes) for an order item's category. */
+  protected readonly categoryBadge = categoryBadge;
+
   private readonly auth = inject(AuthService);
   private readonly toast = inject(ToastService);
   private readonly config = inject(ConfiguratorService);

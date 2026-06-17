@@ -243,6 +243,10 @@
               <li class="flex justify-between gap-4">
                 <div class="min-w-0">
                   <p class="font-medium text-content">{{ item.quantity }}× {{ item.name }}</p>
+                  @let orderCat = categoryBadge(item.category);
+                  <span class="mt-1 {{ orderCat.chipClass }}">
+                    {{ orderCat.labelKey | translate }}
+                  </span>
                   <dl class="mt-2 space-y-0.5 text-sm text-content-secondary">
                     @if (item.brand || item.model) {
                       <div class="flex gap-2">
@@ -258,6 +262,14 @@
                           {{ 'cart_year_range' | translate }}:
                         </dt>
                         <dd>{{ item.yearRange }}</dd>
+                      </div>
+                    }
+                    @if (item.bodyType) {
+                      <div class="flex gap-2">
+                        <dt class="font-medium text-content">
+                          {{ 'refine_body_type_label' | translate }}:
+                        </dt>
+                        <dd>{{ 'body_type_' + item.bodyType | translate }}</dd>
                       </div>
                     }
                     @if (item.sku) {
