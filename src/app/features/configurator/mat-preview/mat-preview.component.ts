@@ -106,5 +106,4 @@ export class MatPreviewComponent {
   });
 
   protected readonly heelPadLabelKey = computed(() => `configurator_heel_${this.heelPad()}`);
-  protected readonly heelRestLabelKey = computed(() => `heel_rest_${this.heelRest()}`);
 }
