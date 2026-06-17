@@ -115,7 +115,7 @@ const SORT_OPTIONS: readonly SortOption[] = ['newest', 'oldest', 'price_high', '
     LucideSlidersHorizontal,
     LucideSearchX,
   ],
-  // Fill the account content column so the card's lg:max-w-[80%] is meaningful.
+  // Fill the account content column so the orders sidebar + list span its width.
   host: { '[style.display]': '"flex"', '[style.width]': '"100%"' },
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './account-page.component.html',
