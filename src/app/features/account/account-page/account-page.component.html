@@ -157,11 +157,13 @@
         <!-- Scannable header: id + date (left), status badge (right). -->
         <div class="flex flex-wrap items-start justify-between gap-3">
           <div class="min-w-0">
-            <div class="flex items-center gap-2">
-              <span class="text-lg font-extrabold tracking-tight">#{{ order.id }}</span>
+            <div class="flex min-w-0 items-center gap-2">
+              <span class="min-w-0 truncate text-base font-extrabold tracking-tight md:text-lg">
+                #{{ order.id }}
+              </span>
               <button
                 type="button"
-                class="text-content-muted transition-colors hover:text-primary"
+                class="shrink-0 text-content-muted transition-colors hover:text-primary"
                 [attr.aria-label]="'order_copy_id' | translate"
                 (click)="clipboard.copy(order.id, 'order_copy_id')">
                 @if (clipboard.isCopied(order.id)) {
@@ -171,13 +173,13 @@
                 }
               </button>
             </div>
-            <p class="mt-0.5 text-sm text-content-secondary">
+            <p class="mt-0.5 text-xs text-content-secondary md:text-sm">
               {{ order.createdAt | date: 'dd.MM.yyyy, HH:mm:ss' }}
             </p>
           </div>
           <span
             [class]="
-              'inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold ' +
+              'inline-flex shrink-0 items-center rounded-full px-3 py-1 text-xs font-semibold md:text-sm ' +
               statusBadgeClasses(order.status)
             ">
             {{ 'order_status_' + order.status | translate }}
@@ -186,8 +188,10 @@
 
         <!-- Products + quantity (left), total (right). -->
         <div class="mt-3 flex items-end justify-between gap-4 border-t border-border pt-3">
-          <div class="min-w-0">
-            <p class="truncate text-sm font-medium text-content">{{ itemSummary(order) }}</p>
+          <div class="min-w-0 flex-1">
+            <p class="truncate text-xs font-medium text-content md:text-sm">
+              {{ itemSummary(order) }}
+            </p>
             @let itemQuantity = totalQuantity(order);
             <p class="mt-0.5 text-xs text-content-secondary">
               {{ itemQuantity }}
@@ -198,7 +202,7 @@
               }
             </p>
           </div>
-          <span class="shrink-0 whitespace-nowrap text-lg font-extrabold">
+          <span class="shrink-0 whitespace-nowrap text-base font-extrabold md:text-lg">
             {{ order.total | euro }}
           </span>
         </div>
@@ -218,7 +222,7 @@
         </button>
 
         @if (isExpanded(order.id)) {
-          <p class="mt-3 flex items-center gap-1.5 text-sm text-content-secondary">
+          <p class="mt-3 flex items-center gap-1.5 text-xs text-content-secondary md:text-sm">
             @switch (order.paymentMethod) {
               @case ('stripe_card') {
                 <svg lucideCreditCard class="size-4 text-content-muted" aria-hidden="true"></svg>
@@ -238,19 +242,21 @@
               {{ paymentKey(order.paymentMethod) | translate }}
             </span>
           </p>
-          <ul class="mt-3 space-y-1 border-t border-border pt-3 text-sm">
+          <ul class="mt-3 space-y-1 border-t border-border pt-3 text-xs md:text-sm">
             @for (item of order.items; track $index) {
               <li class="flex justify-between gap-4">
-                <div class="min-w-0">
-                  <p class="font-medium text-content">{{ item.quantity }}× {{ item.name }}</p>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate font-medium text-content">
+                    {{ item.quantity }}× {{ item.name }}
+                  </p>
                   @let orderCat = categoryBadge(item.category);
                   <span class="mt-1 {{ orderCat.chipClass }}">
                     {{ orderCat.labelKey | translate }}
                   </span>
-                  <dl class="mt-2 space-y-0.5 text-sm text-content-secondary">
+                  <dl class="mt-2 space-y-0.5 text-content-secondary">
                     @if (item.brand || item.model) {
                       <div class="flex gap-2">
-                        <dt class="font-medium text-content">
+                        <dt class="shrink-0 font-medium text-content">
                           {{ 'cart_brand_model' | translate }}:
                         </dt>
                         <dd>{{ item.brand }} {{ item.model }}</dd>
@@ -258,7 +264,7 @@
                     }
                     @if (item.yearRange) {
                       <div class="flex gap-2">
-                        <dt class="font-medium text-content">
+                        <dt class="shrink-0 font-medium text-content">
                           {{ 'cart_year_range' | translate }}:
                         </dt>
                         <dd>{{ item.yearRange }}</dd>
@@ -266,7 +272,7 @@
                     }
                     @if (item.bodyType) {
                       <div class="flex gap-2">
-                        <dt class="font-medium text-content">
+                        <dt class="shrink-0 font-medium text-content">
                           {{ 'refine_body_type_label' | translate }}:
                         </dt>
                         <dd>{{ 'body_type_' + item.bodyType | translate }}</dd>
@@ -275,14 +281,14 @@
                     @if (item.sku) {
                       @let sku = item.orderItemSku ?? item.sku;
                       <div class="flex gap-2">
-                        <dt class="font-medium text-content">
+                        <dt class="shrink-0 font-medium text-content">
                           {{ 'order_sku_label' | translate }}:
                         </dt>
-                        <dd class="font-mono flex items-center gap-1">
-                          {{ sku }}
+                        <dd class="flex min-w-0 items-center gap-1">
+                          <span class="font-mono break-all">{{ sku }}</span>
                           <button
                             type="button"
-                            class="text-content-muted transition-colors hover:text-primary"
+                            class="shrink-0 text-content-muted transition-colors hover:text-primary"
                             [attr.aria-label]="'order_copy_sku' | translate"
                             (click)="clipboard.copy(sku, 'order_copy_sku')">
                             @if (clipboard.isCopied(sku)) {
@@ -299,13 +305,15 @@
                     }
                     @if (item.tier) {
                       <div class="flex gap-2">
-                        <dt class="font-medium text-content">{{ 'cart_tier' | translate }}:</dt>
+                        <dt class="shrink-0 font-medium text-content">
+                          {{ 'cart_tier' | translate }}:
+                        </dt>
                         <dd>{{ 'mat_kit_tier_' + item.tier | translate }}</dd>
                       </div>
                     }
                     @if (item.materialColour) {
                       <div class="flex gap-2">
-                        <dt class="font-medium text-content">
+                        <dt class="shrink-0 font-medium text-content">
                           {{ 'cart_material_colour' | translate }}:
                         </dt>
                         <dd class="flex items-center gap-1">
@@ -318,7 +326,7 @@
                     }
                     @if (item.edgeColour) {
                       <div class="flex gap-2">
-                        <dt class="font-medium text-content">
+                        <dt class="shrink-0 font-medium text-content">
                           {{ 'cart_edge_colour' | translate }}:
                         </dt>
                         <dd class="flex items-center gap-1">
@@ -331,37 +339,46 @@
                     }
                     @if (item.kitPieces?.length) {
                       <div class="flex gap-2">
-                        <dt class="font-medium text-content">{{ 'cart_kit' | translate }}:</dt>
-                        <dd>
-                          @for (piece of item.kitPieces; track piece; let last = $last) {
-                            {{ 'kit_piece_' + piece | translate }}{{ last ? '' : ', ' }}
+                        <dt class="shrink-0 font-medium text-content">
+                          {{ 'cart_kit' | translate }}:
+                        </dt>
+                        <dd class="flex min-w-0 flex-wrap gap-1">
+                          @for (piece of item.kitPieces; track piece) {
+                            <span
+                              class="rounded-full bg-primary/10 px-2 py-0.5 text-[0.625rem] font-medium text-primary">
+                              {{ 'kit_piece_' + piece | translate }}
+                            </span>
                           }
                         </dd>
                       </div>
                     }
                   </dl>
                 </div>
-                <span class="font-medium">{{ item.unitPrice * item.quantity | euro }}</span>
+                <span class="shrink-0 whitespace-nowrap font-medium">
+                  {{ item.unitPrice * item.quantity | euro }}
+                </span>
               </li>
             }
           </ul>
 
           <!-- Explicit price breakdown so total never looks unexplained: every
                  line shown; the discount/free-shipping lines clarify the gap. -->
-          <dl class="mt-3 space-y-1 border-t border-border pt-3 text-sm">
-            <div class="flex justify-between">
-              <dt class="text-content-secondary">{{ 'cart_subtotal' | translate }}</dt>
-              <dd class="font-medium">{{ order.subtotal | euro }}</dd>
+          <dl class="mt-3 space-y-1 border-t border-border pt-3 text-xs md:text-sm">
+            <div class="flex justify-between gap-3">
+              <dt class="min-w-0 text-content-secondary">{{ 'cart_subtotal' | translate }}</dt>
+              <dd class="shrink-0 whitespace-nowrap font-medium">{{ order.subtotal | euro }}</dd>
             </div>
             @if (order.discount > 0) {
-              <div class="flex justify-between text-success">
-                <dt>{{ 'cart_discount' | translate }}</dt>
-                <dd class="font-medium">&minus;{{ order.discount | euro }}</dd>
+              <div class="flex justify-between gap-3 text-success">
+                <dt class="min-w-0">{{ 'cart_discount' | translate }}</dt>
+                <dd class="shrink-0 whitespace-nowrap font-medium">
+                  &minus;{{ order.discount | euro }}
+                </dd>
               </div>
             }
-            <div class="flex justify-between">
-              <dt class="text-content-secondary">{{ 'cart_shipping' | translate }}</dt>
-              <dd class="font-medium">
+            <div class="flex justify-between gap-3">
+              <dt class="min-w-0 text-content-secondary">{{ 'cart_shipping' | translate }}</dt>
+              <dd class="shrink-0 whitespace-nowrap font-medium">
                 @if (order.shipping === 0) {
                   {{ 'configurator_delivery_free' | translate }}
                 } @else {
@@ -369,9 +386,10 @@
                 }
               </dd>
             </div>
-            <div class="flex justify-between border-t border-border pt-2 text-base font-extrabold">
-              <dt>{{ 'cart_total' | translate }}</dt>
-              <dd>{{ order.total | euro }}</dd>
+            <div
+              class="flex justify-between gap-3 border-t border-border pt-2 text-sm font-bold md:text-base md:font-extrabold">
+              <dt class="min-w-0">{{ 'cart_total' | translate }}</dt>
+              <dd class="shrink-0 whitespace-nowrap">{{ order.total | euro }}</dd>
             </div>
           </dl>
           @if (order.status === 'review') {

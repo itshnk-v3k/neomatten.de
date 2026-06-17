@@ -54,9 +54,10 @@
             [subscribeToEvents]="['init', 'reInit', 'select']"
             (emblaChange)="onEmblaChange()"
             class="overflow-hidden">
-            <div class="flex">
+            <div class="flex gap-5">
               @for (review of reviews(); track $index) {
-                <div class="min-w-0 flex-[0_0_100%] pr-5 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%]">
+                <div
+                  class="min-w-0 flex-[0_0_100%] sm:flex-[0_0_calc(50%-0.625rem)] lg:flex-[0_0_calc(33.333%-0.833rem)]">
                   <article
                     class="flex h-full flex-col rounded-lg border border-border bg-surface p-6">
                     <div class="mb-2 flex min-w-0 items-center justify-between gap-3">

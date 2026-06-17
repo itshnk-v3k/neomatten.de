@@ -73,7 +73,8 @@
                   </p>
                 }
               </div>
-              <span class="shrink-0 whitespace-nowrap text-right text-lg font-extrabold">
+              <span
+                class="shrink-0 whitespace-nowrap text-right text-base font-extrabold md:text-lg">
                 {{ item.unitPrice * item.quantity | euro }}
               </span>
             </div>
@@ -136,21 +137,21 @@
       <!-- Summary -->
       <aside class="lg:sticky lg:top-24 lg:self-start">
         <div class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
-          <h2 class="text-lg font-bold">{{ 'cart_summary_title' | translate }}</h2>
-          <dl class="mt-4 space-y-2 text-sm">
-            <div class="flex justify-between">
-              <dt class="text-content-secondary">{{ 'cart_subtotal' | translate }}</dt>
-              <dd class="font-medium">{{ subtotal() | euro }}</dd>
+          <h2 class="text-base font-bold md:text-lg">{{ 'cart_summary_title' | translate }}</h2>
+          <dl class="mt-4 space-y-2 text-xs md:text-sm">
+            <div class="flex justify-between gap-3">
+              <dt class="min-w-0 text-content-secondary">{{ 'cart_subtotal' | translate }}</dt>
+              <dd class="shrink-0 whitespace-nowrap font-medium">{{ subtotal() | euro }}</dd>
             </div>
             @if (discountApplies()) {
-              <div class="flex justify-between text-success">
-                <dt>{{ 'cart_discount' | translate }}</dt>
-                <dd class="font-medium">−{{ discount() | euro }}</dd>
+              <div class="flex justify-between gap-3 text-success">
+                <dt class="min-w-0">{{ 'cart_discount' | translate }}</dt>
+                <dd class="shrink-0 whitespace-nowrap font-medium">−{{ discount() | euro }}</dd>
               </div>
             }
-            <div class="flex justify-between">
-              <dt class="text-content-secondary">{{ 'cart_shipping' | translate }}</dt>
-              <dd class="font-medium">
+            <div class="flex justify-between gap-3">
+              <dt class="min-w-0 text-content-secondary">{{ 'cart_shipping' | translate }}</dt>
+              <dd class="shrink-0 whitespace-nowrap font-medium">
                 @if (shipping() === 0) {
                   {{ 'configurator_delivery_free' | translate }}
                 } @else {
@@ -158,9 +159,10 @@
                 }
               </dd>
             </div>
-            <div class="flex justify-between border-t border-border pt-3 text-base font-extrabold">
-              <dt>{{ 'cart_total' | translate }}</dt>
-              <dd>{{ total() | euro }}</dd>
+            <div
+              class="flex justify-between gap-3 border-t border-border pt-3 text-sm font-bold md:text-base md:font-extrabold">
+              <dt class="min-w-0">{{ 'cart_total' | translate }}</dt>
+              <dd class="shrink-0 whitespace-nowrap">{{ total() | euro }}</dd>
             </div>
           </dl>
 

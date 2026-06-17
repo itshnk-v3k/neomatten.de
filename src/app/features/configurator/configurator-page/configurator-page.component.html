@@ -765,34 +765,40 @@
           <nm-config-details [details]="configDetails()" class="mt-4 block" />
 
           <!-- Price breakdown -->
-          <dl class="mt-4 space-y-1.5 border-t border-border pt-4 text-sm">
-            <div class="flex justify-between">
-              <dt class="text-content-secondary">{{ 'configurator_summary_mats' | translate }}</dt>
-              <dd class="font-medium">{{ price() | euro }}</dd>
+          <dl class="mt-4 space-y-1.5 border-t border-border pt-4 text-xs md:text-sm">
+            <div class="flex justify-between gap-3">
+              <dt class="min-w-0 text-content-secondary">
+                {{ 'configurator_summary_mats' | translate }}
+              </dt>
+              <dd class="shrink-0 whitespace-nowrap font-medium">{{ price() | euro }}</dd>
             </div>
             @if (heelPad() !== 'none') {
-              <div class="flex justify-between">
-                <dt class="text-content-secondary">
+              <div class="flex justify-between gap-3">
+                <dt class="min-w-0 text-content-secondary">
                   {{ 'configurator_step_heel' | translate }}:
                   {{ 'configurator_heel_' + heelPad() | translate }}
                 </dt>
-                <dd class="font-medium">+{{ heelPadPrice() | euro }}</dd>
+                <dd class="shrink-0 whitespace-nowrap font-medium">+{{ heelPadPrice() | euro }}</dd>
               </div>
             }
             @if (heelRest() !== 'none') {
-              <div class="flex justify-between">
-                <dt class="text-content-secondary">
+              <div class="flex justify-between gap-3">
+                <dt class="min-w-0 text-content-secondary">
                   {{ 'heel_rest_title' | translate }}: {{ 'heel_rest_' + heelRest() | translate }}
                   @if (heelRestColourKey(); as colourKey) {
                     · {{ colourKey | translate }}
                   }
                 </dt>
-                <dd class="font-medium">+{{ heelRestPrice() | euro }}</dd>
+                <dd class="shrink-0 whitespace-nowrap font-medium">
+                  +{{ heelRestPrice() | euro }}
+                </dd>
               </div>
             }
-            <div class="flex justify-between">
-              <dt class="text-content-secondary">{{ 'configurator_step_delivery' | translate }}</dt>
-              <dd class="font-medium">
+            <div class="flex justify-between gap-3">
+              <dt class="min-w-0 text-content-secondary">
+                {{ 'configurator_step_delivery' | translate }}
+              </dt>
+              <dd class="shrink-0 whitespace-nowrap font-medium">
                 @if (freeShipping()) {
                   {{ 'configurator_delivery_free' | translate }}
                 } @else {
@@ -800,9 +806,10 @@
                 }
               </dd>
             </div>
-            <div class="flex justify-between border-t border-border pt-2 text-base font-extrabold">
-              <dt>{{ 'configurator_total' | translate }}</dt>
-              <dd>{{ total() | euro }}</dd>
+            <div
+              class="flex justify-between gap-3 border-t border-border pt-2 text-sm font-bold md:text-base md:font-extrabold">
+              <dt class="min-w-0">{{ 'configurator_total' | translate }}</dt>
+              <dd class="shrink-0 whitespace-nowrap">{{ total() | euro }}</dd>
             </div>
           </dl>
 
