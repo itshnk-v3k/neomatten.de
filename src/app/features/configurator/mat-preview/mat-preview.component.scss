@@ -7,8 +7,10 @@
 .mat-edge-mask {
   -webkit-mask-image: url('/assets/images/mats/edging.webp');
   mask-image: url('/assets/images/mats/edging.webp');
-  -webkit-mask-size: cover;
-  mask-size: cover;
+  // contain + center matches the images' object-contain so the trim aligns
+  // with the mat photo (both square, letterboxed identically in the 4:3 box).
+  -webkit-mask-size: contain;
+  mask-size: contain;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-position: center;

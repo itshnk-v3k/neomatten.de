@@ -72,6 +72,31 @@ export class MatPreviewComponent {
     () => `assets/images/mats/${this.texture()}-mat.webp`
   );
 
+  /**
+   * EN: Clips the mat-colour overlay to the mat body shape — the texture WebP's
+   *     own alpha is used as a CSS mask, so the colour only tints the opaque mat
+   *     (not the transparent background). Mask URL must be dynamic (per texture),
+   *     so it's an inline style; root-absolute so it resolves on any route.
+   *     `contain` + `center` mirrors the images' object-contain so they align.
+   * RU: Обрезает слой цвета по форме коврика — альфа фото-фактуры служит CSS-маской,
+   *     поэтому цвет тонирует только непрозрачный коврик (не прозрачный фон). URL
+   *     маски динамический (по фактуре) → инлайн-стиль; корневой-абсолютный, чтобы
+   *     резолвился на любом маршруте. `contain` + `center` совпадает с object-contain.
+   */
+  protected readonly matMaskStyle = computed(() => {
+    const mask = `url(/assets/images/mats/${this.texture()}-mat.webp)`;
+    return {
+      'mask-image': mask,
+      '-webkit-mask-image': mask,
+      'mask-size': 'contain',
+      '-webkit-mask-size': 'contain',
+      'mask-repeat': 'no-repeat',
+      '-webkit-mask-repeat': 'no-repeat',
+      'mask-position': 'center',
+      '-webkit-mask-position': 'center',
+    };
+  });
+
   protected readonly heelPadLabelKey = computed(() => `configurator_heel_${this.heelPad()}`);
   protected readonly heelRestLabelKey = computed(() => `heel_rest_${this.heelRest()}`);
 }

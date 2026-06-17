@@ -31,20 +31,24 @@
       </div>
     } @else {
       <!-- Photo simulation: texture photo + mat-colour tint + edge-colour trim.
-           Blend/opacity are first-pass and tunable — the mat photos are dark, so
-           light colours read subtly under `multiply`. -->
+           All layers use object-contain / mask contain + center so they align;
+           both colour overlays are masked to their shape so the transparent
+           background is never tinted. The mat photos are dark, so light colours
+           read subtly under `multiply`. -->
       <div class="relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-soft">
-        <!-- Base mat texture photo -->
+        <!-- Base mat texture photo (contain → whole mat visible, never cropped). -->
         <img
           [ngSrc]="textureImageSrc()"
           fill
           [alt]="caption()"
           sizes="(max-width: 1024px) 90vw, 30vw"
-          class="object-cover" />
+          class="object-contain" />
 
-        <!-- Mat colour overlay: multiply tints the mat while preserving the texture. -->
+        <!-- Mat colour overlay: multiply tints the mat while preserving the texture,
+             masked by the mat photo's alpha so only the mat body is coloured. -->
         <div
-          class="absolute inset-0 opacity-70 mix-blend-multiply"
+          class="pointer-events-none absolute inset-0 opacity-70 mix-blend-multiply"
+          [style]="matMaskStyle()"
           [style.background-color]="materialHex()"></div>
 
         <!-- Edging outline (defines the trim shape + seam relief). -->
@@ -52,7 +56,7 @@
           src="assets/images/mats/edging.webp"
           alt=""
           aria-hidden="true"
-          class="pointer-events-none absolute inset-0 h-full w-full object-cover" />
+          class="pointer-events-none absolute inset-0 h-full w-full object-contain" />
 
         <!-- Edge colour: a coloured layer masked to the edging outline so only the
              trim is tinted (a full-rect overlay would tint the whole mat). -->
