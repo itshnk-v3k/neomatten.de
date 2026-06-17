@@ -53,13 +53,18 @@
 
       <!-- Center showcase image -->
       <div class="order-first lg:order-none">
-        <img
-          [ngSrc]="advantagesImage"
-          width="1024"
-          height="1024"
-          [alt]="'home_advantages_image_alt' | translate"
-          sizes="(max-width: 1024px) 90vw, 35vw"
-          class="mx-auto h-auto w-full max-w-md rounded-lg shadow-soft" />
+        @if (!imageFailed()) {
+          <img
+            [ngSrc]="advantagesImage"
+            width="1024"
+            height="1024"
+            [alt]="'home_advantages_image_alt' | translate"
+            sizes="(max-width: 1024px) 90vw, 35vw"
+            (error)="imageFailed.set(true)"
+            class="mx-auto h-auto w-full max-w-md rounded-lg shadow-soft" />
+        } @else {
+          <nm-image-placeholder class="mx-auto aspect-square w-full max-w-md rounded-lg" />
+        }
       </div>
 
       <!-- Right column (icon then text, left-aligned) -->

@@ -69,6 +69,16 @@ export class ProductDetailPageComponent {
     this.imageFailed.set(true);
   }
 
+  /**
+   * Per-thumbnail failure set: a single thumb failing shouldn't blank the others,
+   * so each broken index renders its own placeholder in the strip.
+   */
+  protected readonly failedThumbs = signal<ReadonlySet<number>>(new Set());
+
+  protected onThumbError(index: number): void {
+    this.failedThumbs.update(set => new Set(set).add(index));
+  }
+
   protected select(index: number): void {
     this.activeIndex.set(index);
     this.imageFailed.set(false);

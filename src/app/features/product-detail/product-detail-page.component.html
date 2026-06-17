@@ -58,13 +58,18 @@
                     'size-20 overflow-hidden rounded-lg border-2 transition-colors ' +
                     (i === activeIndex() ? 'border-primary' : 'border-border hover:border-primary')
                   ">
-                  <img
-                    [ngSrc]="image"
-                    width="80"
-                    height="80"
-                    sizes="80px"
-                    [alt]="p.name"
-                    class="size-full object-cover" />
+                  @if (!failedThumbs().has(i)) {
+                    <img
+                      [ngSrc]="image"
+                      width="80"
+                      height="80"
+                      sizes="80px"
+                      [alt]="p.name"
+                      (error)="onThumbError(i)"
+                      class="size-full object-cover" />
+                  } @else {
+                    <nm-image-placeholder class="size-full rounded-none" />
+                  }
                 </button>
               </li>
             }
