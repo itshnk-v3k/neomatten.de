@@ -94,6 +94,9 @@ export class MatPreviewComponent {
       '-webkit-mask-repeat': 'no-repeat',
       'mask-position': 'center',
       '-webkit-mask-position': 'center',
+      // plus-lighter additively lightens the dark mat photo toward the chosen
+      // colour, so light colours read clearly (multiply kept everything dark).
+      'mix-blend-mode': 'plus-lighter',
     };
   });
 

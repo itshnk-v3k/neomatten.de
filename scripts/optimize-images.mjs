@@ -1,5 +1,5 @@
 import sharp from 'sharp';
-import { readdir, stat } from 'fs/promises';
+import { readdir, stat, unlink } from 'fs/promises';
 import { join, extname, basename } from 'path';
 
 const INPUT_DIR = 'src/assets/images';
@@ -33,13 +33,17 @@ async function optimise(filePath) {
   try {
     const original = await stat(filePath);
     const info = await sharp(filePath).webp({ quality: QUALITY }).toFile(webpPath);
+
+    await unlink(filePath); // delete original only after a successful conversion
+
     const saved = original.size - info.size;
     const pct = ((saved / original.size) * 100).toFixed(1);
     console.log(
-      `✅ ${filePath} → ${basename(webpPath)} | ${(original.size / 1024).toFixed(0)}KB → ${(info.size / 1024).toFixed(0)}KB (-${pct}%)`
+      `✅ ${basename(filePath)} → ${basename(webpPath)} | ${(original.size / 1024).toFixed(0)}KB → ${(info.size / 1024).toFixed(0)}KB (-${pct}%) 🗑`
     );
   } catch (err) {
     console.error(`❌ ${filePath}:`, err.message);
+    // Do NOT delete original if conversion failed.
   }
 }
 

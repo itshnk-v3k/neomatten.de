@@ -7,15 +7,16 @@
       мобильного слота (всегда виден, без перехода).
 -->
 @if (mode() === 'full') {
-  <!-- Mat preview (steps ≤10) and car diagram (≥11) swap IN PLACE: the car card
-       stays in normal flow and sets the shared height (it's the taller of the
-       two); the mat card overlays it absolutely. Only opacity changes between
-       them, so there is no layout jump. -->
-  <div class="relative w-full">
-    <!-- Mat preview card — absolute overlay; fills the car card's footprint. -->
+  <!-- Mat preview (steps ≤10) and car diagram (≥11) swap IN PLACE: both cards are
+       stacked in the same grid cell (grid-area 1/1), so the container sizes to the
+       TALLER of the two and each card fills that height. Only opacity changes
+       between them, so there is no layout jump — and neither card's content (e.g.
+       the mat caption) is ever clipped, whichever happens to be taller. -->
+  <div class="grid w-full">
+    <!-- Mat preview card — stacked over the car card; both share the grid cell. -->
     <div
       [class]="
-        'absolute inset-0 rounded-2xl border border-border bg-surface p-4 shadow-soft transition-opacity duration-300 lg:p-5 ' +
+        'rounded-2xl border border-border bg-surface p-4 shadow-soft transition-opacity duration-300 [grid-area:1/1] lg:p-5 ' +
         (showMatPreview() ? 'opacity-100' : 'pointer-events-none opacity-0')
       ">
       <h2 class="text-sm font-semibold text-content-secondary">
@@ -38,10 +39,10 @@
       </div>
     </div>
 
-    <!-- Car diagram card — in normal flow; defines the container height. -->
+    <!-- Car diagram card — shares the same grid cell as the mat card. -->
     <div
       [class]="
-        'rounded-2xl border border-border bg-surface p-4 shadow-soft transition-opacity duration-300 lg:p-5 ' +
+        'rounded-2xl border border-border bg-surface p-4 shadow-soft transition-opacity duration-300 [grid-area:1/1] lg:p-5 ' +
         (showCarDiagram() ? 'opacity-100' : 'pointer-events-none opacity-0')
       ">
       <h2 class="text-sm font-semibold text-content-secondary">

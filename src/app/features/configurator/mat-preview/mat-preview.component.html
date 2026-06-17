@@ -35,7 +35,7 @@
            both colour overlays are masked to their shape so the transparent
            background is never tinted. The mat photos are dark, so light colours
            read subtly under `multiply`. -->
-      <div class="relative aspect-[4/3] w-full overflow-hidden rounded-2xl shadow-soft">
+      <div class="relative aspect-square w-full overflow-hidden rounded-2xl shadow-soft">
         <!-- Base mat texture photo (contain → whole mat visible, never cropped). -->
         <img
           [ngSrc]="textureImageSrc()"
@@ -44,10 +44,11 @@
           sizes="(max-width: 1024px) 90vw, 30vw"
           class="object-contain" />
 
-        <!-- Mat colour overlay: multiply tints the mat while preserving the texture,
-             masked by the mat photo's alpha so only the mat body is coloured. -->
+        <!-- Mat colour overlay: plus-lighter tints the mat while preserving the
+             texture, masked by the mat photo's alpha so only the mat body (and its
+             blend mode) is set via matMaskStyle. -->
         <div
-          class="pointer-events-none absolute inset-0 opacity-70 mix-blend-multiply"
+          class="pointer-events-none absolute inset-0 opacity-70"
           [style]="matMaskStyle()"
           [style.background-color]="materialHex()"></div>
 
@@ -56,13 +57,20 @@
           src="assets/images/mats/edging.webp"
           alt=""
           aria-hidden="true"
-          class="pointer-events-none absolute inset-0 h-full w-full object-contain" />
+          class="pointer-events-none absolute inset-0 size-full object-contain" />
 
         <!-- Edge colour: a coloured layer masked to the edging outline so only the
              trim is tinted (a full-rect overlay would tint the whole mat). -->
         <div
           class="mat-edge-mask pointer-events-none absolute inset-0 opacity-[0.85]"
           [style.background-color]="edgeHex()"></div>
+
+        <!-- Clips overlay — always topmost, rendered as-is (no blend, no tint). -->
+        <img
+          src="assets/images/mats/mat-clips.webp"
+          alt=""
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 size-full object-contain" />
       </div>
     }
 
