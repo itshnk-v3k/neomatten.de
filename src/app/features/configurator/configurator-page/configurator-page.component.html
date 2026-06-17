@@ -233,26 +233,26 @@
                 type="button"
                 (click)="selectTexture(tex)"
                 [attr.aria-pressed]="texture() === tex"
-                [class]="
-                  'overflow-hidden rounded-xl text-center transition-all ' +
-                  (texture() === tex
-                    ? 'ring-2 ring-primary'
-                    : 'ring-1 ring-border hover:ring-primary')
-                ">
-                <!-- Texture pattern swatch from the dedicated texture/ crops (WebP only). -->
-                <div class="relative aspect-[4/3] w-full overflow-hidden rounded-lg">
+                class="flex flex-col items-center gap-2 rounded-xl p-2 text-center transition-colors">
+                <!-- Compact circular texture swatch from the dedicated texture/ crops
+                     (WebP only). Selected ring mirrors the colour swatches. -->
+                <span
+                  [class]="
+                    'block aspect-square w-16 overflow-hidden rounded-full ring-2 ring-offset-2 ring-offset-surface transition-all ' +
+                    (texture() === tex ? 'ring-primary' : 'ring-transparent hover:ring-border')
+                  ">
                   @if (!textureFailed().has(tex)) {
                     <img
                       [src]="'assets/images/texture/' + tex + '.webp'"
                       [alt]="'configurator_texture_' + tex | translate"
                       loading="lazy"
-                      class="absolute inset-0 size-full object-cover object-center"
+                      class="size-full object-cover object-center"
                       (error)="onTextureError(tex)" />
                   } @else {
                     <nm-image-placeholder class="size-full rounded-none" />
                   }
-                </div>
-                <span class="block py-2 text-sm font-semibold">
+                </span>
+                <span class="text-sm font-semibold" [class.text-primary]="texture() === tex">
                   {{ 'configurator_texture_' + tex | translate }}
                 </span>
               </button>

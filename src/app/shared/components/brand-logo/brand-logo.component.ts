@@ -12,8 +12,15 @@
  *       3. ничего из этого → хром-плитка с 1–2 инициалами марки (декоративный фолбэк).
  *     `slug` (id из brands.json) определяет выбор; `name` даёт инициалы/alt.
  */
-import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { MediaService } from '@core/services/media.service';
 import { BrandIconComponent } from '@shared/components/brand-icon/brand-icon.component';
 
@@ -23,7 +30,7 @@ export type BrandLogoSize = 'sm' | 'md' | 'lg';
 
 @Component({
   selector: 'nm-brand-logo',
-  imports: [NgOptimizedImage, BrandIconComponent],
+  imports: [BrandIconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './brand-logo.component.html',
   styleUrl: './brand-logo.component.scss',
@@ -44,6 +51,18 @@ export class BrandLogoComponent {
   protected readonly logoUrl = computed(() =>
     this.icon() ? null : this.media.getBrandLogoUrl(this.slug())
   );
+
+  /** Flips true if the bitmap logo fails to load → render the initials tile. */
+  protected readonly logoFailed = signal(false);
+
+  constructor() {
+    // Reset the failure flag whenever the resolved logo changes (e.g. a reused
+    // instance switches brand) so the new logo gets a fresh attempt.
+    effect(() => {
+      this.logoUrl(); // track
+      this.logoFailed.set(false);
+    });
+  }
 
   protected readonly initials = computed(() => {
     const letters = this.name().replace(/[^a-zA-Z]/g, '');
