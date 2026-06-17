@@ -50,7 +50,7 @@ import { SkeletonComponent } from '@shared/components/skeleton/skeleton.componen
 import type { SelectOption } from '@shared/models/select-option.model';
 import { EuroPipe } from '@shared/pipes/euro.pipe';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
-import { ToastService } from '@shared/services/toast.service';
+import { ClipboardService } from '@shared/services/clipboard.service';
 import { categoryBadge } from '@shared/utils/product-category';
 
 /** Filter value = a concrete status/category or the "all" sentinel. */
@@ -116,9 +116,10 @@ const SORT_OPTIONS: readonly SortOption[] = ['newest', 'oldest', 'price_high', '
 export class AccountPageComponent {
   /** Category chip preset (label key + classes) for an order item's category. */
   protected readonly categoryBadge = categoryBadge;
+  /** Shared copy-to-clipboard helper (order ID + line SKU copy buttons). */
+  protected readonly clipboard = inject(ClipboardService);
 
   private readonly auth = inject(AuthService);
-  private readonly toast = inject(ToastService);
   private readonly config = inject(ConfiguratorService);
   private readonly translation = inject(TranslationService);
   private readonly destroyRef = inject(DestroyRef);
@@ -308,38 +309,6 @@ export class AccountPageComponent {
   }
   protected edgeColourHex(id: string): string {
     return this.config.edgeColourHex(id);
-  }
-
-  /**
-   * Values (order IDs / SKUs) currently showing the "copied" checkmark. Keyed by
-   * the copied text so each button — there can be many SKUs per order — flips
-   * back independently after its own 1.5s timer.
-   */
-  private readonly copied = signal(new Set<string>());
-
-  /** Whether `text`'s copy button should currently render the checkmark. */
-  protected isCopied(text: string): boolean {
-    return this.copied().has(text);
-  }
-
-  /** Copy `text` to the clipboard, toast `successKey`, and flash a checkmark. */
-  protected copyToClipboard(text: string, successKey: string): void {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        this.copied.update(set => new Set(set).add(text));
-        this.toast.success(successKey);
-        setTimeout(() => {
-          this.copied.update(set => {
-            const next = new Set(set);
-            next.delete(text);
-            return next;
-          });
-        }, 1500);
-      })
-      .catch(() => {
-        this.toast.error('error_generic');
-      });
   }
 
   /** Badge colour classes per order status (matches the spec's status palette). */

@@ -163,8 +163,8 @@
                 type="button"
                 class="text-content-muted transition-colors hover:text-primary"
                 [attr.aria-label]="'order_copy_id' | translate"
-                (click)="copyToClipboard(order.id, 'order_copy_id')">
-                @if (isCopied(order.id)) {
+                (click)="clipboard.copy(order.id, 'order_copy_id')">
+                @if (clipboard.isCopied(order.id)) {
                   <svg lucideCheck class="size-4 text-success" aria-hidden="true"></svg>
                 } @else {
                   <svg lucideCopy class="size-4" aria-hidden="true"></svg>
@@ -284,8 +284,8 @@
                             type="button"
                             class="text-content-muted transition-colors hover:text-primary"
                             [attr.aria-label]="'order_copy_sku' | translate"
-                            (click)="copyToClipboard(sku, 'order_copy_sku')">
-                            @if (isCopied(sku)) {
+                            (click)="clipboard.copy(sku, 'order_copy_sku')">
+                            @if (clipboard.isCopied(sku)) {
                               <svg
                                 lucideCheck
                                 class="size-3.5 text-success"

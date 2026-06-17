@@ -43,7 +43,7 @@ import { PaymentDialogComponent } from '@shared/components/payment-dialog/paymen
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
 import { EuroPipe } from '@shared/pipes/euro.pipe';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
-import { ToastService } from '@shared/services/toast.service';
+import { ClipboardService } from '@shared/services/clipboard.service';
 import { categoryBadge } from '@shared/utils/product-category';
 
 @Component({
@@ -72,13 +72,14 @@ import { categoryBadge } from '@shared/utils/product-category';
 export class CartPageComponent {
   /** Category chip preset (label key + classes) for an item's product category. */
   protected readonly categoryBadge = categoryBadge;
+  /** Shared copy-to-clipboard helper (line SKU copy buttons). */
+  protected readonly clipboard = inject(ClipboardService);
 
   protected readonly cart = inject(CartService);
   private readonly checkout = inject(CheckoutService);
   private readonly auth = inject(AuthService);
   private readonly config = inject(ConfiguratorService);
   private readonly translation = inject(TranslationService);
-  private readonly toast = inject(ToastService);
 
   /** Cart line ids whose configuration details are currently expanded (collapsed by default). */
   private readonly expandedIds = signal(new Set<string>());
@@ -168,33 +169,6 @@ export class CartPageComponent {
       deliveryTierKey: zones.size > 0 ? this.config.deliveryTierKey(zones) : null,
       deliveryCost: ship === 0 ? null : ship,
     };
-  }
-
-  /** SKUs currently flashing the "copied" checkmark; each flips back after 1.5s. */
-  private readonly copiedSkus = signal(new Set<string>());
-
-  protected isCopied(sku: string): boolean {
-    return this.copiedSkus().has(sku);
-  }
-
-  /** Copy a line SKU to the clipboard, toast, and briefly show a checkmark. */
-  protected copySku(sku: string): void {
-    navigator.clipboard
-      .writeText(sku)
-      .then(() => {
-        this.copiedSkus.update(set => new Set(set).add(sku));
-        this.toast.success('order_copy_sku');
-        setTimeout(() => {
-          this.copiedSkus.update(set => {
-            const next = new Set(set);
-            next.delete(sku);
-            return next;
-          });
-        }, 1500);
-      })
-      .catch(() => {
-        this.toast.error('error_generic');
-      });
   }
 
   protected readonly items = this.cart.items;

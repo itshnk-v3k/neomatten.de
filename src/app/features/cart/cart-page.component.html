@@ -63,8 +63,8 @@
                       type="button"
                       class="transition-colors hover:text-primary"
                       [attr.aria-label]="'order_copy_sku' | translate"
-                      (click)="copySku(sku)">
-                      @if (isCopied(sku)) {
+                      (click)="clipboard.copy(sku, 'order_copy_sku')">
+                      @if (clipboard.isCopied(sku)) {
                         <svg lucideCheck class="size-3.5 text-success" aria-hidden="true"></svg>
                       } @else {
                         <svg lucideCopy class="size-3.5" aria-hidden="true"></svg>
