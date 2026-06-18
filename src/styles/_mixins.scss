@@ -1,0 +1,28 @@
+/*
+ * EN: Shared SCSS mixins. `inset()` / `inset-x()` / `inset-y()` emit the
+ *     top/right/bottom/left longhand instead of the `inset` shorthand, which is
+ *     unsupported in Safari < 14.1 / iOS Safari < 14.5. Use these for any manual
+ *     positioning in .scss files (Tailwind's inset-* utilities are handled by the
+ *     config override in tailwind.config.cjs).
+ * RU: Общие SCSS-миксины. `inset()` / `inset-x()` / `inset-y()` выводят
+ *     longhand top/right/bottom/left вместо сокращения `inset`, не
+ *     поддерживаемого в Safari < 14.1 / iOS Safari < 14.5. Применяйте для ручного
+ *     позиционирования в .scss (утилиты inset-* Tailwind покрыты переопределением
+ *     в tailwind.config.cjs).
+ */
+@mixin inset($value) {
+  top: $value;
+  right: $value;
+  bottom: $value;
+  left: $value;
+}
+
+@mixin inset-x($value) {
+  left: $value;
+  right: $value;
+}
+
+@mixin inset-y($value) {
+  top: $value;
+  bottom: $value;
+}
