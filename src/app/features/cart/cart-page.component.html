@@ -101,6 +101,13 @@
                   [class.rotate-180]="isExpanded(item.id)"
                   aria-hidden="true"></svg>
               </button>
+            } @else {
+              <!-- Simple products (bags, cushions, leather): no configurator
+                   fields — show the catalogue description if one exists. -->
+              @let cartDesc = productDescription(item);
+              @if (cartDesc) {
+                <p class="text-sm text-content-secondary">{{ cartDesc }}</p>
+              }
             }
 
             <!-- Bottom row: quantity stepper (left) + remove (right). -->

@@ -27,6 +27,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslationService } from '@core/i18n/translation.service';
 import type {
+  OrderItemDTO,
   OrderRecord,
   OrderStatus,
   PaymentMethod,
@@ -34,6 +35,7 @@ import type {
 } from '@core/models/order.model';
 import { AuthService } from '@core/services/auth.service';
 import { OrderService } from '@core/services/order.service';
+import { ProductService } from '@core/services/product.service';
 import { ConfiguratorService } from '@features/configurator/configurator.service';
 import {
   LucideCheck,
@@ -134,6 +136,20 @@ export class AccountPageComponent {
   private readonly translation = inject(TranslationService);
   private readonly destroyRef = inject(DestroyRef);
   protected readonly orders = inject(OrderService);
+  private readonly products = inject(ProductService);
+
+  /**
+   * Catalogue description for a simple (non-configured) product line, resolved by
+   * SKU from products.json and translated. Returns null when the product or its
+   * description i18n key can't be resolved (so nothing renders).
+   */
+  protected productDescription(item: OrderItemDTO): string | null {
+    if (!item.sku) return null;
+    const product = this.products.products().find(p => p.sku === item.sku);
+    if (!product?.description) return null;
+    const text = this.translation.translate(product.description);
+    return text === product.description ? null : text;
+  }
 
   protected readonly user = this.auth.user;
   protected readonly orderList = this.orders.orders;
