@@ -62,16 +62,27 @@ export interface OrderItemDTO {
   readonly brand?: string;
   readonly model?: string;
   readonly yearRange?: string;
+  /** Vehicle body type, read-only from the matched pattern (e.g. 'sedan'). */
+  readonly bodyType?: string;
   readonly tier?: string;
   readonly kitPieces?: readonly string[];
+  /** Material type: 'eva' | 'ecoskin'. */
+  readonly material?: string;
   readonly texture?: string;
   readonly materialColour?: string;
   readonly edgeColour?: string;
   readonly heelPad?: string;
   /** Heel-rest pad accessory: 'none' | 'metal' | 'rubber'. */
   readonly heelRest?: string;
+  /** Selected rubber heel-rest colour id (e.g. 'grey'); only when heelRest === 'rubber'. */
+  readonly heelRestColour?: string;
   readonly mounting?: string;
   readonly accessories?: string;
+  // --- Step-02 refine spec (optional/informational, for order fulfilment) ---
+  readonly transmission?: string;
+  readonly yearOfManufacture?: number;
+  readonly drive?: string;
+  readonly engine?: string;
   // --- Common ---
   readonly quantity: number;
   readonly unitPrice: number;

@@ -16,6 +16,9 @@
       content="Premium EVA Automatten nach Maß — passgenau für Ihr Fahrzeug. Konfigurieren Sie Ihre individuellen Fußmatten online." />
     <meta name="author" content="NEOMATTEN" />
     <meta name="robots" content="INDEX, FOLLOW" />
+    <meta name="format-detection" content="telephone=no" />
+    <!-- Google Search Console — backup (meta) verification alongside the DNS/file method. -->
+    <meta name="google-site-verification" content="AiC5Yf-NoRuT5vU6hkKhqhbJZkbV3ZNXtRE4a0Q9tJg" />
     <meta name="geo.region" content="DE" />
     <meta name="geo.placename" content="Berlin, Deutschland" />
     <meta name="theme-color" content="#8B1A1A" />
@@ -24,7 +27,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="NEOMATTEN" />
     <meta name="msapplication-TileColor" content="#8B1A1A" />
-    <meta name="msapplication-TileImage" content="assets/icons/icon-310x310.png" />
+    <meta name="msapplication-TileImage" content="assets/images/icons/icon-310x310.png" />
 
     <!--
       Security headers. The authoritative versions are set as real HTTP headers by
@@ -37,8 +40,30 @@
     -->
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://m.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://cdn.neomatten.de; media-src 'self'; connect-src 'self' ws: wss: https://api.neomatten.de https://*.tile.openstreetmap.org https://api.stripe.com; frame-src https://js.stripe.com https://hooks.stripe.com; base-uri 'self'; form-action 'self'" />
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://m.stripe.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://cdn.neomatten.de https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com; media-src 'self'; connect-src 'self' ws: wss: https://api.neomatten.de https://*.tile.openstreetmap.org https://api.stripe.com https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com; frame-src https://js.stripe.com https://hooks.stripe.com; base-uri 'self'; form-action 'self'" />
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+
+    <!--
+      Google tag (gtag.js) — GA4 (G-6G3KVDD5GH). Loaded in GDPR consent-mode
+      "denied" by default: no analytics/ad storage and no page_view until the
+      visitor accepts cookies. AnalyticsService flips consent to "granted" once
+      nm-cookie-consent records acceptance (or on load for a returning visitor
+      who already accepted). See src/app/core/services/analytics.service.ts.
+    -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6G3KVDD5GH"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+      gtag('consent', 'default', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        wait_for_update: 500,
+      });
+      gtag('config', 'G-6G3KVDD5GH', { send_page_view: false });
+    </script>
 
     <!-- Open Graph -->
     <meta property="og:title" content="NEOMATTEN — Premium Auto Fußmatten aus Deutschland" />
@@ -50,12 +75,10 @@
     <meta property="og:site_name" content="NEOMATTEN" />
     <meta property="og:locale" content="de_DE" />
     <meta property="og:locale:alternate" content="en_US" />
-    <meta
-      property="og:image"
-      content="https://neomatten.de/assets/logo/neomat_full_transparent.png" />
+    <meta property="og:image" content="https://neomatten.de/assets/images/og-image/og-front.webp" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="NEOMATTEN Premium Auto Fußmatten" />
+    <meta property="og:image:alt" content="NEOMATTEN — Premium Auto Fußmatten" />
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -66,7 +89,7 @@
       content="Premium EVA Automatten nach Maß — passgenau für Ihr Fahrzeug." />
     <meta
       name="twitter:image"
-      content="https://neomatten.de/assets/logo/neomat_full_transparent.png" />
+      content="https://neomatten.de/assets/images/og-image/og-front.webp" />
 
     <!-- Canonical + hreflang. IDs match SeoService so it updates these in place per
          route (no duplicate canonical tags); the static values are the home defaults
@@ -77,11 +100,11 @@
     <link id="seo-alt-default" rel="alternate" hreflang="x-default" href="https://neomatten.de/" />
 
     <!-- Icons -->
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/icon-16x16.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/icon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="64x64" href="assets/icons/icon-64x64.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/icon-180x180.png" />
-    <link rel="mask-icon" href="assets/icons/safari-pinned-tab.svg" color="#8B1A1A" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/icons/icon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/icons/icon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="assets/images/icons/icon-64x64.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/icons/icon-180x180.png" />
+    <link rel="mask-icon" href="assets/images/icons/safari-pinned-tab.svg" color="#8B1A1A" />
 
     <!-- Manifest -->
     <link rel="manifest" href="manifest.webmanifest" />
@@ -105,7 +128,7 @@
          would (a) trip the browser's "preloaded but not used within a few seconds"
          warning and (b) compete with the JS bundle that must run first. `prefetch`
          warms the cache at low priority so the poster is ready when the hero mounts. -->
-    <link rel="prefetch" as="image" href="assets/content/hero-poster.jpg" />
+    <link rel="prefetch" as="image" href="assets/images/content/hero-poster.webp" />
 
     <!-- Default-language dictionary, fetched at app init. Prefetched (not
          preloaded) so it warms the cache without the browser's "preloaded but not
@@ -114,7 +137,7 @@
          choice falls back to a normal runtime fetch.) -->
     <link rel="prefetch" href="assets/i18n/de/common.json" />
 
-    <!-- JSON-LD Organization -->
+    <!-- JSON-LD: Organization + WebSite (SearchAction) + LocalBusiness -->
     <script type="application/ld+json">
       [
         {
@@ -125,7 +148,7 @@
           "legalName": "NEOMATTEN",
           "description": "Premium EVA Automatten nach Maß für alle Fahrzeugmodelle. Konfigurieren Sie Ihre individuellen Fußmatten online.",
           "url": "https://neomatten.de",
-          "logo": "https://neomatten.de/assets/logo/neomat_full_transparent.png",
+          "logo": "https://neomatten.de/assets/images/logo/neomat_full_transparent.webp",
           "foundingDate": "2024",
           "areaServed": ["DE", "AT", "CH", "EU"],
           "contactPoint": [
@@ -142,9 +165,51 @@
             "https://t.me/neomatten_de",
             "https://wa.me/491772140083"
           ]
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "NEOMATTEN",
+          "url": "https://neomatten.de",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://neomatten.de/configurator?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          "name": "NEOMATTEN",
+          "url": "https://neomatten.de",
+          "telephone": "+49-177-2140083",
+          "email": "neomatten.de@gmail.com",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Musterstraße 42",
+            "addressLocality": "Berlin",
+            "postalCode": "10115",
+            "addressCountry": "DE"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 52.52,
+            "longitude": 13.405
+          },
+          "priceRange": "€€",
+          "currenciesAccepted": "EUR",
+          "paymentAccepted": "Credit Card, PayPal",
+          "areaServed": ["DE", "AT", "CH"],
+          "openingHours": "Mo-Fr 09:00-18:00"
         }
       ]
     </script>
+    <!--
+      TODO(admin): the LocalBusiness "address" (Musterstraße 42, Berlin 10115) and
+      "openingHours" (Mo-Fr 09:00-18:00) above are placeholders — replace with the
+      real registered business address and opening hours once available. The "geo"
+      coordinates should be updated to match the real address too.
+    -->
   </head>
   <body class="font-montserrat">
     <nm-root></nm-root>

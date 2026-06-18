@@ -32,7 +32,7 @@
     }
   </a>
   <div class="flex flex-1 flex-col p-5">
-    <h3 class="font-bold">
+    <h3 class="line-clamp-2 font-bold">
       <a [routerLink]="detailLink()" class="transition-colors hover:text-primary">
         {{ product().name }}
       </a>
@@ -43,8 +43,13 @@
     <p class="mt-1 line-clamp-2 text-sm text-content-secondary">
       {{ product().description | translate }}
     </p>
-    <!-- Stock status: out of stock / low-stock warning / available count. -->
-    @if (product().stockQuantity === 0) {
+    <!-- Made-to-order products show a neutral badge (no stock count); otherwise
+         the regular stock status: out of stock / low-stock warning / count. -->
+    @if (product().madeToOrder) {
+      <p class="mt-2">
+        <nm-badge variant="outline">{{ 'product_made_to_order' | translate }}</nm-badge>
+      </p>
+    } @else if (product().stockQuantity === 0) {
       <p class="mt-2 text-sm font-semibold text-error">
         {{ 'product_out_of_stock' | translate }}
       </p>
@@ -58,12 +63,13 @@
       </p>
     }
     <div class="mt-4 flex items-center justify-between gap-3">
-      <span class="text-xl font-extrabold">{{ product().price }} &euro;</span>
+      <span class="whitespace-nowrap text-xl font-extrabold">{{ product().price | euro }}</span>
       <button
         nmButton
         size="sm"
         type="button"
-        [disabled]="product().stockQuantity === 0"
+        class="shrink-0 whitespace-nowrap"
+        [disabled]="!product().madeToOrder && product().stockQuantity === 0"
         [loading]="addToCartAction.pending()"
         (click)="addToCartAction.execute()">
         {{ 'action_add_to_cart' | translate }}

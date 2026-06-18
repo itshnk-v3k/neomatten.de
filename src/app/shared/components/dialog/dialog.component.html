@@ -22,7 +22,8 @@
       role="dialog"
       aria-modal="true"
       [attr.aria-labelledby]="titleKey() ? titleId : null"
-      class="relative flex h-full w-full flex-col bg-surface shadow-elev animate-in fade-in md:h-auto md:max-h-[90vh] md:max-w-lg md:rounded-lg md:zoom-in-95">
+      [class]="panelMaxWidth()"
+      class="relative flex size-full flex-col bg-surface shadow-elev animate-in fade-in md:h-auto md:max-h-[90vh] md:rounded-lg md:zoom-in-95">
       @if (titleKey() || dismissible()) {
         <!-- Sticky header: title + close button. -->
         <div class="flex shrink-0 items-center gap-4 border-b border-border px-6 py-4">

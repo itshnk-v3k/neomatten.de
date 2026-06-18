@@ -15,13 +15,16 @@
  */
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { PRICING } from '@core/config/pricing.config';
 import type { OrderItemDTO, OrderRecord, PaymentMethod } from '@core/models/order.model';
+import { AnalyticsService } from '@core/services/analytics.service';
 import { AuthService } from '@core/services/auth.service';
-import { CartService, FIRST_ORDER_DISCOUNT_RATE } from '@core/services/cart.service';
+import { CartService } from '@core/services/cart.service';
 import { EmailService } from '@core/services/email.service';
 import { OrderService } from '@core/services/order.service';
 import { PaymentService } from '@core/services/payment.service';
 import { ToastService } from '@shared/services/toast.service';
+import { computeTotals } from '@shared/utils/money.util';
 
 export interface CheckoutInput {
   readonly items: readonly OrderItemDTO[];
@@ -35,6 +38,8 @@ export interface CheckoutInput {
 @Injectable({ providedIn: 'root' })
 export class CheckoutService {
   private readonly auth = inject(AuthService);
+  private readonly pricing = inject(PRICING);
+  private readonly analytics = inject(AnalyticsService);
   private readonly payment = inject(PaymentService);
   private readonly orders = inject(OrderService);
   private readonly cart = inject(CartService);
@@ -61,10 +66,12 @@ export class CheckoutService {
    * Requires an authenticated user (the CTAs are auth-gated before reaching here).
    */
   async complete(input: CheckoutInput): Promise<OrderRecord | null> {
-    const discount = this.auth.user()?.firstOrderDiscount
-      ? round2(input.subtotal * FIRST_ORDER_DISCOUNT_RATE)
-      : 0;
-    const total = round2(Math.max(0, input.subtotal - discount) + input.shipping);
+    const { discount, total } = computeTotals({
+      subtotal: input.subtotal,
+      shipping: input.shipping,
+      discountApplies: this.auth.user()?.firstOrderDiscount === true,
+      discountRate: this.pricing.firstOrderDiscountRate,
+    });
 
     // Online methods process payment first; "contact manager" records intent only.
     if (input.method !== 'contact_manager') {
@@ -86,6 +93,9 @@ export class CheckoutService {
 
     if (input.method === 'contact_manager') {
       await this.email.notifyManager(order.id, total, this.auth.user()?.email);
+    } else {
+      // Online payment (mock) → GA4 purchase. Contact-manager is intent only.
+      this.analytics.trackPurchase(order);
     }
     if (input.clearCart) {
       this.cart.clear();
@@ -102,8 +112,4 @@ export class CheckoutService {
     void this.router.navigate(['/account']);
     return order;
   }
-}
-
-function round2(value: number): number {
-  return Math.round(value * 100) / 100;
 }

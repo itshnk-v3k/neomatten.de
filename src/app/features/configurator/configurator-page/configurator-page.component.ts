@@ -25,16 +25,18 @@ import {
   input,
   signal,
   untracked,
+  viewChild,
   viewChildren,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslationService } from '@core/i18n/translation.service';
+import type { MatColour } from '@core/models/mat-colour.model';
 import type { PaymentMethod } from '@core/models/order.model';
+import { AnalyticsService } from '@core/services/analytics.service';
 import { AuthService } from '@core/services/auth.service';
 import { CartService } from '@core/services/cart.service';
 import { CheckoutService } from '@core/services/checkout.service';
-import { MediaService } from '@core/services/media.service';
 import { VehicleService } from '@core/services/vehicle.service';
 import { LucideInfo } from '@lucide/angular';
 import { AccordionComponent } from '@shared/components/accordion/accordion.component';
@@ -49,17 +51,23 @@ import { SelectComponent } from '@shared/components/select/select.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
 import { TooltipDirective } from '@shared/components/tooltip/tooltip.directive';
 import type { SelectOption } from '@shared/models/select-option.model';
+import { EuroPipe } from '@shared/pipes/euro.pipe';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { ToastService } from '@shared/services/toast.service';
 import { createAsyncAction } from '@shared/utils/async-action.util';
+import { round2 } from '@shared/utils/money.util';
 
 import {
+  ConfigDetailsComponent,
+  type ConfigDetailsVM,
+} from '../config-details/config-details.component';
+import {
   type Accessories,
+  CAR_ZONES,
   type CarZone,
-  COLORS_BY_TEXTURE,
   type ConfigState,
   ConfiguratorService,
-  EDGE_COLORS,
+  HEEL_REST_RUBBER_COLOURS,
   type HeelPadAccessory,
   type HeelRest,
   type KitPreset,
@@ -79,17 +87,19 @@ import { ConfiguratorPreviewComponent } from '../configurator-preview/configurat
     SelectComponent,
     ButtonDirective,
     BadgeComponent,
+    ImagePlaceholderComponent,
     AccordionComponent,
     AccordionItemComponent,
     AuthDialogComponent,
     PaymentDialogComponent,
     ConfiguratorPreviewComponent,
+    ConfigDetailsComponent,
     ConfiguratorInfoDialogsComponent,
     SkeletonComponent,
     TooltipDirective,
-    ImagePlaceholderComponent,
     LucideInfo,
     TranslatePipe,
+    EuroPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './configurator-page.component.html',
@@ -104,15 +114,7 @@ export class ConfiguratorPageComponent {
   private readonly auth = inject(AuthService);
   private readonly toast = inject(ToastService);
   private readonly translation = inject(TranslationService);
-  private readonly media = inject(MediaService);
-
-  /**
-   * Texture swatch thumbnail, or null → the template renders nm-image-placeholder.
-   * TODO(admin): real texture swatch image comes from the media API once uploaded.
-   */
-  protected textureImage(texture: string): string | null {
-    return this.media.getPlaceholder(200, 140, `nm-tex-${texture}`);
-  }
+  private readonly analytics = inject(AnalyticsService);
 
   /** Brand id from `/configurator/:brand`. */
   readonly brand = input<string>('');
@@ -125,22 +127,28 @@ export class ConfiguratorPageComponent {
 
   // Static option tables (exposed to the template).
   protected readonly textures = TEXTURES;
-  protected readonly edgeColors = EDGE_COLORS;
+  // Edge colour palette loaded at runtime (empty until the load resolves). Mat
+  // colours are texture-scoped — see availableMatColours.
+  protected readonly edgeColours = this.config.edgeColours;
+  /** Mat (fill) colours available for the current texture (+ size). Step-05 list. */
+  protected readonly availableMatColours = computed(() =>
+    this.config.matColoursFor(this.texture(), this.matSize() === '210x140')
+  );
   protected readonly transmissionOptions = this.config.transmissionOptions;
   protected readonly driveOptions = this.config.driveOptions;
   protected readonly engineOptions = this.config.engineOptions;
 
-  // --- vehicle + refine form -------------------------------------------------
+  // --- vehicle selection (step 01) + refine spec (step 02) -------------------
   protected readonly form = this.fb.nonNullable.group({
     brandId: [''],
     model: [''],
     yearLabel: [''],
-    // Refine (optional / informational).
-    yearOfManufacture: [''],
+    // Step-02 refine spec (optional/informational). Year-of-manufacture starts
+    // disabled — it's only choosable once the vehicle's year range is resolved.
     transmission: [''],
+    yearOfManufacture: [{ value: '', disabled: true }],
     drive: [''],
     engine: [''],
-    trim: [''],
   });
   private readonly values = toSignal(this.form.valueChanges, {
     initialValue: this.form.getRawValue(),
@@ -148,22 +156,41 @@ export class ConfiguratorPageComponent {
 
   // --- configuration choices (signals) --------------------------------------
   protected readonly material = signal<MaterialType>('eva');
-  protected readonly texture = signal<Texture>('raute');
+  protected readonly texture = signal<Texture>('rhombus');
   protected readonly materialColor = signal<string>('black');
   protected readonly edgeColor = signal<string>('black');
+  /**
+   * Selected mat size. Colours offered in the larger 210x140 are a subset, so this
+   * further filters the palette. No size selector exists yet → defaults to the
+   * standard size (all of the texture's colours available).
+   */
+  protected readonly matSize = signal<string>('200x120');
   protected readonly zones = signal<ReadonlySet<CarZone>>(new Set(['front_left', 'front_right']));
   protected readonly accessories = signal<Accessories>('with_clips');
   protected readonly mounting = signal<Mounting>('none');
   protected readonly heelPad = signal<HeelPadAccessory>('none');
   protected readonly heelRest = signal<HeelRest>('none');
+  /** Selected rubber heel-rest colour id (step 09); null unless Rubber is chosen. */
+  protected readonly heelRestColour = signal<string | null>(null);
+  /** Rubber colour choices for the step-09 picker. */
+  protected readonly rubberColours = HEEL_REST_RUBBER_COLOURS;
+
+  /** Texture ids whose thumbnail photo failed to load → render the placeholder. */
+  protected readonly textureFailed = signal<ReadonlySet<string>>(new Set());
+  protected onTextureError(texture: string): void {
+    this.textureFailed.update(failed => new Set(failed).add(texture));
+  }
 
   // --- dialogs / flow --------------------------------------------------------
   protected readonly materialInfoOpen = signal(false);
   // Per-step explanation dialogs (opened from the ℹ️ icon next to each title).
   protected readonly textureInfoOpen = signal(false);
+  protected readonly mountingInfoOpen = signal(false);
+  protected readonly heelRestInfoOpen = signal(false);
   protected readonly kitInfoOpen = signal(false);
   protected readonly accessoriesInfoOpen = signal(false);
   protected readonly heelInfoOpen = signal(false);
+  protected readonly deliveryInfoOpen = signal(false);
   protected readonly authOpen = signal(false);
   protected readonly paymentOpen = signal(false);
   private readonly pendingAction = signal<'pay' | 'manager' | null>(null);
@@ -177,9 +204,10 @@ export class ConfiguratorPageComponent {
     () => {
       const pattern = this.activePattern();
       if (!pattern) return;
-      const merged = this.cart.add(
-        this.config.toCartItem(this.cartLineId(), pattern, this.state())
-      );
+      const item = this.config.toCartItem(this.cartLineId(), pattern, this.state());
+      const merged = this.cart.add(item);
+      // Configured mat set finished + added (the cart fires the add_to_cart event).
+      this.analytics.trackConfiguratorCompleted(item);
       this.toast.success(merged ? 'cart_quantity_updated' : 'product_added_to_cart');
     },
     { minDurationMs: 500 }
@@ -199,11 +227,6 @@ export class ConfiguratorPageComponent {
       ? this.vehicles.yearOptionsFor(brandId, model).map(y => ({ value: y.label, label: y.label }))
       : [];
   });
-
-  /** Trim-level options for the selected brand (per-brand, falls back to default). */
-  protected readonly trimOptions = computed<SelectOption[]>(() =>
-    this.config.trimsFor(this.values().brandId ?? '')
-  );
 
   private readonly matchingPatterns = computed(() => {
     const { brandId, model, yearLabel } = this.values();
@@ -239,9 +262,6 @@ export class ConfiguratorPageComponent {
     for (let y = to; y >= p.yearFrom; y--) out.push({ value: String(y), label: String(y) });
     return out;
   });
-
-  /** Colour palette for the selected texture. */
-  protected readonly colorOptions = computed(() => COLORS_BY_TEXTURE[this.texture()]);
 
   /** Whether the resolved pattern supports a heel pad at all (dataset `heel_pad`). */
   protected readonly heelPadSupported = computed(() => {
@@ -282,6 +302,11 @@ export class ConfiguratorPageComponent {
     mounting: this.mounting(),
     heelPad: this.heelPad(),
     heelRest: this.heelRest(),
+    heelRestColour: this.heelRestColour(),
+    transmission: this.values().transmission || null,
+    year: this.values().yearOfManufacture ? Number(this.values().yearOfManufacture) : null,
+    drive: this.values().drive || null,
+    engine: this.values().engine || null,
   }));
   protected readonly price = computed(() => this.config.price(this.state()));
   protected readonly shipping = computed(() => this.config.shipping(this.zones()));
@@ -290,6 +315,15 @@ export class ConfiguratorPageComponent {
   /** Individual add-on prices, surfaced for the summary breakdown (step 13). */
   protected readonly heelPadPrice = computed(() => this.config.heelPadPrice(this.heelPad()));
   protected readonly heelRestPrice = computed(() => this.config.heelRestPrice(this.heelRest()));
+
+  /** Heel-rest overlay image src for the mat preview (null → no overlay). */
+  protected readonly heelRestOverlaySrc = computed(() =>
+    this.config.heelRestOverlaySrc(this.heelRest(), this.heelRestColour())
+  );
+  /** i18n label key for the selected rubber colour (null unless Rubber). */
+  protected readonly heelRestColourKey = computed(() =>
+    this.config.heelRestColourLabelKey(this.heelRestColour())
+  );
 
   /** Free shipping applies (full interior / premium set). */
   protected readonly freeShipping = computed(() => this.shipping() === 0 && this.zones().size > 0);
@@ -302,11 +336,74 @@ export class ConfiguratorPageComponent {
 
   /** Colour hex helpers for the preview. */
   protected readonly materialHex = computed(
-    () => this.colorOptions().find(c => c.id === this.materialColor())?.hex ?? '#1a1a1a'
+    () => this.availableMatColours().find(c => c.id === this.materialColor())?.hex ?? '#1a1a1a'
   );
   protected readonly edgeHex = computed(
-    () => EDGE_COLORS.find(c => c.id === this.edgeColor())?.hex ?? '#1a1a1a'
+    () => this.edgeColours().find(c => c.id === this.edgeColor())?.hex ?? '#1a1a1a'
   );
+
+  /** Selected colour names in the active language, for the step-13 summary. */
+  protected readonly materialColourName = computed(() =>
+    this.config.matColourName(this.materialColor(), this.translation.currentLanguage())
+  );
+  protected readonly edgeColourName = computed(() =>
+    this.config.edgeColourName(this.edgeColor(), this.translation.currentLanguage())
+  );
+
+  /** Vehicle line for the summary, e.g. "Acura MDX 2014–2020" (null if unresolved). */
+  protected readonly vehicleSummary = computed(() => {
+    const p = this.activePattern();
+    if (!p) return null;
+    return p.yearLabel ? `${p.brandName} ${p.model} ${p.yearLabel}` : `${p.brandName} ${p.model}`;
+  });
+
+  /** Full configuration view-model for the shared step-13 summary list. */
+  protected readonly configDetails = computed<ConfigDetailsVM>(() => {
+    const zones = this.zones();
+    const ship = this.shipping();
+    return {
+      vehicle: this.vehicleSummary(),
+      bodyType: this.activePattern()?.bodyType ?? null,
+      transmission: this.values().transmission || null,
+      year: this.values().yearOfManufacture ? Number(this.values().yearOfManufacture) : null,
+      drive: this.values().drive || null,
+      engine: this.values().engine || null,
+      material: this.material(),
+      texture: this.texture(),
+      materialColour: this.materialColourName(),
+      materialColourHex: this.materialHex(),
+      edgeColour: this.edgeColourName(),
+      edgeColourHex: this.edgeHex(),
+      mounting: this.mounting(),
+      heelPad: this.heelPad(),
+      heelPadPrice: this.heelPadPrice(),
+      heelRest: this.heelRest(),
+      heelRestColour: this.heelRestColourKey(),
+      heelRestPrice: this.heelRestPrice(),
+      accessories: this.accessories(),
+      positions: CAR_ZONES.filter(z => zones.has(z)),
+      deliveryTierKey: zones.size > 0 ? this.config.deliveryTierKey(zones) : null,
+      deliveryCost: ship === 0 ? null : ship,
+    };
+  });
+
+  /** Colour display name in the active language (DE → name_de, else name_en). */
+  protected colourName(colour: MatColour): string {
+    return this.translation.currentLanguage() === 'de' ? colour.name_de : colour.name_en;
+  }
+
+  /**
+   * Very light/near-white swatches need a faint border so they read as a circle on
+   * the white surface. True when perceived luminance (Rec. 601, normalized 0–1)
+   * exceeds 0.85 — i.e. white, cream, light grey.
+   */
+  protected needsBorder(hex: string): boolean {
+    const value = hex.replace('#', '');
+    const r = parseInt(value.slice(0, 2), 16);
+    const g = parseInt(value.slice(2, 4), 16);
+    const b = parseInt(value.slice(4, 6), 16);
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.85;
+  }
 
   protected readonly canCheckout = computed(() => this.vehicleResolved() && this.zones().size > 0);
 
@@ -316,8 +413,30 @@ export class ConfiguratorPageComponent {
   /** Step currently in the viewport's active band (1–13). */
   protected readonly activeStep = signal(1);
 
+  /** The Summary card (step 13); observed directly to toggle the sticky bar. */
+  private readonly summaryCard = viewChild<ElementRef<HTMLElement>>('summaryCard');
+  /** True once the Summary card enters the viewport (≥10% visible). */
+  protected readonly summaryVisible = signal(false);
+
+  /**
+   * Mobile sticky bottom bar visibility. Hidden once the Summary card is in view —
+   * its own card already carries the full total + "Add to cart" / "Pay now" CTAs,
+   * so the bar would be redundant there. Reappears when scrolled back up.
+   */
+  protected readonly showStickyBar = computed(() => !this.summaryVisible());
+
   constructor() {
     const destroyRef = inject(DestroyRef);
+
+    // Fire configurator_started once, capturing the resolved :brand route param
+    // (component input binding sets `brand` before the first effect run).
+    let startedTracked = false;
+    effect(() => {
+      const brand = this.brand();
+      if (startedTracked) return;
+      startedTracked = true;
+      this.analytics.trackConfiguratorStarted(brand || undefined);
+    });
 
     // Watch the step cards; the one in the active band (≈20–40% down the
     // viewport) sets activeStep, switching the left column between
@@ -348,11 +467,23 @@ export class ConfiguratorPageComponent {
       onCleanup(() => observer.disconnect());
     });
 
-    // Reset downstream selections when an upstream one changes (trim too — its
-    // options are per-brand, so a stale value from another brand must clear).
+    // Toggle the mobile sticky bar by observing the Summary card directly (rather
+    // than the activeStep band) so it hides exactly when Summary scrolls into view.
+    effect(onCleanup => {
+      const card = this.summaryCard();
+      if (!card || typeof IntersectionObserver === 'undefined') return;
+      const observer = new IntersectionObserver(
+        ([entry]) => this.summaryVisible.set(entry.isIntersecting),
+        { threshold: 0.1 }
+      );
+      observer.observe(card.nativeElement);
+      onCleanup(() => observer.disconnect());
+    });
+
+    // Reset downstream selections when an upstream one changes.
     this.form.controls.brandId.valueChanges
       .pipe(takeUntilDestroyed(destroyRef))
-      .subscribe(() => this.form.patchValue({ model: '', yearLabel: '', trim: '' }));
+      .subscribe(() => this.form.patchValue({ model: '', yearLabel: '' }));
     this.form.controls.model.valueChanges
       .pipe(takeUntilDestroyed(destroyRef))
       .subscribe(() => this.form.patchValue({ yearLabel: '' }));
@@ -376,11 +507,33 @@ export class ConfiguratorPageComponent {
       }
     });
 
-    // Keep the material colour valid when the texture (and thus palette) changes.
+    // Year-of-manufacture (step 02) is gated on the resolved pattern's year range:
+    // enable the dropdown only when that range exists, else clear + disable it.
     effect(() => {
-      const palette = this.colorOptions();
-      if (!palette.some(c => c.id === untracked(this.materialColor))) {
-        this.materialColor.set(palette[0].id);
+      const hasRange = this.yearOfManufactureOptions().length > 0;
+      const control = this.form.controls.yearOfManufacture;
+      if (hasRange) {
+        if (control.disabled) control.enable();
+      } else if (control.enabled) {
+        control.reset('');
+        control.disable();
+      }
+    });
+
+    // Keep the chosen mat colour valid for the current texture/size. When the
+    // texture changes (step 04) its colour set changes too — if the selected
+    // colour isn't offered, reset to black (always available) or the first option.
+    effect(() => {
+      const available = this.availableMatColours();
+      if (available.length && !available.some(c => c.id === untracked(this.materialColor))) {
+        const fallback = available.find(c => c.id === 'black') ?? available[0];
+        this.materialColor.set(fallback.id);
+      }
+    });
+    effect(() => {
+      const palette = this.edgeColours();
+      if (palette.length && !palette.some(c => c.id === untracked(this.edgeColor))) {
+        this.edgeColor.set(palette[0].id);
       }
     });
 
@@ -418,6 +571,12 @@ export class ConfiguratorPageComponent {
   }
   protected setHeelRest(value: HeelRest): void {
     this.heelRest.set(value);
+    // Rubber needs a colour (default to the first); clear it for metal/none so
+    // switching away never leaves a stale colour in the state or overlay.
+    this.heelRestColour.set(value === 'rubber' ? this.config.defaultHeelRestColour : null);
+  }
+  protected setHeelRestColour(id: string): void {
+    this.heelRestColour.set(id);
   }
 
   protected isZone(zone: CarZone): boolean {
@@ -507,8 +666,4 @@ export class ConfiguratorPageComponent {
   private cartLineId(): string {
     return `cfg-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
   }
-}
-
-function round2(value: number): number {
-  return Math.round(value * 100) / 100;
 }

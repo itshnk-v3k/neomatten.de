@@ -52,15 +52,23 @@ export class MediaService {
    * Real brand logo URL, or null to fall back to the BrandLogoComponent initials.
    * Brands with a bundled vector mark (simple-icons) are handled inline by
    * BrandLogoComponent and never reach this method. The set below is every brand
-   * that ships a bitmap logo under `src/assets/brands/`.
+   * that ships a bitmap logo under `src/assets/images/brands/`.
    * TODO(admin)/TODO(backend): once brand logos are managed in the admin panel,
    * return the uploaded logo URL from the media API instead of the bundled asset.
    */
   getBrandLogoUrl(brandSlug: string): string | null {
-    return MediaService.BRAND_LOGO_FILES.has(brandSlug) ? `assets/brands/${brandSlug}.png` : null;
+    if (!brandSlug || brandSlug.trim() === '') return null;
+    // Normalize a display name or loose id to the asset filename slug
+    // (e.g. "Alfa Romeo" → "alfa-romeo").
+    const slug = brandSlug
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-') // spaces → hyphens
+      .replace(/[^a-z0-9-]/g, ''); // drop special chars
+    return MediaService.BRAND_LOGO_FILES.has(slug) ? `assets/images/brands/${slug}.webp` : null;
   }
 
-  /** Brand ids (brands.json) with a bitmap logo file in `src/assets/brands/`. */
+  /** Brand ids (brands.json) with a bitmap logo file in `src/assets/images/brands/`. */
   private static readonly BRAND_LOGO_FILES = new Set<string>([
     'alfa-romeo',
     'buick',

@@ -1,0 +1,89 @@
+{
+  "_comment": "NEOMATTEN colour palette v2.0 — real supplier data. Colours grouped by texture. Size variants noted. Edge colours TBD.",
+
+  "textures": [
+    {
+      "id": "rhombus",
+      "name_en": "Rhombus",
+      "name_de": "Rhombus",
+      "sizes": ["200x120", "210x140"],
+      "colours": [
+        { "id": "black", "name_en": "Black", "name_de": "Schwarz", "hex": "#1a1a1a" },
+        { "id": "grey", "name_en": "Grey", "name_de": "Grau", "hex": "#6b6b6b" },
+        { "id": "brown", "name_en": "Brown", "name_de": "Braun", "hex": "#6b4226" },
+        { "id": "beige", "name_en": "Beige", "name_de": "Beige", "hex": "#c8a97a" },
+        { "id": "cream", "name_en": "Cream", "name_de": "Creme", "hex": "#e8d9b8" },
+        { "id": "orange", "name_en": "Orange", "name_de": "Orange", "hex": "#e06020" },
+        { "id": "yellow", "name_en": "Yellow", "name_de": "Gelb", "hex": "#f5c800" },
+        { "id": "lime", "name_en": "Lime", "name_de": "Hellgrün", "hex": "#7dc930" },
+        { "id": "khaki", "name_en": "Khaki", "name_de": "Khaki", "hex": "#6b6b3a" },
+        { "id": "red", "name_en": "Red", "name_de": "Rot", "hex": "#c0392b" },
+        { "id": "burgundy", "name_en": "Burgundy", "name_de": "Bordeaux", "hex": "#6b1a2a" },
+        { "id": "blue", "name_en": "Blue", "name_de": "Blau", "hex": "#2060c0" },
+        { "id": "navy", "name_en": "Navy Blue", "name_de": "Marineblau", "hex": "#1a2a5a" },
+        { "id": "camel", "name_en": "Camel", "name_de": "Kamel", "hex": "#c19a6b" }
+      ],
+      "size_210x140_colours": ["black", "grey"]
+    },
+    {
+      "id": "honeycomb",
+      "name_en": "Honeycomb",
+      "name_de": "Waben",
+      "sizes": ["200x120", "210x140"],
+      "colours": [
+        { "id": "black", "name_en": "Black", "name_de": "Schwarz", "hex": "#1a1a1a" },
+        { "id": "grey", "name_en": "Grey", "name_de": "Grau", "hex": "#6b6b6b" },
+        { "id": "brown", "name_en": "Brown", "name_de": "Braun", "hex": "#6b4226" },
+        { "id": "beige", "name_en": "Beige", "name_de": "Beige", "hex": "#c8a97a" }
+      ],
+      "size_210x140_colours": ["black"]
+    },
+    {
+      "id": "drop",
+      "name_en": "Drop",
+      "name_de": "Tropfen",
+      "sizes": ["200x120", "210x140"],
+      "colours": [
+        { "id": "pink", "name_en": "Pink", "name_de": "Rosa", "hex": "#e87aa0" },
+        { "id": "black", "name_en": "Black", "name_de": "Schwarz", "hex": "#1a1a1a" },
+        { "id": "nard-grey", "name_en": "Nard Grey", "name_de": "Nardgrau", "hex": "#4a4a52" },
+        { "id": "cognac", "name_en": "Cognac", "name_de": "Cognac", "hex": "#8b4513" },
+        { "id": "grey", "name_en": "Grey", "name_de": "Grau", "hex": "#6b6b6b" }
+      ],
+      "size_210x140_colours": ["black"]
+    }
+  ],
+  "_edge_note": "Edge colours TBD — will be added when supplier provides data",
+  "edge_colours": [
+    { "id": "white", "name_en": "White", "name_de": "Weiß", "hex": "#f4f9fd" },
+    { "id": "light-grey", "name_en": "Light Grey", "name_de": "Hellgrau", "hex": "#e6e7ed" },
+    { "id": "silver", "name_en": "Silver", "name_de": "Silber", "hex": "#c9d3df" },
+    { "id": "grey", "name_en": "Grey", "name_de": "Grau", "hex": "#868c93" },
+    { "id": "dark-grey", "name_en": "Dark Grey", "name_de": "Dunkelgrau", "hex": "#4f4d52" },
+    { "id": "charcoal", "name_en": "Charcoal", "name_de": "Anthrazit", "hex": "#35343b" },
+    { "id": "black", "name_en": "Black", "name_de": "Schwarz", "hex": "#18181a" },
+    { "id": "caramel", "name_en": "Caramel", "name_de": "Karamell", "hex": "#aa7c49" },
+    { "id": "brown", "name_en": "Brown", "name_de": "Braun", "hex": "#8e5e48" },
+    { "id": "dark-brown", "name_en": "Dark Brown", "name_de": "Dunkelbraun", "hex": "#684f43" },
+    { "id": "espresso", "name_en": "Espresso", "name_de": "Espresso", "hex": "#4a423b" },
+    { "id": "cream", "name_en": "Cream", "name_de": "Creme", "hex": "#efdca2" },
+    { "id": "peach", "name_en": "Peach", "name_de": "Pfirsich", "hex": "#fee1b4" },
+    { "id": "olive", "name_en": "Olive", "name_de": "Oliv", "hex": "#7f8267" },
+    { "id": "dark-olive", "name_en": "Dark Olive", "name_de": "Dunkeloliv", "hex": "#424237" },
+    { "id": "orange", "name_en": "Orange", "name_de": "Orange", "hex": "#f19236" },
+    { "id": "dark-orange", "name_en": "Dark Orange", "name_de": "Dunkelorange", "hex": "#df6b0b" },
+    { "id": "yellow", "name_en": "Yellow", "name_de": "Gelb", "hex": "#ffd300" },
+    { "id": "lime-yellow", "name_en": "Lime Yellow", "name_de": "Limonengelb", "hex": "#f5e722" },
+    { "id": "teal", "name_en": "Teal", "name_de": "Petrol", "hex": "#009c99" },
+    { "id": "emerald", "name_en": "Emerald", "name_de": "Smaragd", "hex": "#06aa92" },
+    { "id": "royal-blue", "name_en": "Royal Blue", "name_de": "Königsblau", "hex": "#0625bd" },
+    { "id": "navy", "name_en": "Navy", "name_de": "Marine", "hex": "#002a86" },
+    { "id": "blue", "name_en": "Blue", "name_de": "Blau", "hex": "#005cb6" },
+    { "id": "bright-blue", "name_en": "Bright Blue", "name_de": "Hellblau", "hex": "#126be9" },
+    { "id": "crimson", "name_en": "Crimson", "name_de": "Karmesin", "hex": "#c0002f" },
+    { "id": "red", "name_en": "Red", "name_de": "Rot", "hex": "#e13b53" },
+    { "id": "pink", "name_en": "Pink", "name_de": "Rosa", "hex": "#fe89da" },
+    { "id": "light-purple", "name_en": "Light Purple", "name_de": "Hellviolett", "hex": "#a270e9" },
+    { "id": "purple", "name_en": "Purple", "name_de": "Violett", "hex": "#5b2a8b" }
+  ]
+}

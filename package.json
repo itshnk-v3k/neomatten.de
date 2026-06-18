@@ -12,6 +12,7 @@
     "build:staging": "ng build --configuration staging",
     "watch": "ng build --watch --configuration development",
     "build:data": "node scripts/build-vehicle-data.mjs",
+    "optimize:images": "node scripts/optimize-images.mjs",
     "test": "ng test",
     "lint": "ng lint && npm run lint:styles",
     "lint:styles": "node scripts/check-no-ng-deep.mjs",

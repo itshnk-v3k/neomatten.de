@@ -8,18 +8,18 @@
       <h2 class="mt-3 text-3xl font-bold md:text-4xl">{{ 'home_gallery_title' | translate }}</h2>
     </div>
 
-    <div nmLazySection (sectionVisible)="galleryVisible.set(true)">
-      @if (galleryVisible()) {
-        <div class="mx-auto max-w-4xl" nmReveal>
-          <nm-gallery [slides]="gallerySlides" />
-        </div>
-      } @else {
-        <div class="mx-auto grid max-w-4xl gap-4 sm:grid-cols-3">
-          @for (i of [0, 1, 2]; track i) {
-            <nm-skeleton variant="card" />
-          }
-        </div>
-      }
-    </div>
+    <!-- Heavy embla carousel is code-split into its own chunk and only loaded
+         once the placeholder scrolls into view (@defer on viewport). -->
+    @defer (on viewport) {
+      <div class="mx-auto max-w-4xl" nmReveal>
+        <nm-gallery [albums]="galleryAlbums" />
+      </div>
+    } @placeholder {
+      <div class="mx-auto grid max-w-4xl gap-4 sm:grid-cols-3">
+        @for (i of [0, 1, 2]; track i) {
+          <nm-skeleton variant="card" />
+        }
+      </div>
+    }
   </div>
 </section>

@@ -112,11 +112,17 @@
           </dl>
         </div>
 
-        <nm-map
-          [lat]="mapLat"
-          [lng]="mapLng"
-          [ariaLabel]="mapAria"
-          class="block overflow-hidden rounded-xl border border-border shadow-soft" />
+        <!-- Leaflet map is code-split and only loaded once it scrolls into view. -->
+        @defer (on viewport) {
+          <nm-map
+            [lat]="mapLat"
+            [lng]="mapLng"
+            [ariaLabel]="mapAria"
+            class="block overflow-hidden rounded-xl border border-border shadow-soft" />
+        } @placeholder {
+          <div
+            class="block min-h-72 overflow-hidden rounded-xl border border-border bg-surface-subtle shadow-soft"></div>
+        }
       </div>
 
       <!-- Contact form -->

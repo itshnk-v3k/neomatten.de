@@ -170,6 +170,34 @@
     outline: 2px solid theme('colors.primary.DEFAULT');
     outline-offset: 2px;
   }
+
+  /* German long-compound overflow guard. The i18n service sets `lang` on
+     <html> (de|en), so :lang(de) hyphenation uses the German dictionary.
+     `hyphens` inherits, so this cascades to every descendant. It lives in
+     @layer base, so the Tailwind utilities layer still wins — `truncate`
+     (white-space:nowrap) and `whitespace-nowrap` keep prices/badges that
+     must stay on one line unaffected (nowrap suppresses wrapping entirely). */
+  html,
+  [lang='de'],
+  :lang(de) {
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /* Explicitly hyphenate text inside constrained-width UI (option cards, chips,
+     badges, buttons, select options, step labels). Already inherited from
+     <html>, but stated so a component reset can never silently drop it. */
+  button,
+  nm-badge,
+  nm-select,
+  [role='option'],
+  [role='tab'] {
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    overflow-wrap: break-word;
+  }
 }
 
 /* =====================================================================
@@ -234,7 +262,7 @@ a[nmButton][aria-busy='true']::after {
    acts as an upper bound while CDK fits the panel to the available space. The
    two-class selector outweighs CDK's `.cdk-overlay-pane { max-height: 100% }`. */
 .cdk-overlay-pane.nm-phone-dropdown {
-  max-height: 60vh;
+  max-height: 30vh;
 }
 
 /* Sticky search header: pinned at the top, never shrinks, never scrolls away. */
@@ -278,8 +306,36 @@ a[nmButton][aria-busy='true']::after {
 
 @media (max-width: 767px) {
   .cdk-overlay-pane.nm-phone-dropdown {
-    max-height: 50vh;
+    max-height: 25vh;
   }
+}
+
+/* =====================================================================
+   Date-range picker desktop popover. Styles the CDK overlay pane (panelClass
+   `nm-date-range-popover`) — created by CDK, so styled globally (no ng-deep).
+   A height-capped flex column: the month grid scrolls when the panel is clamped
+   to the viewport while the nav header + Clear/Apply footer stay pinned, so the
+   calendar can never fall off the bottom of the screen.
+   ===================================================================== */
+.nm-date-range-popover {
+  display: flex;
+  flex-direction: column;
+  max-width: calc(100vw - 1rem);
+  padding: 16px;
+  overflow: hidden; /* the container never scrolls — only the month grid does */
+  background: theme('colors.surface.DEFAULT');
+  border: 1px solid theme('colors.border.DEFAULT');
+  border-radius: 12px;
+  box-shadow: theme('boxShadow.elev');
+}
+
+/* Compressed-viewport fallback only: the popover opens at its natural height
+   (no withFlexibleDimensions), so this cap engages — and the month grid scrolls —
+   solely when the viewport is too short to fit the calendar. vh (not %) so it's
+   viewport-relative; the two-class selector outweighs CDK's
+   `.cdk-overlay-pane { max-height: 100% }`. */
+.cdk-overlay-pane.nm-date-range-popover {
+  max-height: calc(100vh - 2rem);
 }
 
 /* =====================================================================

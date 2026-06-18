@@ -1,50 +1,102 @@
 <!--
-  EN: Left column — mat preview (steps 1–10) cross-fading to the car diagram
-      (steps 11–13) on desktop; both stack on mobile. Plus the desktop total.
-  RU: Левая колонка — превью коврика (шаги 1–10) с переходом на схему авто
-      (шаги 11–13) на десктопе; на мобиле обе видны. Плюс итог (десктоп).
+  EN: `full` = desktop left column (mat preview ≤ step 10 cross-fading to the car
+      diagram from step 11) + desktop total. `mat`/`car` = a single compact panel
+      used as an inline mobile slot (always visible, no cross-fade).
+  RU: `full` = левая колонка десктопа (превью коврика ≤ шаг 10 с переходом на схему
+      авто с шага 11) + итог. `mat`/`car` = один компактный блок для встроенного
+      мобильного слота (всегда виден, без перехода).
 -->
-<!-- Mat preview: desktop steps 1–10; collapses from step 11. Always on mobile. -->
-<div
-  [class]="
-    'ease-out-brand mx-auto w-full max-w-[240px] transition-all duration-300 lg:max-w-full ' +
-    (activeStep() >= 11
-      ? 'lg:pointer-events-none lg:max-h-0 lg:scale-95 lg:overflow-hidden lg:opacity-0'
-      : 'lg:max-h-[640px] lg:scale-100 lg:opacity-100')
-  ">
-  <nm-mat-preview
-    [texture]="texture()"
-    [materialHex]="materialHex()"
-    [edgeHex]="edgeHex()"
-    [mounting]="mounting()"
-    [heelPad]="heelPad()"
-    [heelRest]="heelRest()"
-    [caption]="caption()"
-    [sku]="sku()"
-    [colorId]="colorId()" />
-</div>
+@if (mode() === 'full') {
+  <!-- Mat preview (steps ≤10) and car diagram (≥11) swap IN PLACE: both cards are
+       stacked in the same grid cell (grid-area 1/1), so the container sizes to the
+       TALLER of the two and each card fills that height. Only opacity changes
+       between them, so there is no layout jump — and neither card's content (e.g.
+       the mat caption) is ever clipped, whichever happens to be taller. -->
+  <div class="grid w-full">
+    <!-- Mat preview card — stacked over the car card; both share the grid cell. -->
+    <div
+      [class]="
+        'rounded-2xl border border-border bg-surface p-4 shadow-soft transition-opacity duration-300 [grid-area:1/1] lg:p-5 ' +
+        (showMatPreview() ? 'opacity-100' : 'pointer-events-none opacity-0')
+      ">
+      <h2 class="text-sm font-semibold text-content-secondary">
+        {{ 'mat_preview_title' | translate }}
+      </h2>
+      <p class="mt-1 text-xs text-content-muted">
+        {{ 'mat_preview_subtitle' | translate }}
+      </p>
+      <div class="mx-auto mt-3 w-full max-w-[240px] lg:max-w-full">
+        <nm-mat-preview
+          [texture]="texture()"
+          [materialHex]="materialHex()"
+          [edgeHex]="edgeHex()"
+          [mounting]="mounting()"
+          [heelPad]="heelPad()"
+          [heelRest]="heelRest()"
+          [heelRestOverlaySrc]="heelRestOverlaySrc()"
+          [caption]="caption()"
+          [sku]="sku()"
+          [colorId]="colorId()" />
+      </div>
+    </div>
 
-<!-- Car diagram: desktop from step 11; collapsed on steps 1–10. Always on mobile. -->
-<div
-  [class]="
-    'ease-out-brand rounded-2xl border border-border bg-surface p-4 shadow-soft transition-all duration-300 lg:p-5 ' +
-    (activeStep() >= 11
-      ? 'lg:max-h-[720px] lg:scale-100 lg:opacity-100'
-      : 'lg:pointer-events-none lg:max-h-0 lg:scale-95 lg:overflow-hidden lg:border-0 lg:p-0 lg:opacity-0')
-  ">
-  <h2 class="text-sm font-semibold text-content-secondary">
-    {{ 'configurator_diagram_title' | translate }}
-  </h2>
-  <p class="mt-1 text-xs text-content-muted">
-    {{ 'configurator_diagram_hint' | translate }}
-  </p>
-  <div class="mx-auto mt-3 max-w-[150px] lg:max-w-full">
-    <nm-car-diagram [zones]="zones()" (zoneToggle)="zoneToggle.emit($event)" />
+    <!-- Car diagram card — shares the same grid cell as the mat card. -->
+    <div
+      [class]="
+        'rounded-2xl border border-border bg-surface p-4 shadow-soft transition-opacity duration-300 [grid-area:1/1] lg:p-5 ' +
+        (showCarDiagram() ? 'opacity-100' : 'pointer-events-none opacity-0')
+      ">
+      <h2 class="text-sm font-semibold text-content-secondary">
+        {{ 'configurator_diagram_title' | translate }}
+      </h2>
+      <p class="mt-1 text-xs text-content-muted">
+        {{ 'configurator_diagram_hint' | translate }}
+      </p>
+      <div class="mx-auto mt-3 max-w-[150px] lg:max-w-full">
+        <nm-car-diagram [zones]="zones()" (zoneToggle)="zoneToggle.emit($event)" />
+      </div>
+    </div>
   </div>
-</div>
 
-<!-- Total (desktop only; mobile uses the sticky bottom bar) -->
-<div class="hidden items-center justify-between rounded-2xl bg-ink p-5 text-white lg:flex">
-  <span class="text-sm text-white/75">{{ 'configurator_total' | translate }}</span>
-  <span class="text-2xl font-extrabold">{{ total() }} &euro;</span>
-</div>
+  <!-- Total (desktop only; mobile uses the sticky bottom bar) -->
+  <div class="hidden items-center justify-between rounded-2xl bg-ink p-5 text-white lg:flex">
+    <span class="text-sm text-white/75">{{ 'configurator_total' | translate }}</span>
+    <span class="text-2xl font-extrabold">{{ total() | euro }}</span>
+  </div>
+} @else if (mode() === 'mat') {
+  <!-- Compact inline mat preview (mobile, after Refine). -->
+  <div class="rounded-2xl border border-border bg-surface p-4 shadow-soft">
+    <h2 class="text-sm font-semibold text-content-secondary">
+      {{ 'mat_preview_title' | translate }}
+    </h2>
+    <p class="mt-1 text-xs text-content-muted">
+      {{ 'mat_preview_subtitle' | translate }}
+    </p>
+    <div class="mx-auto mt-3 max-w-[260px]">
+      <nm-mat-preview
+        [texture]="texture()"
+        [materialHex]="materialHex()"
+        [edgeHex]="edgeHex()"
+        [mounting]="mounting()"
+        [heelPad]="heelPad()"
+        [heelRest]="heelRest()"
+        [heelRestOverlaySrc]="heelRestOverlaySrc()"
+        [caption]="caption()"
+        [sku]="sku()"
+        [colorId]="colorId()" />
+    </div>
+  </div>
+} @else {
+  <!-- Compact inline car diagram (mobile, before Build your set). -->
+  <div class="rounded-2xl border border-border bg-surface p-4 shadow-soft">
+    <h2 class="text-sm font-semibold text-content-secondary">
+      {{ 'configurator_diagram_title' | translate }}
+    </h2>
+    <p class="mt-1 text-xs text-content-muted">
+      {{ 'configurator_diagram_hint' | translate }}
+    </p>
+    <div class="mx-auto mt-3 max-w-[170px]">
+      <nm-car-diagram [zones]="zones()" (zoneToggle)="zoneToggle.emit($event)" />
+    </div>
+  </div>
+}

@@ -15,24 +15,38 @@
     (emblaChange)="onEmblaChange()"
     class="overflow-hidden rounded-lg shadow-soft">
     <div class="flex">
-      @for (slide of slides(); track $index; let i = $index) {
+      @for (album of albums(); track album.id; let i = $index) {
         <div class="relative min-w-0 flex-[0_0_100%]">
-          @if (slide.src && !hasFailed(i)) {
-            <img
-              [ngSrc]="slide.src"
-              width="980"
-              height="480"
-              [alt]="slide.caption"
-              sizes="100vw"
-              (error)="onImageError(i)"
-              class="h-auto w-full object-cover" />
-          } @else {
-            <nm-image-placeholder class="block aspect-[980/480] w-full rounded-none" />
-          }
-          <div
-            class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-5">
-            <span class="text-sm font-semibold text-white">{{ slide.caption }}</span>
-          </div>
+          <!-- Clicking the slide opens the album dialog with all its photos. -->
+          <button
+            type="button"
+            class="group relative block aspect-[980/480] w-full cursor-pointer overflow-hidden"
+            [attr.aria-label]="('home_gallery_open_album' | translate) + ': ' + album.title"
+            (click)="openAlbum(album)">
+            @if (album.coverImage && !hasFailed(i)) {
+              <img
+                [ngSrc]="album.coverImage"
+                fill
+                [alt]="album.title"
+                sizes="100vw"
+                (error)="onImageError(i)"
+                class="object-cover" />
+            } @else {
+              <nm-image-placeholder class="block size-full rounded-none" />
+            }
+            <!-- Hover overlay with an expand icon hinting the album is clickable. -->
+            <span
+              class="absolute inset-0 flex items-center justify-center bg-ink/0 opacity-0 transition-all duration-200 group-hover:bg-ink/30 group-hover:opacity-100 group-focus-visible:bg-ink/30 group-focus-visible:opacity-100">
+              <span
+                class="grid size-12 place-items-center rounded-full bg-white/90 text-content shadow-soft">
+                <svg lucideExpand class="size-6"></svg>
+              </span>
+            </span>
+            <span
+              class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-5 text-left">
+              <span class="text-sm font-semibold text-white">{{ album.title }}</span>
+            </span>
+          </button>
         </div>
       }
     </div>
@@ -54,7 +68,7 @@
   </button>
 
   <div class="mt-5 flex items-center justify-center gap-2">
-    @for (slide of slides(); track $index; let i = $index) {
+    @for (album of albums(); track album.id; let i = $index) {
       <button
         type="button"
         [attr.aria-label]="('home_gallery_goto_slide' | translate) + ' ' + (i + 1)"
@@ -65,3 +79,6 @@
     }
   </div>
 </div>
+
+<!-- Album dialog: opens with all photos of the clicked album. -->
+<nm-gallery-album-dialog [(open)]="albumOpen" [album]="activeAlbum()" />

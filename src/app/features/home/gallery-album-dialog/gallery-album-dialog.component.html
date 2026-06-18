@@ -1,0 +1,35 @@
+<!--
+  EN: Album dialog body — the album title in the sticky header (via titleKey, which
+      falls back to the literal for proper nouns) and a responsive 2-column grid of
+      captioned photos. Null images render the local nm-image-placeholder.
+  RU: Тело диалога альбома — название альбома в шапке (через titleKey, который для
+      имён собственных откатывается к строке) и адаптивная сетка фото с подписями в
+      2 колонки. Пустые изображения — локальная заглушка nm-image-placeholder.
+-->
+<nm-dialog [(open)]="open" [titleKey]="album()?.title ?? ''" size="xl">
+  @if (album(); as a) {
+    <ul class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      @for (image of a.images; track $index; let i = $index) {
+        <li class="flex flex-col gap-2">
+          <div
+            class="relative aspect-[4/3] overflow-hidden rounded-lg border border-border bg-surface-subtle">
+            @if (image.src && !hasFailed(i)) {
+              <img
+                [ngSrc]="image.src"
+                fill
+                sizes="(min-width: 768px) 45vw, 90vw"
+                [alt]="image.alt"
+                (error)="onImageError(i)"
+                class="object-cover" />
+            } @else {
+              <nm-image-placeholder class="size-full rounded-none" />
+            }
+          </div>
+          @if (image.caption) {
+            <span class="text-sm font-medium text-content-secondary">{{ image.caption }}</span>
+          }
+        </li>
+      }
+    </ul>
+  }
+</nm-dialog>

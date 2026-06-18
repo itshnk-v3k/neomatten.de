@@ -20,5 +20,5 @@ import { LeadFormComponent } from '../lead-form/lead-form.component';
 })
 export class ConsultationComponent {
   /** Background poster (real content asset; shared with the hero). */
-  protected readonly heroPoster = 'assets/content/hero-poster.jpg';
+  protected readonly heroPoster = 'assets/images/content/hero-poster.webp';
 }

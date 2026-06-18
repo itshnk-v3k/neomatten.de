@@ -1,0 +1,236 @@
+<!--
+  EN: Grouped configuration summary — four distinct cards (Vehicle, Material,
+      Options, Set & Delivery), each a section header (icon + title) over labelled
+      rows. Filled values read dark/bold; skipped fields show a dimmed "—".
+  RU: Сгруппированная сводка конфигурации — четыре блока (Фахрцойг/Материал/Опции/
+      Сет и доставка), у каждого заголовок (иконка + название) над строками. Выбранные
+      значения — тёмные/жирные; пропущенные поля — приглушённое «—».
+-->
+@let d = details();
+<div class="space-y-3">
+  <!-- GROUP 1 — Vehicle -->
+  <section class="rounded-xl bg-surface-subtle p-4">
+    <h3 class="flex items-center gap-2 text-sm font-bold text-content">
+      <svg lucideCar class="size-4 text-primary" aria-hidden="true"></svg>
+      {{ 'summary_group_vehicle' | translate }}
+    </h3>
+    <dl class="mt-3 space-y-1.5 text-xs md:text-sm">
+      <div class="flex items-start justify-between gap-3">
+        <dt class="text-content-secondary">{{ 'configurator_step_vehicle' | translate }}</dt>
+        @if (d.vehicle) {
+          <dd class="text-right font-semibold text-content">{{ d.vehicle }}</dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+      <div class="flex items-start justify-between gap-3">
+        <dt class="text-content-secondary">{{ 'refine_body_type_label' | translate }}</dt>
+        @if (d.bodyType) {
+          <dd class="text-right font-semibold text-content">
+            {{ 'body_type_' + d.bodyType | translate }}
+          </dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+      <div class="flex items-start justify-between gap-3">
+        <dt class="text-content-secondary">{{ 'refine_transmission' | translate }}</dt>
+        @if (d.transmission) {
+          <dd class="text-right font-semibold text-content">
+            {{ 'refine_transmission_' + d.transmission | translate }}
+          </dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+      <div class="flex items-start justify-between gap-3">
+        <dt class="text-content-secondary">{{ 'refine_year' | translate }}</dt>
+        @if (d.year) {
+          <dd class="text-right font-semibold text-content">{{ d.year }}</dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+      <div class="flex items-start justify-between gap-3">
+        <dt class="text-content-secondary">{{ 'refine_drive' | translate }}</dt>
+        @if (d.drive) {
+          <dd class="text-right font-semibold text-content">
+            {{ 'refine_drive_' + d.drive | translate }}
+          </dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+      <div class="flex items-start justify-between gap-3">
+        <dt class="text-content-secondary">{{ 'refine_engine' | translate }}</dt>
+        @if (d.engine) {
+          <dd class="text-right font-semibold text-content">
+            {{ engineKey(d.engine) | translate }}
+          </dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+    </dl>
+  </section>
+
+  <!-- GROUP 2 — Material -->
+  <section class="rounded-xl bg-surface-subtle p-4">
+    <h3 class="flex items-center gap-2 text-sm font-bold text-content">
+      <svg lucideLayers class="size-4 text-primary" aria-hidden="true"></svg>
+      {{ 'summary_group_material' | translate }}
+    </h3>
+    <dl class="mt-3 space-y-1.5 text-xs md:text-sm">
+      <div class="flex items-start justify-between gap-3">
+        <dt class="text-content-secondary">{{ 'configurator_step_material' | translate }}</dt>
+        @if (d.material) {
+          <dd class="text-right font-semibold text-content">
+            {{ 'configurator_material_' + d.material | translate }}
+          </dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+      <div class="flex items-start justify-between gap-3">
+        <dt class="text-content-secondary">{{ 'configurator_step_texture' | translate }}</dt>
+        @if (d.texture) {
+          <dd class="text-right font-semibold text-content">
+            {{ 'configurator_texture_' + d.texture | translate }}
+          </dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+      <div class="flex items-start justify-between gap-3">
+        <dt class="text-content-secondary">{{ 'configurator_step_material_color' | translate }}</dt>
+        @if (d.materialColour) {
+          <dd class="flex items-center justify-end gap-1.5 text-right font-semibold text-content">
+            @if (d.materialColourHex) {
+              <span
+                class="inline-block size-3 shrink-0 rounded-full border border-border"
+                [style.background-color]="d.materialColourHex"></span>
+            }
+            {{ d.materialColour }}
+          </dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+      <div class="flex items-start justify-between gap-3">
+        <dt class="text-content-secondary">{{ 'configurator_step_edge_color' | translate }}</dt>
+        @if (d.edgeColour) {
+          <dd class="flex items-center justify-end gap-1.5 text-right font-semibold text-content">
+            @if (d.edgeColourHex) {
+              <span
+                class="inline-block size-3 shrink-0 rounded-full border border-border"
+                [style.background-color]="d.edgeColourHex"></span>
+            }
+            {{ d.edgeColour }}
+          </dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+    </dl>
+  </section>
+
+  <!-- GROUP 3 — Options -->
+  <section class="rounded-xl bg-surface-subtle p-4">
+    <h3 class="flex items-center gap-2 text-sm font-bold text-content">
+      <svg lucideSettings class="size-4 text-primary" aria-hidden="true"></svg>
+      {{ 'summary_group_options' | translate }}
+    </h3>
+    <dl class="mt-3 space-y-1.5 text-xs md:text-sm">
+      <div class="flex items-start justify-between gap-3">
+        <dt class="text-content-secondary">{{ 'configurator_step_mounting' | translate }}</dt>
+        @if (d.mounting) {
+          <dd class="text-right font-semibold text-content">
+            {{ 'configurator_mount_' + d.mounting | translate }}
+          </dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+      <div class="flex items-start justify-between gap-3">
+        <dt class="text-content-secondary">{{ 'configurator_step_heel' | translate }}</dt>
+        @if (d.heelPad) {
+          <dd class="text-right font-semibold text-content">
+            {{ 'configurator_heel_' + d.heelPad | translate }}
+            @if (d.heelPadPrice) {
+              <span class="text-primary">+{{ d.heelPadPrice | euro }}</span>
+            }
+          </dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+      <div class="flex items-start justify-between gap-3">
+        <dt class="text-content-secondary">{{ 'heel_rest_title' | translate }}</dt>
+        @if (d.heelRest) {
+          <dd class="text-right font-semibold text-content">
+            {{ 'heel_rest_' + d.heelRest | translate }}
+            @if (d.heelRestColour) {
+              · {{ d.heelRestColour | translate }}
+            }
+            @if (d.heelRestPrice) {
+              <span class="text-primary">+{{ d.heelRestPrice | euro }}</span>
+            }
+          </dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+      <div class="flex items-start justify-between gap-3">
+        <dt class="text-content-secondary">{{ 'configurator_step_accessories' | translate }}</dt>
+        @if (d.accessories) {
+          <dd class="text-right font-semibold text-content">
+            {{ accessoriesKey(d.accessories) | translate }}
+          </dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+    </dl>
+  </section>
+
+  <!-- GROUP 4 — Set & Delivery -->
+  <section class="rounded-xl bg-surface-subtle p-4">
+    <h3 class="flex items-center gap-2 text-sm font-bold text-content">
+      <svg lucidePackage class="size-4 text-primary" aria-hidden="true"></svg>
+      {{ 'summary_group_delivery' | translate }}
+    </h3>
+    <dl class="mt-3 space-y-1.5 text-xs md:text-sm">
+      <div class="flex items-start justify-between gap-3">
+        <dt class="shrink-0 text-content-secondary">{{ 'configurator_step_kit' | translate }}</dt>
+        @if (d.positions.length) {
+          <dd class="flex flex-wrap justify-end gap-1">
+            @for (p of d.positions; track p) {
+              <span class="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                {{ 'kit_piece_' + p | translate }}
+              </span>
+            }
+          </dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+      <div class="flex items-start justify-between gap-3">
+        <dt class="text-content-secondary">{{ 'configurator_step_delivery' | translate }}</dt>
+        @if (d.deliveryTierKey) {
+          <dd class="text-right font-semibold text-content">
+            {{ d.deliveryTierKey | translate }}
+            @if (d.deliveryCost) {
+              <span class="text-content-secondary">&middot; {{ d.deliveryCost | euro }}</span>
+            } @else {
+              <span class="text-success">
+                &middot; {{ 'configurator_delivery_free' | translate }}
+              </span>
+            }
+          </dd>
+        } @else {
+          <dd class="text-right text-content-muted">—</dd>
+        }
+      </div>
+    </dl>
+  </section>
+</div>

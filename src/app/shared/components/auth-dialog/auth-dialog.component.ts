@@ -23,6 +23,7 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { LucideShieldAlert } from '@lucide/angular';
 import { ButtonDirective } from '@shared/components/button/button.directive';
+import { CheckboxComponent } from '@shared/components/checkbox/checkbox.component';
 import { DialogComponent } from '@shared/components/dialog/dialog.component';
 import { InputComponent } from '@shared/components/input/input.component';
 import { PhoneInputComponent } from '@shared/components/phone-input/phone-input.component';
@@ -41,6 +42,7 @@ type Mode = 'login' | 'register';
     DialogComponent,
     InputComponent,
     PhoneInputComponent,
+    CheckboxComponent,
     ButtonDirective,
     SocialLoginComponent,
     TranslatePipe,
@@ -100,7 +102,14 @@ export class AuthDialogComponent {
     email: ['', [Validators.required, Validators.email]],
     phone: ['', phoneValidator()],
     password: ['', [Validators.required, Validators.minLength(6)]],
+    dataConsent: [false, Validators.requiredTrue],
   });
+
+  /** Whether to show the data-consent error inline (unchecked + interacted). */
+  protected get showDataConsentError(): boolean {
+    const control = this.registerForm.controls.dataConsent;
+    return control.invalid && (control.touched || control.dirty);
+  }
 
   protected setMode(mode: Mode): void {
     this.mode.set(mode);

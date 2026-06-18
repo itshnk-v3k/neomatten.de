@@ -18,11 +18,17 @@
     </div>
   } @else {
     <form [formGroup]="form" (ngSubmit)="submit()" class="mt-6 flex flex-col gap-4">
-      <nm-input formControlName="name" label="form_name" autocomplete="name" [required]="true" />
+      <nm-input
+        formControlName="name"
+        label="form_name"
+        placeholder="form_name_placeholder"
+        autocomplete="name"
+        [required]="true" />
       <nm-input
         formControlName="email"
         type="email"
         label="form_email"
+        placeholder="form_email_placeholder"
         autocomplete="email"
         [required]="true" />
       <nm-phone-input formControlName="phone" label="form_phone" />
@@ -55,7 +61,7 @@
       <button
         type="button"
         class="inline-flex flex-1 items-center justify-center gap-2 rounded-full border-2 border-error bg-transparent px-6 py-2.5 font-semibold text-error transition-colors duration-150 hover:bg-error/10"
-        (click)="deleteOpen.set(true)">
+        (click)="requestDelete()">
         <svg lucideAlertTriangle class="size-5 shrink-0"></svg>
         {{ 'account_delete_account' | translate }}
       </button>
@@ -84,6 +90,29 @@
       (click)="confirmDelete()">
       {{ 'account_delete' | translate }}
     </button>
+  </div>
+</nm-dialog>
+
+<!-- Delete blocked: account has active orders → contact support instead of deleting -->
+<nm-dialog [(open)]="deleteBlockedOpen" titleKey="account_delete_blocked_title">
+  <p>{{ 'account_delete_blocked_body' | translate }}</p>
+  <div dialogFooter>
+    <button
+      nmButton
+      variant="outline"
+      type="button"
+      class="rounded-full"
+      (click)="deleteBlockedOpen.set(false)">
+      {{ 'action_close' | translate }}
+    </button>
+    <a
+      nmButton
+      routerLink="/contact"
+      [queryParams]="{ topic: 'account_deletion' }"
+      class="rounded-full"
+      (click)="deleteBlockedOpen.set(false)">
+      {{ 'account_delete_contact_us' | translate }}
+    </a>
   </div>
 </nm-dialog>
 

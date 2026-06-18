@@ -23,7 +23,7 @@
       [attr.aria-label]="'header_home' | translate"
       class="flex shrink-0 items-center">
       <img
-        ngSrc="assets/logo/neomat_nm_transparent.png"
+        ngSrc="assets/images/logo/neomat_nm_transparent.webp"
         width="517"
         height="300"
         priority
@@ -40,13 +40,13 @@
         @if (link.sectionId) {
           <button
             type="button"
-            class="whitespace-nowrap rounded-md px-2 py-2 text-[13px] font-medium text-content transition-colors duration-150 hover:text-primary xl:px-3 xl:text-sm"
+            class="whitespace-nowrap rounded-md p-2 text-[13px] font-medium text-content transition-colors duration-150 hover:text-primary xl:px-3 xl:text-sm"
             (click)="goToSection(link)">
             {{ link.labelKey | translate }}
           </button>
         } @else {
           <a
-            class="whitespace-nowrap rounded-md px-2 py-2 text-[13px] font-medium text-content transition-colors duration-150 hover:text-primary xl:px-3 xl:text-sm"
+            class="whitespace-nowrap rounded-md p-2 text-[13px] font-medium text-content transition-colors duration-150 hover:text-primary xl:px-3 xl:text-sm"
             routerLinkActive="text-primary"
             [routerLinkActiveOptions]="{ exact: true }"
             ariaCurrentWhenActive="page"

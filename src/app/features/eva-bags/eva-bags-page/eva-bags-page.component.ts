@@ -6,7 +6,7 @@
  *     «Без крышки» — со ссылками на соответствующие списки товаров. Здесь нет
  *     товаров; списки находятся на /eva-bags/with-lid и /eva-bags/without-lid.
  */
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MediaService } from '@core/services/media.service';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
@@ -27,4 +27,8 @@ export class EvaBagsPageComponent {
   // real photos come from the media API once uploaded.
   protected readonly withLidImage = this.media.getPlaceholder(800, 450, 'nm-bags-lid');
   protected readonly withoutLidImage = this.media.getPlaceholder(800, 450, 'nm-bags-open');
+
+  /** Flip true when the respective card image fails to load → render the placeholder. */
+  protected readonly withLidFailed = signal(false);
+  protected readonly withoutLidFailed = signal(false);
 }

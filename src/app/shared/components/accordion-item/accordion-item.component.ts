@@ -19,7 +19,7 @@ let uid = 0;
   templateUrl: './accordion-item.component.html',
   styleUrl: './accordion-item.component.scss',
   host: {
-    class: 'block border-b border-border',
+    class: 'block border-border',
   },
 })
 export class AccordionItemComponent {

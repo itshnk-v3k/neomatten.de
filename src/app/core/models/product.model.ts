@@ -1,12 +1,12 @@
 /*
  * EN: Catalogue product DTO for the simple (non-configured) products — headrest
  *     cushions, EVA-material bags and EVA-leather bags. Maps to a future
- *     `products` table; the mock data lives in assets/mock-data and is served by
+ *     `products` table; the mock data lives in assets/data and is served by
  *     ProductService. `specs` is an ordered list of label/value pairs (label is
  *     a translate key) shown on the product detail page.
  * RU: DTO товара каталога для простых (неконфигурируемых) товаров — кисени на
  *     подголовник, сумки из EVA-материала и из EVA-кожи. Ложится в будущую
- *     таблицу `products`; mock-данные в assets/mock-data, отдаёт ProductService.
+ *     таблицу `products`; mock-данные в assets/data, отдаёт ProductService.
  *     `specs` — упорядоченный список пар метка/значение (метка — ключ перевода)
  *     для страницы товара.
  */
@@ -37,6 +37,13 @@ export interface ProductDTO {
    * low-stock warning.
    */
   readonly stockQuantity: number;
+  /**
+   * Made-to-order products are produced per order: they show a neutral
+   * "Made to order" badge instead of any stock count, and add-to-cart stays
+   * enabled regardless of `stockQuantity`. True for all EVA-bag products today.
+   * TODO(backend): served per-product by `GET /api/products`.
+   */
+  readonly madeToOrder?: boolean;
   /**
    * Image URLs for the detail-page carousel (first is the listing thumbnail).
    * Empty in the mock JSON today, so call sites render the local

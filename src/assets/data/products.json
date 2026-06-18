@@ -1,0 +1,398 @@
+[
+  {
+    "id": "kk-01",
+    "sku": "KK-01",
+    "category": "cushion",
+    "name": "Kopfstützenkissen EVA",
+    "description": "product_kk_01_desc",
+    "specs": [
+      {
+        "labelKey": "spec_material",
+        "value": "EVA"
+      },
+      {
+        "labelKey": "spec_dimensions",
+        "value": "30 × 22 cm"
+      },
+      {
+        "labelKey": "spec_mount",
+        "value": "Universal"
+      }
+    ],
+    "price": 24,
+    "images": [],
+    "stockQuantity": 34
+  },
+  {
+    "id": "kk-02",
+    "sku": "KK-02",
+    "category": "cushion",
+    "name": "Kopfstützenkissen Leder",
+    "description": "product_kk_02_desc",
+    "specs": [
+      {
+        "labelKey": "spec_material",
+        "value": "EVA-Leder"
+      },
+      {
+        "labelKey": "spec_dimensions",
+        "value": "30 × 22 cm"
+      },
+      {
+        "labelKey": "spec_mount",
+        "value": "Universal"
+      }
+    ],
+    "price": 34,
+    "images": [],
+    "stockQuantity": 22
+  },
+  {
+    "id": "kk-03",
+    "sku": "KK-03",
+    "category": "cushion",
+    "name": "Kopfstützenkissen Set",
+    "description": "product_kk_03_desc",
+    "specs": [
+      {
+        "labelKey": "spec_material",
+        "value": "EVA"
+      },
+      {
+        "labelKey": "spec_set",
+        "value": "2"
+      },
+      {
+        "labelKey": "spec_mount",
+        "value": "Universal"
+      }
+    ],
+    "price": 59,
+    "images": [],
+    "stockQuantity": 8
+  },
+  {
+    "id": "kk-04",
+    "sku": "KK-04",
+    "category": "cushion",
+    "name": "Kopfstützenkissen Memory",
+    "description": "product_kk_04_desc",
+    "specs": [
+      {
+        "labelKey": "spec_material",
+        "value": "EVA + Memory-Schaum"
+      },
+      {
+        "labelKey": "spec_dimensions",
+        "value": "30 × 22 cm"
+      },
+      {
+        "labelKey": "spec_mount",
+        "value": "Universal"
+      }
+    ],
+    "price": 39,
+    "images": [],
+    "stockQuantity": 41
+  },
+  {
+    "id": "tb-eva-01",
+    "sku": "TB-EVA-01",
+    "category": "eva_bag",
+    "subcategory": "without-lid",
+    "name": "EVA-Tasche Kompakt",
+    "description": "product_tb_eva_01_desc",
+    "specs": [
+      {
+        "labelKey": "spec_material",
+        "value": "EVA"
+      },
+      {
+        "labelKey": "spec_volume",
+        "value": "12 L"
+      },
+      {
+        "labelKey": "spec_waterproof",
+        "value": "spec_value_yes"
+      }
+    ],
+    "price": 39,
+    "images": [],
+    "stockQuantity": 15,
+    "madeToOrder": true
+  },
+  {
+    "id": "tb-eva-02",
+    "sku": "TB-EVA-02",
+    "category": "eva_bag",
+    "subcategory": "with-lid",
+    "name": "EVA-Tasche mit Deckel",
+    "description": "product_tb_eva_02_desc",
+    "specs": [
+      {
+        "labelKey": "spec_material",
+        "value": "EVA"
+      },
+      {
+        "labelKey": "spec_volume",
+        "value": "18 L"
+      },
+      {
+        "labelKey": "spec_waterproof",
+        "value": "spec_value_yes"
+      }
+    ],
+    "price": 49,
+    "images": [],
+    "stockQuantity": 4,
+    "madeToOrder": true
+  },
+  {
+    "id": "tb-eva-03",
+    "sku": "TB-EVA-03",
+    "category": "eva_bag",
+    "subcategory": "with-lid",
+    "name": "EVA-Tasche XL",
+    "description": "product_tb_eva_03_desc",
+    "specs": [
+      {
+        "labelKey": "spec_material",
+        "value": "EVA"
+      },
+      {
+        "labelKey": "spec_volume",
+        "value": "30 L"
+      },
+      {
+        "labelKey": "spec_waterproof",
+        "value": "spec_value_yes"
+      }
+    ],
+    "price": 59,
+    "images": [],
+    "stockQuantity": 28,
+    "madeToOrder": true
+  },
+  {
+    "id": "tb-eva-04",
+    "sku": "TB-EVA-04",
+    "category": "eva_bag",
+    "subcategory": "without-lid",
+    "name": "EVA-Organizer",
+    "description": "product_tb_eva_04_desc",
+    "specs": [
+      {
+        "labelKey": "spec_material",
+        "value": "EVA"
+      },
+      {
+        "labelKey": "spec_volume",
+        "value": "15 L"
+      },
+      {
+        "labelKey": "spec_foldable",
+        "value": "spec_value_yes"
+      }
+    ],
+    "price": 45,
+    "images": [],
+    "stockQuantity": 19,
+    "madeToOrder": true
+  },
+  {
+    "id": "tb-eva-05",
+    "sku": "TB-EVA-05",
+    "category": "eva_bag",
+    "subcategory": "with-lid",
+    "name": "EVA-Tasche Duo",
+    "description": "product_tb_eva_05_desc",
+    "specs": [
+      {
+        "labelKey": "spec_material",
+        "value": "EVA"
+      },
+      {
+        "labelKey": "spec_volume",
+        "value": "2 × 12 L"
+      },
+      {
+        "labelKey": "spec_waterproof",
+        "value": "spec_value_yes"
+      }
+    ],
+    "price": 69,
+    "images": [],
+    "stockQuantity": 0,
+    "madeToOrder": true
+  },
+  {
+    "id": "tb-eva-06",
+    "sku": "TB-EVA-06",
+    "category": "eva_bag",
+    "subcategory": "without-lid",
+    "name": "EVA-Tasche Mini",
+    "description": "product_tb_eva_06_desc",
+    "specs": [
+      {
+        "labelKey": "spec_material",
+        "value": "EVA"
+      },
+      {
+        "labelKey": "spec_volume",
+        "value": "6 L"
+      },
+      {
+        "labelKey": "spec_waterproof",
+        "value": "spec_value_yes"
+      }
+    ],
+    "price": 29,
+    "images": [],
+    "stockQuantity": 37,
+    "madeToOrder": true
+  },
+  {
+    "id": "tb-led-01",
+    "sku": "TB-LED-01",
+    "category": "leather_bag",
+    "name": "EVA-Leder Tasche Classic",
+    "description": "product_tb_led_01_desc",
+    "specs": [
+      {
+        "labelKey": "spec_material",
+        "value": "EVA-Leder"
+      },
+      {
+        "labelKey": "spec_volume",
+        "value": "16 L"
+      },
+      {
+        "labelKey": "spec_finish",
+        "value": "spec_value_leather_look"
+      }
+    ],
+    "price": 59,
+    "images": [],
+    "stockQuantity": 12
+  },
+  {
+    "id": "tb-led-02",
+    "sku": "TB-LED-02",
+    "category": "leather_bag",
+    "name": "EVA-Leder Tasche Premium",
+    "description": "product_tb_led_02_desc",
+    "specs": [
+      {
+        "labelKey": "spec_material",
+        "value": "EVA-Leder"
+      },
+      {
+        "labelKey": "spec_volume",
+        "value": "20 L"
+      },
+      {
+        "labelKey": "spec_finish",
+        "value": "spec_value_double_stitch"
+      }
+    ],
+    "price": 79,
+    "images": [],
+    "stockQuantity": 46
+  },
+  {
+    "id": "tb-led-03",
+    "sku": "TB-LED-03",
+    "category": "leather_bag",
+    "name": "EVA-Leder Organizer",
+    "description": "product_tb_led_03_desc",
+    "specs": [
+      {
+        "labelKey": "spec_material",
+        "value": "EVA-Leder"
+      },
+      {
+        "labelKey": "spec_volume",
+        "value": "15 L"
+      },
+      {
+        "labelKey": "spec_finish",
+        "value": "spec_value_leather_look"
+      }
+    ],
+    "price": 69,
+    "images": [],
+    "stockQuantity": 25
+  },
+  {
+    "id": "tb-led-04",
+    "sku": "TB-LED-04",
+    "category": "leather_bag",
+    "name": "EVA-Leder Tasche XL",
+    "description": "product_tb_led_04_desc",
+    "specs": [
+      {
+        "labelKey": "spec_material",
+        "value": "EVA-Leder"
+      },
+      {
+        "labelKey": "spec_volume",
+        "value": "30 L"
+      },
+      {
+        "labelKey": "spec_finish",
+        "value": "spec_value_leather_look"
+      }
+    ],
+    "price": 89,
+    "images": [],
+    "stockQuantity": 3
+  },
+  {
+    "id": "tb-led-05",
+    "sku": "TB-LED-05",
+    "category": "leather_bag",
+    "name": "EVA-Leder Set",
+    "description": "product_tb_led_05_desc",
+    "specs": [
+      {
+        "labelKey": "spec_material",
+        "value": "EVA-Leder"
+      },
+      {
+        "labelKey": "spec_set",
+        "value": "2"
+      },
+      {
+        "labelKey": "spec_finish",
+        "value": "spec_value_leather_look"
+      }
+    ],
+    "price": 99,
+    "images": [],
+    "stockQuantity": 31
+  },
+  {
+    "id": "tb-led-06",
+    "sku": "TB-LED-06",
+    "category": "leather_bag",
+    "name": "EVA-Leder Tasche Mini",
+    "description": "product_tb_led_06_desc",
+    "specs": [
+      {
+        "labelKey": "spec_material",
+        "value": "EVA-Leder"
+      },
+      {
+        "labelKey": "spec_volume",
+        "value": "8 L"
+      },
+      {
+        "labelKey": "spec_finish",
+        "value": "spec_value_leather_look"
+      }
+    ],
+    "price": 45,
+    "images": [],
+    "stockQuantity": 18
+  }
+]

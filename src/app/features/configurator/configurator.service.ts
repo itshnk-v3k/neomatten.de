@@ -13,13 +13,18 @@
  *     строит OrderItemDTO / CartItem для готовой конфигурации. Позже мок-таблицу
  *     цен заменит расчёт с бэкенда — вызовы не изменятся.
  */
-import { Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { PRICING } from '@core/config/pricing.config';
+import type { Language } from '@core/i18n/language.model';
 import type { CartItem } from '@core/models/cart-item.model';
+import type { MatColour, MatColoursData, TextureColours } from '@core/models/mat-colour.model';
 import type { OrderItemDTO } from '@core/models/order.model';
 import type { VehiclePattern } from '@core/models/vehicle.model';
 import type { SelectOption } from '@shared/models/select-option.model';
+import { round2 } from '@shared/utils/money.util';
 
-export type Texture = 'raute' | 'wabe' | 'tropfen';
+export type Texture = 'rhombus' | 'honeycomb' | 'drop';
 export type MaterialType = 'eva' | 'ecoskin';
 /** Mounting (step 07). `3d` is Coming Soon / disabled — selection stays `none`. */
 export type Mounting = 'none' | '3d';
@@ -31,6 +36,40 @@ export type Mounting = 'none' | '3d';
 export type HeelPadAccessory = 'none' | 'standard' | '3d';
 /** Heel-rest pad accessory (step 09) — a paid add-on, independent of the dataset. */
 export type HeelRest = 'none' | 'metal' | 'rubber';
+
+/**
+ * A rubber heel-rest colour (step 09): the id stored in state/order, its webp
+ * filename under `heel-rest-pad/heel-rest-rubber/`, an i18n label key and a CSS
+ * background for the picker swatch.
+ */
+export interface HeelRestColour {
+  readonly id: string;
+  readonly file: string;
+  readonly labelKey: string;
+  readonly swatch: string;
+}
+
+/** Root path for the heel-rest overlay assets (2077×2077, aligned to mat-clips). */
+const HEEL_REST_ASSET_BASE = 'assets/images/heel-rest-pad';
+
+/** Rubber colour choices shown below the option cards when Rubber is selected. */
+export const HEEL_REST_RUBBER_COLOURS: readonly HeelRestColour[] = [
+  { id: 'brown', file: 'brown.webp', labelKey: 'heel_rest_rubber_brown', swatch: '#6b4423' },
+  {
+    id: 'black-red',
+    file: 'black-with-red.webp',
+    labelKey: 'heel_rest_rubber_black_red',
+    swatch: 'linear-gradient(135deg, #1a1a1a 0 50%, #c81e1e 50% 100%)',
+  },
+  { id: 'grey', file: 'grey.webp', labelKey: 'heel_rest_rubber_grey', swatch: '#9ca3af' },
+  {
+    id: 'black-grey',
+    file: 'black-grey.webp',
+    labelKey: 'heel_rest_rubber_black_grey',
+    swatch: 'linear-gradient(135deg, #1a1a1a 0 50%, #6b7280 50% 100%)',
+  },
+  { id: 'black', file: 'black.webp', labelKey: 'heel_rest_rubber_black', swatch: '#1a1a1a' },
+];
 export type Accessories = 'with_clips' | 'without_clips';
 /** Clickable car-diagram zones = step-07 kit pieces. */
 export type CarZone = 'front_left' | 'front_right' | 'rear_left' | 'rear_right' | 'trunk';
@@ -53,138 +92,23 @@ export const FLOOR_ZONES: readonly CarZone[] = [
   'rear_right',
 ] as const;
 
-// TODO(admin): texture, per-texture colour palette and edge-colour options below
-// are static placeholders. They should become admin-managed catalogue data
-// (e.g. `GET /api/configurator/options`) with swatch images via MediaService.
-export const TEXTURES: readonly Texture[] = ['raute', 'wabe', 'tropfen'] as const;
+// TODO(admin): texture options below are static placeholders. They should become
+// admin-managed catalogue data (e.g. `GET /api/configurator/options`) with swatch
+// images via MediaService. Mat colours are now per-texture and edge colours a flat
+// palette, both loaded at runtime from mock JSON (see ConfiguratorService
+// .textureColours / .edgeColours) and will move to `GET /api/settings/colours`.
+export const TEXTURES: readonly Texture[] = ['rhombus', 'honeycomb', 'drop'] as const;
 
-/**
- * Curated colour palette per texture (no colour data in the dataset). Each id
- * maps to a `mat_color_*` translate key and a swatch hex.
- */
-export const COLORS_BY_TEXTURE: Readonly<Record<Texture, readonly ColorSwatch[]>> = {
-  raute: [
-    { id: 'black', hex: '#1a1a1a' },
-    { id: 'grey', hex: '#9ca3af' },
-    { id: 'beige', hex: '#d6c7a1' },
-    { id: 'brown', hex: '#6b4f3a' },
-    { id: 'red', hex: '#9b1c1c' },
-    { id: 'blue', hex: '#1e3a8a' },
-  ],
-  wabe: [
-    { id: 'black', hex: '#1a1a1a' },
-    { id: 'grey', hex: '#9ca3af' },
-    { id: 'beige', hex: '#d6c7a1' },
-    { id: 'blue', hex: '#1e3a8a' },
-  ],
-  tropfen: [
-    { id: 'black', hex: '#1a1a1a' },
-    { id: 'grey', hex: '#9ca3af' },
-    { id: 'red', hex: '#9b1c1c' },
-  ],
-};
-
-/** Edge-colour palette (same for every texture). */
-export const EDGE_COLORS: readonly ColorSwatch[] = [
-  { id: 'black', hex: '#1a1a1a' },
-  { id: 'grey', hex: '#9ca3af' },
-  { id: 'beige', hex: '#d6c7a1' },
-  { id: 'red', hex: '#9b1c1c' },
-  { id: 'blue', hex: '#1e3a8a' },
-];
-
-export interface ColorSwatch {
-  readonly id: string;
-  readonly hex: string;
+/** Localized display name for a colour (German name when DE, English otherwise). */
+export function colourName(colour: MatColour, lang: Language): string {
+  return lang === 'de' ? colour.name_de : colour.name_en;
 }
 
-/**
- * Per-brand trim levels (keyed by brand id slug). Values are proper nouns shown
- * as-is — the translate pipe falls back to the literal string for unknown keys,
- * so no i18n entries are needed. Brands without an entry use `default`.
- */
-export const BRAND_TRIMS: Readonly<Record<string, readonly string[]>> = {
-  audi: [
-    'Base',
-    'Sport',
-    'S-Line',
-    'S-Line Plus',
-    'Black Edition',
-    'Quattro',
-    'RS',
-    'S',
-    'Edition 1',
-  ],
-  bmw: [
-    'Base',
-    'M Sport',
-    'M Sport Pro',
-    'xDrive',
-    'Sport Line',
-    'Luxury Line',
-    'M Performance',
-    'Alpina',
-  ],
-  'mercedes-benz': [
-    'Base',
-    'AMG Line',
-    'AMG',
-    'Exclusive',
-    'Avantgarde',
-    'Elegance',
-    'Night Edition',
-    'Edition 1',
-  ],
-  volkswagen: [
-    'Base',
-    'Life',
-    'Style',
-    'R-Line',
-    'GTI',
-    'R',
-    'Highline',
-    'Comfortline',
-    'Trendline',
-  ],
-  toyota: ['Base', 'Comfort', 'Executive', 'GR Sport', 'Hybrid', 'Lounge'],
-  ford: ['Base', 'Trend', 'Titanium', 'ST-Line', 'ST', 'Vignale'],
-  skoda: ['Active', 'Ambition', 'Style', 'Sportline', 'RS', 'Scout', 'L&K'],
-  seat: ['Reference', 'Style', 'FR', 'Xcellence', 'Cupra'],
-  hyundai: ['Classic', 'Comfort', 'Smart', 'Premium', 'N-Line', 'N'],
-  kia: ['Concept', 'Dream-Team', 'Spirit', 'GT-Line', 'GT'],
-  porsche: ['Base', 'S', 'GTS', 'Turbo', 'Turbo S', 'Carrera', 'Targa', '4S'],
-  renault: ['Life', 'Zen', 'Intens', 'Techno', 'RS Line', 'RS'],
-  peugeot: ['Active', 'Allure', 'GT', 'GT Premium', 'e-GT'],
-  opel: ['Edition', 'Elegance', 'GS', 'GS Line', 'OPC'],
-  volvo: ['Core', 'Plus', 'Ultra', 'Black Edition', 'Polestar'],
-  mazda: ['Prime-Line', 'Exclusive-Line', 'Homura', 'Takumi'],
-  subaru: ['Active', 'Comfort', 'Trend', 'STI Sport'],
-  mitsubishi: ['Inform', 'Plus', 'Top', 'Instyle', 'Ralliart'],
-  nissan: ['Visia', 'Acenta', 'N-Connecta', 'Tekna', 'N-Sport'],
-  honda: ['Comfort', 'Elegance', 'Sport', 'Executive', 'Type R'],
-  default: ['Base', 'Comfort', 'Sport', 'Premium', 'Luxury', 'Limited Edition'],
-};
-
 // --- mock pricing -----------------------------------------------------------
-// TODO(admin)/TODO(backend): all prices below (tier base prices, add-on prices
-// and shipping tiers) are a mock. They should be admin-managed and/or computed
-// by the backend (e.g. `POST /api/configurator/price`); swap `price()`/`shipping()`
-// to call the API — the call sites stay the same.
-
-const BASE_BY_TIER = { economy: 89, standard: 119, premium: 159 } as const;
-const EXTRA_MAT_PRICE = 15;
-// Heel-pad (step 08) upgrade prices. TODO(admin): GET /api/settings/prices.
-const HEEL_PAD_STANDARD_PRICE = 5;
-const HEEL_PAD_3D_PRICE = 10;
-// Heel-rest pad (step 09) accessory prices. TODO(admin): GET /api/settings/prices.
-const HEEL_METAL_PRICE = 20;
-const HEEL_RUBBER_PRICE = 15;
-
-/** Shipping tiers (EUR) matching the step-11 delivery table. */
-export const SHIPPING_SINGLE = 4.99;
-export const SHIPPING_PAIR = 6.99;
-export const SHIPPING_FULL = 9.99;
-export const SHIPPING_PREMIUM = 12.99;
+// All prices (tier base prices, add-on prices and shipping tiers) come from the
+// injected `PRICING` config — a single source of truth shared with the cart and
+// checkout. TODO(admin)/TODO(backend): provide `PRICING` from a settings API
+// (e.g. `POST /api/configurator/price`); the call sites stay the same.
 
 /** The full configuration state used by pricing + builders. */
 export interface ConfigState {
@@ -197,47 +121,117 @@ export interface ConfigState {
   readonly mounting: Mounting;
   readonly heelPad: HeelPadAccessory;
   readonly heelRest: HeelRest;
+  /** Selected rubber colour id (step 09); null unless heelRest === 'rubber'. */
+  readonly heelRestColour: string | null;
+  // Step-02 refine spec — optional/informational (don't affect pricing).
+  readonly transmission: string | null;
+  readonly year: number | null;
+  readonly drive: string | null;
+  readonly engine: string | null;
 }
 
 export type PricingTier = 'economy' | 'standard' | 'premium';
 
 @Injectable({ providedIn: 'root' })
 export class ConfiguratorService {
+  private readonly http = inject(HttpClient);
+  private readonly pricing = inject(PRICING);
+
   private readonly loadingSignal = signal(true);
-  /** True while configurator data initializes; flips false after a short delay (mock). */
+  /** True while configurator data initializes; flips false once colours load. */
   readonly loading = this.loadingSignal.asReadonly();
 
+  /**
+   * Per-texture mat (fill) colour tables, loaded at runtime (supplier data v2 —
+   * colours differ per texture). Empty until the load resolves.
+   */
+  readonly textureColours = signal<TextureColours[]>([]);
+  /** Edge (border) colour palette, loaded at runtime. Empty until the load resolves. */
+  readonly edgeColours = signal<MatColour[]>([]);
+
+  /** Every mat colour across all textures, de-duplicated by id (name/hex lookups). */
+  private readonly allMatColours = computed(() => {
+    const byId = new Map<string, MatColour>();
+    for (const t of this.textureColours()) {
+      for (const c of t.colours) if (!byId.has(c.id)) byId.set(c.id, c);
+    }
+    return [...byId.values()];
+  });
+
   constructor() {
-    // Mock loading delay so skeleton states are visible during development.
-    // TODO(backend): drive `loading` from the real data/request lifecycle.
-    setTimeout(() => this.loadingSignal.set(false), 600);
+    // TODO(backend): GET /api/settings/colours
+    this.http.get<MatColoursData>('assets/data/mat-colours.json').subscribe({
+      next: data => {
+        this.textureColours.set(data.textures ?? []);
+        this.edgeColours.set(data.edge_colours ?? []);
+        this.loadingSignal.set(false);
+      },
+      // Don't strand the page on the skeleton if the palette fails to load.
+      error: () => this.loadingSignal.set(false),
+    });
   }
 
-  // Static refine-spec options (no such columns in the dataset — informational).
+  /**
+   * Mat (fill) colours available for a texture. When `size210` is true, restricts
+   * to the subset offered in the larger 210x140 size (`size_210x140_colours`).
+   */
+  matColoursFor(texture: string, size210 = false): MatColour[] {
+    const entry = this.textureColours().find(t => t.id === texture);
+    if (!entry) return [];
+    if (!size210) return entry.colours;
+    const allowed = new Set(entry.size_210x140_colours);
+    return entry.colours.filter(c => allowed.has(c.id));
+  }
+
+  /** Sizes a texture is produced in, e.g. ["200x120", "210x140"]. */
+  sizesFor(texture: string): string[] {
+    return this.textureColours().find(t => t.id === texture)?.sizes ?? [];
+  }
+
+  /** Localized name for a stored mat-colour id (falls back to the id itself). */
+  matColourName(id: string, lang: Language): string {
+    const colour = this.allMatColours().find(c => c.id === id);
+    return colour ? colourName(colour, lang) : id;
+  }
+
+  /** Localized name for a stored edge-colour id (falls back to the id itself). */
+  edgeColourName(id: string, lang: Language): string {
+    const colour = this.edgeColours().find(c => c.id === id);
+    return colour ? colourName(colour, lang) : id;
+  }
+
+  /** Hex for a stored mat-colour id (for cart/order swatches); '' if unknown. */
+  matColourHex(id: string): string {
+    return this.allMatColours().find(c => c.id === id)?.hex ?? '';
+  }
+
+  /** Hex for a stored edge-colour id (for cart/order swatches); '' if unknown. */
+  edgeColourHex(id: string): string {
+    return this.edgeColours().find(c => c.id === id)?.hex ?? '';
+  }
+
+  // Static refine-spec options (step 02). Informational only — they don't filter
+  // patterns or affect pricing; they ride along into the OrderItemDTO for the
+  // admin. `label` is an i18n key (rendered via the translate pipe in the pills).
   readonly transmissionOptions: SelectOption[] = [
-    { value: 'automatic', label: 'configurator_transmission_automatic' },
-    { value: 'manual', label: 'configurator_transmission_manual' },
+    { value: 'automatic', label: 'refine_transmission_automatic' },
+    { value: 'manual', label: 'refine_transmission_manual' },
+    { value: 'robot', label: 'refine_transmission_robot' },
   ];
   readonly driveOptions: SelectOption[] = [
-    { value: 'awd', label: 'configurator_drive_awd' },
-    { value: 'front', label: 'configurator_drive_front' },
-    { value: 'rear', label: 'configurator_drive_rear' },
+    { value: 'rear', label: 'refine_drive_rear' },
+    { value: 'front', label: 'refine_drive_front' },
+    { value: 'all', label: 'refine_drive_all' },
   ];
   readonly engineOptions: SelectOption[] = [
-    { value: '1.6', label: '1.6 L' },
-    { value: '2.0', label: '2.0 L' },
-    { value: '2.5', label: '2.5 L' },
-    { value: '3.0', label: '3.0 L' },
-    { value: 'electric', label: 'configurator_engine_electric' },
+    { value: 'petrol', label: 'refine_engine_petrol' },
+    { value: 'diesel', label: 'refine_engine_diesel' },
+    { value: 'petrol-gas', label: 'refine_engine_petrol_gas' },
+    { value: 'gas', label: 'refine_engine_gas' },
+    { value: 'electric', label: 'refine_engine_electric' },
+    { value: 'hybrid', label: 'refine_engine_hybrid' },
+    { value: 'unknown', label: 'refine_engine_unknown' },
   ];
-  /**
-   * Trim-level options for a brand (by id slug). Falls back to `default` for
-   * brands without a curated list. Values are proper nouns shown as-is.
-   */
-  trimsFor(brandId: string): SelectOption[] {
-    const trims = BRAND_TRIMS[brandId] ?? BRAND_TRIMS['default'];
-    return trims.map(t => ({ value: t, label: t }));
-  }
 
   /** Zones selected by a step-07 preset shortcut. */
   presetZones(preset: KitPreset): CarZone[] {
@@ -262,16 +256,45 @@ export class ConfiguratorService {
 
   /** Heel-pad (step 08) upgrade price for the chosen option, in EUR. */
   heelPadPrice(heelPad: HeelPadAccessory): number {
-    if (heelPad === 'standard') return HEEL_PAD_STANDARD_PRICE;
-    if (heelPad === '3d') return HEEL_PAD_3D_PRICE;
+    if (heelPad === 'standard') return this.pricing.heelPad.standard;
+    if (heelPad === '3d') return this.pricing.heelPad.threeD;
     return 0;
   }
 
   /** Heel-rest pad (step 09) accessory price for the chosen option, in EUR. */
   heelRestPrice(heelRest: HeelRest): number {
-    if (heelRest === 'metal') return HEEL_METAL_PRICE;
-    if (heelRest === 'rubber') return HEEL_RUBBER_PRICE;
+    if (heelRest === 'metal') return this.pricing.heelRest.metal;
+    if (heelRest === 'rubber') return this.pricing.heelRest.rubber;
     return 0;
+  }
+
+  /** Rubber colour id chosen by default when Rubber is first selected. */
+  readonly defaultHeelRestColour = HEEL_REST_RUBBER_COLOURS[0].id;
+
+  /** Rubber colour record for an id (null when unknown / not a rubber colour). */
+  heelRestColour(id: string | null): HeelRestColour | null {
+    return HEEL_REST_RUBBER_COLOURS.find(c => c.id === id) ?? null;
+  }
+
+  /** i18n label key for a rubber colour id (null when none). */
+  heelRestColourLabelKey(id: string | null): string | null {
+    return this.heelRestColour(id)?.labelKey ?? null;
+  }
+
+  /**
+   * Heel-rest overlay image to composite on the mat preview (above the clips
+   * layer, no tint/blend), or null when no heel rest is selected. Metal is a
+   * single image; rubber resolves to the selected colour's webp.
+   */
+  heelRestOverlaySrc(heelRest: HeelRest, colourId: string | null): string | null {
+    if (heelRest === 'metal') {
+      return `${HEEL_REST_ASSET_BASE}/heel-rest-metal/metal.webp`;
+    }
+    if (heelRest === 'rubber') {
+      const colour = this.heelRestColour(colourId) ?? HEEL_REST_RUBBER_COLOURS[0];
+      return `${HEEL_REST_ASSET_BASE}/heel-rest-rubber/${colour.file}`;
+    }
+    return null;
   }
 
   /** Mock configured-mat price (before shipping/discount), in EUR. */
@@ -282,11 +305,20 @@ export class ConfiguratorService {
     const extras = Math.max(0, floors - 2); // beyond the front pair
     // Mounting (3D) is Coming Soon — not charged. Heel-pad + heel-rest are add-ons.
     const total =
-      BASE_BY_TIER[tier] +
-      extras * EXTRA_MAT_PRICE +
+      this.pricing.tierBasePrices[tier] +
+      extras * this.pricing.extraMatPrice +
       this.heelPadPrice(state.heelPad) +
       this.heelRestPrice(state.heelRest);
     return round2(total);
+  }
+
+  /** Delivery-tier i18n key implied by the kit (mirrors `shipping()` thresholds). */
+  deliveryTierKey(zones: ReadonlySet<CarZone>): string {
+    const floors = FLOOR_ZONES.filter(z => zones.has(z)).length;
+    if (zones.has('trunk')) return 'configurator_delivery_premium';
+    if (floors >= 3) return 'configurator_delivery_full';
+    if (floors === 2) return 'configurator_delivery_pair';
+    return 'configurator_delivery_single';
   }
 
   /** Shipping cost for the kit (EUR). Free for full interior / premium sets. */
@@ -294,9 +326,10 @@ export class ConfiguratorService {
     const floors = FLOOR_ZONES.filter(z => zones.has(z)).length;
     if (zones.has('trunk')) return 0; // premium set → free to Germany
     if (floors >= 4) return 0; // full interior → free to Germany
-    if (floors <= 1) return SHIPPING_SINGLE;
-    if (floors === 2) return SHIPPING_PAIR;
-    return SHIPPING_FULL;
+    const tiers = this.pricing.shipping;
+    if (floors <= 1) return tiers.single;
+    if (floors === 2) return tiers.pair;
+    return tiers.full;
   }
 
   /** Builds the cart line for a finished configuration. `id` must be unique. */
@@ -314,23 +347,27 @@ export class ConfiguratorService {
       brand: pattern.brandName,
       model: pattern.model,
       yearRange: pattern.yearLabel ?? undefined,
+      bodyType: pattern.bodyType ?? undefined,
       tier: this.tierFor(state.zones),
       kitPieces: CAR_ZONES.filter(z => state.zones.has(z)),
+      material: state.material,
       texture: state.texture,
       materialColour: state.materialColor,
       edgeColour: state.edgeColor,
       heelPad: state.heelPad,
       heelRest: state.heelRest,
+      heelRestColour: state.heelRestColour ?? undefined,
       mounting: state.mounting,
       accessories: state.accessories,
+      // Step-02 refine spec (informational, for the admin fulfilling the order).
+      transmission: state.transmission ?? undefined,
+      yearOfManufacture: state.year ?? undefined,
+      drive: state.drive ?? undefined,
+      engine: state.engine ?? undefined,
       quantity: 1,
       unitPrice: this.price(state),
     };
   }
-}
-
-function round2(value: number): number {
-  return Math.round(value * 100) / 100;
 }
 
 /**

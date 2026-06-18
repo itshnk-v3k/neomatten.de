@@ -5,7 +5,7 @@
  *     центрального изображения, ниже — CTA на конфигуратор. Только статика.
  */
 import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
   LucideAnchor,
@@ -16,6 +16,7 @@ import {
   LucideZap,
 } from '@lucide/angular';
 import { ButtonDirective } from '@shared/components/button/button.directive';
+import { ImagePlaceholderComponent } from '@shared/components/image-placeholder/image-placeholder.component';
 import { RevealOnScrollDirective } from '@shared/directives/reveal-on-scroll.directive';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 
@@ -27,6 +28,7 @@ import { TranslatePipe } from '@shared/pipes/translate.pipe';
     TranslatePipe,
     RevealOnScrollDirective,
     ButtonDirective,
+    ImagePlaceholderComponent,
     LucideLayoutGrid,
     LucideThermometer,
     LucideDroplet,
@@ -40,5 +42,8 @@ import { TranslatePipe } from '@shared/pipes/translate.pipe';
 })
 export class AdvantagesComponent {
   /** Advantages "center" showcase image (real content asset, 1024×1024 square). */
-  protected readonly advantagesImage = 'assets/content/carpet.jpg';
+  protected readonly advantagesImage = 'assets/images/content/carpet.webp';
+
+  /** Flips true if the showcase image fails to load → render the placeholder. */
+  protected readonly imageFailed = signal(false);
 }

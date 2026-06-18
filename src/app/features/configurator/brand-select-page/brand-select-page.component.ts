@@ -1,11 +1,11 @@
 /*
  * EN: Configurator step 1 — brand selection. A grid of circular brand cards (one
  *     per brand in the dataset). Each card links to /configurator/:brand; the
- *     logo is the real brand image from assets/brands/ when present, otherwise
+ *     logo is the real brand image from assets/images/brands/ when present, otherwise
  *     the BrandLogoComponent initials fallback. No form, no dropdowns.
  * RU: Шаг 1 конфигуратора — выбор марки. Сетка круглых карточек марок (по одной
  *     на марку из набора). Каждая ведёт на /configurator/:brand; логотип — реальное
- *     изображение из assets/brands/, иначе фолбэк с инициалами BrandLogoComponent.
+ *     изображение из assets/images/brands/, иначе фолбэк с инициалами BrandLogoComponent.
  *     Без формы и выпадающих списков.
  */
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';

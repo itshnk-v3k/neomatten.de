@@ -22,7 +22,7 @@
             [ngSrc]="url"
             fill
             [alt]="caption()"
-            sizes="(max-width: 1024px) 90vw, 420px"
+            sizes="(max-width: 1024px) 90vw, 30vw"
             (error)="onImageError()"
             class="object-cover" />
         } @else {
@@ -30,15 +30,57 @@
         }
       </div>
     } @else {
-      <div
-        class="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border-[6px] shadow-soft transition-colors"
-        [style.background-color]="materialHex()"
-        [style.border-color]="edgeHex()">
-        <!-- texture overlay -->
+      <!-- Photo simulation: texture photo + mat-colour tint + edge-colour trim.
+           All layers use object-contain / mask contain + center so they align;
+           both colour overlays are masked to their shape so the transparent
+           background is never tinted. The mat photos are dark, so light colours
+           read subtly under `multiply`. -->
+      <div class="relative aspect-square w-full overflow-hidden rounded-2xl shadow-soft">
+        <!-- Base mat texture photo (contain → whole mat visible, never cropped). -->
+        <img
+          [ngSrc]="textureImageSrc()"
+          fill
+          [alt]="caption()"
+          sizes="(max-width: 1024px) 90vw, 30vw"
+          class="object-contain" />
+
+        <!-- Mat colour overlay: plus-lighter tints the mat while preserving the
+             texture, masked by the mat photo's alpha so only the mat body (and its
+             blend mode) is set via matMaskStyle. -->
         <div
-          class="absolute inset-0"
-          [style.background-image]="patternImage()"
-          [style.background-size]="patternSize()"></div>
+          class="pointer-events-none absolute inset-0 opacity-70"
+          [style]="matMaskStyle()"
+          [style.background-color]="materialHex()"></div>
+
+        <!-- Edging outline (defines the trim shape + seam relief). -->
+        <img
+          src="assets/images/mats/edging.webp"
+          alt=""
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 size-full object-contain" />
+
+        <!-- Edge colour: a coloured layer masked to the edging outline so only the
+             trim is tinted (a full-rect overlay would tint the whole mat). -->
+        <div
+          class="mat-edge-mask pointer-events-none absolute inset-0 opacity-[0.85]"
+          [style.background-color]="edgeHex()"></div>
+
+        <!-- Clips overlay — rendered as-is (no blend, no tint). -->
+        <img
+          src="assets/images/mats/mat-clips.webp"
+          alt=""
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 size-full object-contain" />
+
+        <!-- Heel-rest overlay — topmost layer, same size/position as the clips
+             (2077×2077, transparency baked in), rendered as-is (no blend/tint). -->
+        @if (heelRestOverlaySrc(); as heelRestSrc) {
+          <img
+            [src]="heelRestSrc"
+            alt=""
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-0 size-full object-contain" />
+        }
       </div>
     }
 
@@ -53,11 +95,6 @@
         @if (heelPad() !== 'none') {
           <span class="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white shadow">
             {{ heelPadLabelKey() | translate }}
-          </span>
-        }
-        @if (heelRest() !== 'none') {
-          <span class="rounded-full bg-ink px-3 py-1 text-xs font-semibold text-white shadow">
-            {{ heelRestLabelKey() | translate }}
           </span>
         }
       </div>

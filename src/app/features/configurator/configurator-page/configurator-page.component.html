@@ -34,14 +34,19 @@
     </div>
   } @else {
     <div class="lg:flex lg:items-start lg:gap-8">
-      <!-- ===================== LEFT COLUMN ===================== -->
+      <!-- ===================== LEFT COLUMN (desktop only) =====================
+           On mobile the preview/diagram are shown inline in the step flow (slots
+           below); the sticky left column is for lg+ only. -->
       <nm-configurator-preview
+        class="hidden lg:flex"
+        mode="full"
         [texture]="texture()"
         [materialHex]="materialHex()"
         [edgeHex]="edgeHex()"
         [mounting]="mounting()"
         [heelPad]="heelPad()"
         [heelRest]="heelRest()"
+        [heelRestOverlaySrc]="heelRestOverlaySrc()"
         [caption]="caption()"
         [sku]="activePattern()?.sku ?? ''"
         [colorId]="materialColor()"
@@ -55,7 +60,8 @@
         <!-- 01 Vehicle information -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               1
             </span>
             {{ 'configurator_step_vehicle' | translate }}
@@ -94,7 +100,8 @@
         <!-- 02 Refine specification -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               2
             </span>
             {{ 'configurator_step_refine' | translate }}
@@ -102,39 +109,72 @@
           <p class="mt-1 text-sm text-content-secondary">
             {{ 'configurator_refine_hint' | translate }}
           </p>
+          <!-- All four fields are optional/informational dropdowns. Year-of-manufacture
+               is disabled until the vehicle's year range (step 01) is resolved. -->
           <div class="mt-4 grid gap-4 sm:grid-cols-2">
             <nm-select
-              formControlName="yearOfManufacture"
-              label="configurator_field_year_made"
-              placeholder="configurator_optional"
-              [options]="yearOfManufactureOptions()" />
-            <nm-select
               formControlName="transmission"
-              label="configurator_field_transmission"
+              label="refine_transmission"
               placeholder="configurator_optional"
               [options]="transmissionOptions" />
             <nm-select
+              formControlName="yearOfManufacture"
+              label="refine_year"
+              placeholder="configurator_optional"
+              [hint]="yearOfManufactureOptions().length ? '' : 'refine_year_hint'"
+              [options]="yearOfManufactureOptions()" />
+            <nm-select
               formControlName="drive"
-              label="configurator_field_drive"
+              label="refine_drive"
               placeholder="configurator_optional"
               [options]="driveOptions" />
             <nm-select
               formControlName="engine"
-              label="configurator_field_engine"
+              label="refine_engine"
               placeholder="configurator_optional"
               [options]="engineOptions" />
-            <nm-select
-              formControlName="trim"
-              label="configurator_field_trim"
-              placeholder="configurator_optional"
-              [options]="trimOptions()" />
+            <!-- Body type — read-only, auto-filled from the matched pattern (not editable). -->
+            <div>
+              <span class="mb-1.5 block text-sm font-medium text-content">
+                {{ 'refine_body_type_label' | translate }}
+              </span>
+              <div
+                class="flex h-11 w-full items-center rounded-md border border-border bg-surface-input px-4 text-sm text-content opacity-70">
+                @if (activePattern()?.bodyType; as bodyType) {
+                  {{ 'body_type_' + bodyType | translate }}
+                } @else {
+                  <span class="text-content-muted">—</span>
+                }
+              </div>
+            </div>
           </div>
         </section>
+
+        <!-- Mobile preview slot: mat preview, shown after Refine so it's visible
+             while configuring material/texture/colours (lg uses the sticky column). -->
+        <nm-configurator-preview
+          class="lg:hidden"
+          mode="mat"
+          [texture]="texture()"
+          [materialHex]="materialHex()"
+          [edgeHex]="edgeHex()"
+          [mounting]="mounting()"
+          [heelPad]="heelPad()"
+          [heelRest]="heelRest()"
+          [heelRestOverlaySrc]="heelRestOverlaySrc()"
+          [caption]="caption()"
+          [sku]="activePattern()?.sku ?? ''"
+          [colorId]="materialColor()"
+          [zones]="zones()"
+          [activeStep]="activeStep()"
+          [total]="total()"
+          (zoneToggle)="toggleZone($event)" />
 
         <!-- 03 Material type -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               3
             </span>
             {{ 'configurator_step_material' | translate }}
@@ -192,7 +232,8 @@
         <!-- 04 Texture -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               4
             </span>
             {{ 'configurator_step_texture' | translate }}
@@ -210,20 +251,26 @@
                 type="button"
                 (click)="selectTexture(tex)"
                 [attr.aria-pressed]="texture() === tex"
-                [class]="
-                  'overflow-hidden rounded-xl border-2 text-center transition-colors ' +
-                  (texture() === tex ? 'border-primary' : 'border-border hover:border-primary')
-                ">
-                @if (textureImage(tex); as img) {
-                  <img
-                    [src]="img"
-                    [alt]="'configurator_texture_' + tex | translate"
-                    loading="lazy"
-                    class="aspect-[10/7] w-full object-cover" />
-                } @else {
-                  <nm-image-placeholder class="block aspect-[10/7] w-full rounded-none" />
-                }
-                <span class="block py-2 text-sm font-semibold">
+                class="flex flex-col items-center gap-2 rounded-xl p-2 text-center transition-colors">
+                <!-- Compact circular texture swatch from the dedicated texture/ crops
+                     (WebP only). Selected ring mirrors the colour swatches. -->
+                <span
+                  [class]="
+                    'block aspect-square w-20 overflow-hidden rounded-full ring-2 ring-offset-2 ring-offset-surface transition-all sm:w-32 ' +
+                    (texture() === tex ? 'ring-primary' : 'ring-transparent hover:ring-border')
+                  ">
+                  @if (!textureFailed().has(tex)) {
+                    <img
+                      [src]="'assets/images/texture/' + tex + '.webp'"
+                      [alt]="'configurator_texture_' + tex | translate"
+                      loading="lazy"
+                      class="size-full object-none object-center"
+                      (error)="onTextureError(tex)" />
+                  } @else {
+                    <nm-image-placeholder class="size-full rounded-none" />
+                  }
+                </span>
+                <span class="text-sm font-semibold" [class.text-primary]="texture() === tex">
                   {{ 'configurator_texture_' + tex | translate }}
                 </span>
               </button>
@@ -234,70 +281,80 @@
         <!-- 05 Material colour -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               5
             </span>
             {{ 'configurator_step_material_color' | translate }}
           </h2>
-          <ul class="mt-4 flex flex-wrap gap-3">
-            @for (c of colorOptions(); track c.id) {
-              <li>
+          <div class="mt-4 flex flex-wrap">
+            @for (c of availableMatColours(); track c.id) {
+              <div class="p-1">
                 <button
                   type="button"
-                  (click)="selectMaterialColor(c.id)"
-                  [attr.aria-label]="'mat_color_' + c.id | translate"
-                  [attr.aria-pressed]="materialColor() === c.id"
+                  class="size-7 rounded-full shadow-md transition-all duration-150 hover:scale-110"
                   [style.background-color]="c.hex"
-                  [class]="
-                    'size-10 rounded-full ring-2 ring-offset-2 transition-all ' +
-                    (materialColor() === c.id
-                      ? 'ring-primary'
-                      : 'ring-transparent hover:ring-border')
-                  "></button>
-              </li>
+                  [class.ring-2]="materialColor() === c.id"
+                  [class.ring-primary]="materialColor() === c.id"
+                  [class.ring-offset-2]="materialColor() === c.id"
+                  [class.ring-offset-surface]="materialColor() === c.id"
+                  [class.scale-110]="materialColor() === c.id"
+                  [class.border]="needsBorder(c.hex)"
+                  [class.border-border]="needsBorder(c.hex)"
+                  [attr.aria-label]="colourName(c)"
+                  [attr.aria-pressed]="materialColor() === c.id"
+                  [attr.title]="colourName(c)"
+                  (click)="selectMaterialColor(c.id)"></button>
+              </div>
             }
-          </ul>
+          </div>
         </section>
 
         <!-- 06 Edge colour -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               6
             </span>
             {{ 'configurator_step_edge_color' | translate }}
           </h2>
-          <ul class="mt-4 flex flex-wrap gap-3">
-            @for (c of edgeColors; track c.id) {
-              <li>
+          <div class="mt-4 flex flex-wrap">
+            @for (c of edgeColours(); track c.id) {
+              <div class="p-1">
                 <button
                   type="button"
-                  (click)="selectEdgeColor(c.id)"
-                  [attr.aria-label]="'mat_color_' + c.id | translate"
-                  [attr.aria-pressed]="edgeColor() === c.id"
+                  class="size-7 rounded-full shadow-md transition-all duration-150 hover:scale-110"
                   [style.background-color]="c.hex"
-                  [class]="
-                    'size-10 rounded-full ring-2 ring-offset-2 transition-all ' +
-                    (edgeColor() === c.id ? 'ring-primary' : 'ring-transparent hover:ring-border')
-                  "></button>
-              </li>
+                  [class.ring-2]="edgeColor() === c.id"
+                  [class.ring-primary]="edgeColor() === c.id"
+                  [class.ring-offset-2]="edgeColor() === c.id"
+                  [class.ring-offset-surface]="edgeColor() === c.id"
+                  [class.scale-110]="edgeColor() === c.id"
+                  [class.border]="needsBorder(c.hex)"
+                  [class.border-border]="needsBorder(c.hex)"
+                  [attr.aria-label]="colourName(c)"
+                  [attr.aria-pressed]="edgeColor() === c.id"
+                  [attr.title]="colourName(c)"
+                  (click)="selectEdgeColor(c.id)"></button>
+              </div>
             }
-          </ul>
+          </div>
         </section>
 
         <!-- 07 Mounting -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               7
             </span>
             {{ 'configurator_step_mounting' | translate }}
             <button
               type="button"
               class="ml-auto text-content-muted transition-colors hover:text-primary"
-              [nmTooltip]="'mounting_info_3d'"
-              position="left"
-              [attr.aria-label]="'configurator_info_label' | translate">
+              [attr.aria-label]="'configurator_info_label' | translate"
+              (click)="mountingInfoOpen.set(true)">
               <svg lucideInfo class="size-5"></svg>
             </button>
           </h2>
@@ -332,7 +389,8 @@
         <!-- 08 Heel pad -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               8
             </span>
             {{ 'configurator_step_heel' | translate }}
@@ -359,7 +417,7 @@
               (click)="setHeelPad('none')"
               [attr.aria-pressed]="heelPad() === 'none'"
               [class]="
-                'rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                'flex min-h-20 flex-col justify-center gap-1 rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
                 (heelPad() === 'none'
                   ? 'border-primary bg-primary-50'
                   : 'border-border hover:border-primary')
@@ -373,22 +431,22 @@
                 (click)="setHeelPad('standard')"
                 [attr.aria-pressed]="heelPad() === 'standard'"
                 [class]="
-                  'flex items-center justify-between rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                  'flex min-h-20 flex-col justify-center gap-1 rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
                   (heelPad() === 'standard'
                     ? 'border-primary bg-primary-50'
                     : 'border-border hover:border-primary')
                 ">
-                {{ 'configurator_heel_standard' | translate }}
-                <span class="text-sm text-primary">+5 &euro;</span>
+                <span>{{ 'configurator_heel_standard' | translate }}</span>
+                <span class="text-sm font-semibold text-primary">+5.00 &euro;</span>
               </button>
             } @else {
               <div
                 [nmTooltip]="heelPadUnavailableKey('standard')"
                 tone="error"
                 aria-disabled="true"
-                class="flex cursor-not-allowed items-center justify-between rounded-xl border-2 border-border p-4 text-left font-semibold opacity-40">
-                {{ 'configurator_heel_standard' | translate }}
-                <span class="text-sm text-primary">+5 &euro;</span>
+                class="flex min-h-20 cursor-not-allowed flex-col justify-center gap-1 rounded-xl border-2 border-border p-4 text-left font-semibold opacity-40">
+                <span>{{ 'configurator_heel_standard' | translate }}</span>
+                <span class="text-sm font-semibold text-primary">+5.00 &euro;</span>
               </div>
             }
 
@@ -398,22 +456,22 @@
                 (click)="setHeelPad('3d')"
                 [attr.aria-pressed]="heelPad() === '3d'"
                 [class]="
-                  'flex items-center justify-between rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                  'flex min-h-20 flex-col justify-center gap-1 rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
                   (heelPad() === '3d'
                     ? 'border-primary bg-primary-50'
                     : 'border-border hover:border-primary')
                 ">
-                {{ 'configurator_heel_3d' | translate }}
-                <span class="text-sm text-primary">+10 &euro;</span>
+                <span>{{ 'configurator_heel_3d' | translate }}</span>
+                <span class="text-sm font-semibold text-primary">+10.00 &euro;</span>
               </button>
             } @else {
               <div
                 [nmTooltip]="heelPadUnavailableKey('3d')"
                 tone="error"
                 aria-disabled="true"
-                class="flex cursor-not-allowed items-center justify-between rounded-xl border-2 border-border p-4 text-left font-semibold opacity-40">
-                {{ 'configurator_heel_3d' | translate }}
-                <span class="text-sm text-primary">+10 &euro;</span>
+                class="flex min-h-20 cursor-not-allowed flex-col justify-center gap-1 rounded-xl border-2 border-border p-4 text-left font-semibold opacity-40">
+                <span>{{ 'configurator_heel_3d' | translate }}</span>
+                <span class="text-sm font-semibold text-primary">+10.00 &euro;</span>
               </div>
             }
           </div>
@@ -422,10 +480,18 @@
         <!-- 09 Fersenpolster (heel rest pad) -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               9
             </span>
             {{ 'heel_rest_title' | translate }}
+            <button
+              type="button"
+              class="ml-auto text-content-muted transition-colors hover:text-primary"
+              [attr.aria-label]="'configurator_info_label' | translate"
+              (click)="heelRestInfoOpen.set(true)">
+              <svg lucideInfo class="size-5"></svg>
+            </button>
           </h2>
           <div class="mt-4 grid gap-3 sm:grid-cols-3">
             <button
@@ -433,7 +499,7 @@
               (click)="setHeelRest('none')"
               [attr.aria-pressed]="heelRest() === 'none'"
               [class]="
-                'rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                'flex min-h-20 flex-col justify-center gap-1 rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
                 (heelRest() === 'none'
                   ? 'border-primary bg-primary-50'
                   : 'border-border hover:border-primary')
@@ -445,34 +511,59 @@
               (click)="setHeelRest('metal')"
               [attr.aria-pressed]="heelRest() === 'metal'"
               [class]="
-                'flex items-center justify-between rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                'flex min-h-20 flex-col justify-center gap-1 rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
                 (heelRest() === 'metal'
                   ? 'border-primary bg-primary-50'
                   : 'border-border hover:border-primary')
               ">
-              {{ 'heel_rest_metal' | translate }}
-              <span class="text-sm text-primary">+20 &euro;</span>
+              <span>{{ 'heel_rest_metal' | translate }}</span>
+              <span class="text-sm font-semibold text-primary">+20.00 &euro;</span>
             </button>
             <button
               type="button"
               (click)="setHeelRest('rubber')"
               [attr.aria-pressed]="heelRest() === 'rubber'"
               [class]="
-                'flex items-center justify-between rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
+                'flex min-h-20 flex-col justify-center gap-1 rounded-xl border-2 p-4 text-left font-semibold transition-colors ' +
                 (heelRest() === 'rubber'
                   ? 'border-primary bg-primary-50'
                   : 'border-border hover:border-primary')
               ">
-              {{ 'heel_rest_rubber' | translate }}
-              <span class="text-sm text-primary">+15 &euro;</span>
+              <span>{{ 'heel_rest_rubber' | translate }}</span>
+              <span class="text-sm font-semibold text-primary">+15.00 &euro;</span>
             </button>
           </div>
+
+          <!-- Rubber colour picker — only when Rubber is selected. Same swatch
+               pattern as the mat-colour step; updates the overlay immediately. -->
+          @if (heelRest() === 'rubber') {
+            <div class="mt-4 flex flex-wrap items-center gap-1">
+              @for (c of rubberColours; track c.id) {
+                <div class="p-1">
+                  <button
+                    type="button"
+                    class="size-7 rounded-full border border-border shadow-md transition-all duration-150 hover:scale-110"
+                    [style.background]="c.swatch"
+                    [class.ring-2]="heelRestColour() === c.id"
+                    [class.ring-primary]="heelRestColour() === c.id"
+                    [class.ring-offset-2]="heelRestColour() === c.id"
+                    [class.ring-offset-surface]="heelRestColour() === c.id"
+                    [class.scale-110]="heelRestColour() === c.id"
+                    [attr.aria-label]="c.labelKey | translate"
+                    [attr.aria-pressed]="heelRestColour() === c.id"
+                    [attr.title]="c.labelKey | translate"
+                    (click)="setHeelRestColour(c.id)"></button>
+                </div>
+              }
+            </div>
+          }
         </section>
 
         <!-- 10 Accessories -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               10
             </span>
             {{ 'configurator_step_accessories' | translate }}
@@ -520,10 +611,30 @@
           </div>
         </section>
 
+        <!-- Mobile preview slot: car diagram, shown right before Build your set so
+             it's visible while placing mats (lg uses the sticky column). -->
+        <nm-configurator-preview
+          class="lg:hidden"
+          mode="car"
+          [texture]="texture()"
+          [materialHex]="materialHex()"
+          [edgeHex]="edgeHex()"
+          [mounting]="mounting()"
+          [heelPad]="heelPad()"
+          [heelRest]="heelRest()"
+          [caption]="caption()"
+          [sku]="activePattern()?.sku ?? ''"
+          [colorId]="materialColor()"
+          [zones]="zones()"
+          [activeStep]="activeStep()"
+          [total]="total()"
+          (zoneToggle)="toggleZone($event)" />
+
         <!-- 11 Build your set -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               11
             </span>
             {{ 'configurator_step_kit' | translate }}
@@ -579,16 +690,16 @@
         <!-- 12 Delivery -->
         <section #stepCard class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               12
             </span>
             {{ 'configurator_step_delivery' | translate }}
             <button
               type="button"
               class="ml-auto text-content-muted transition-colors hover:text-primary"
-              [nmTooltip]="'configurator_delivery_threshold_info'"
-              position="left"
-              [attr.aria-label]="'configurator_info_label' | translate">
+              [attr.aria-label]="'configurator_info_label' | translate"
+              (click)="deliveryInfoOpen.set(true)">
               <svg lucideInfo class="size-5"></svg>
             </button>
           </h2>
@@ -631,54 +742,74 @@
             @if (freeShipping()) {
               <span class="text-success">{{ 'configurator_delivery_free' | translate }}</span>
             } @else {
-              {{ shipping() }} &euro;
+              {{ shipping() | euro }}
             }
           </p>
         </section>
 
         <!-- 13 Summary + CTA -->
-        <section #stepCard class="rounded-2xl border-2 border-primary bg-surface p-6 shadow-soft">
+        <section
+          #stepCard
+          #summaryCard
+          data-step="13"
+          class="rounded-2xl border-2 border-primary bg-surface p-6 shadow-soft">
           <h2 class="flex items-center gap-3 text-lg font-bold">
-            <span class="grid size-7 place-items-center rounded-full bg-primary text-sm text-white">
+            <span
+              class="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-sm text-white">
               13
             </span>
             {{ 'configurator_step_summary' | translate }}
           </h2>
-          <dl class="mt-4 space-y-1.5 text-sm">
-            <div class="flex justify-between">
-              <dt class="text-content-secondary">{{ 'configurator_summary_mats' | translate }}</dt>
-              <dd class="font-medium">{{ price() }} &euro;</dd>
+
+          <!-- Every configuration step with its selected value (or "—" if skipped). -->
+          <nm-config-details [details]="configDetails()" class="mt-4 block" />
+
+          <!-- Price breakdown -->
+          <dl class="mt-4 space-y-1.5 border-t border-border pt-4 text-xs md:text-sm">
+            <div class="flex justify-between gap-3">
+              <dt class="min-w-0 text-content-secondary">
+                {{ 'configurator_summary_mats' | translate }}
+              </dt>
+              <dd class="shrink-0 whitespace-nowrap font-medium">{{ price() | euro }}</dd>
             </div>
             @if (heelPad() !== 'none') {
-              <div class="flex justify-between">
-                <dt class="text-content-secondary">
+              <div class="flex justify-between gap-3">
+                <dt class="min-w-0 text-content-secondary">
                   {{ 'configurator_step_heel' | translate }}:
                   {{ 'configurator_heel_' + heelPad() | translate }}
                 </dt>
-                <dd class="font-medium">+{{ heelPadPrice() }} &euro;</dd>
+                <dd class="shrink-0 whitespace-nowrap font-medium">+{{ heelPadPrice() | euro }}</dd>
               </div>
             }
             @if (heelRest() !== 'none') {
-              <div class="flex justify-between">
-                <dt class="text-content-secondary">
+              <div class="flex justify-between gap-3">
+                <dt class="min-w-0 text-content-secondary">
                   {{ 'heel_rest_title' | translate }}: {{ 'heel_rest_' + heelRest() | translate }}
+                  @if (heelRestColourKey(); as colourKey) {
+                    · {{ colourKey | translate }}
+                  }
                 </dt>
-                <dd class="font-medium">+{{ heelRestPrice() }} &euro;</dd>
+                <dd class="shrink-0 whitespace-nowrap font-medium">
+                  +{{ heelRestPrice() | euro }}
+                </dd>
               </div>
             }
-            <div class="flex justify-between">
-              <dt class="text-content-secondary">{{ 'configurator_step_delivery' | translate }}</dt>
-              <dd class="font-medium">
+            <div class="flex justify-between gap-3">
+              <dt class="min-w-0 text-content-secondary">
+                {{ 'configurator_step_delivery' | translate }}
+              </dt>
+              <dd class="shrink-0 whitespace-nowrap font-medium">
                 @if (freeShipping()) {
                   {{ 'configurator_delivery_free' | translate }}
                 } @else {
-                  {{ shipping() }} &euro;
+                  {{ shipping() | euro }}
                 }
               </dd>
             </div>
-            <div class="flex justify-between border-t border-border pt-2 text-base font-extrabold">
-              <dt>{{ 'configurator_total' | translate }}</dt>
-              <dd>{{ total() }} &euro;</dd>
+            <div
+              class="flex justify-between gap-3 border-t border-border pt-2 text-sm font-bold md:text-base md:font-extrabold">
+              <dt class="min-w-0">{{ 'configurator_total' | translate }}</dt>
+              <dd class="shrink-0 whitespace-nowrap">{{ total() | euro }}</dd>
             </div>
           </dl>
 
@@ -725,15 +856,16 @@
 </section>
 
 <!-- Sticky bottom bar (mobile only): live total + add to cart. Above content,
-     below dialogs (z-popup 2000). -->
-@if (loaded()) {
+     below dialogs (z-popup 2000). Hidden on the Summary step (13) — redundant
+     with that card's own total + CTAs. -->
+@if (loaded() && showStickyBar()) {
   <div
     class="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-border bg-surface px-4 py-3 shadow-elev lg:hidden">
     <div class="min-w-0">
       <span class="block text-xs text-content-secondary">
         {{ 'configurator_total' | translate }}
       </span>
-      <span class="text-lg font-extrabold">{{ total() }} &euro;</span>
+      <span class="text-lg font-extrabold">{{ total() | euro }}</span>
     </div>
     <button
       nmButton
@@ -751,9 +883,12 @@
 <nm-configurator-info-dialogs
   [(materialInfoOpen)]="materialInfoOpen"
   [(textureInfoOpen)]="textureInfoOpen"
+  [(mountingInfoOpen)]="mountingInfoOpen"
   [(kitInfoOpen)]="kitInfoOpen"
   [(accessoriesInfoOpen)]="accessoriesInfoOpen"
-  [(heelInfoOpen)]="heelInfoOpen" />
+  [(heelInfoOpen)]="heelInfoOpen"
+  [(heelRestInfoOpen)]="heelRestInfoOpen"
+  [(deliveryInfoOpen)]="deliveryInfoOpen" />
 
 <!-- Auth + payment dialogs -->
 <nm-auth-dialog [(open)]="authOpen" (authenticated)="onAuthenticated()" />

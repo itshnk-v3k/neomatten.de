@@ -15,12 +15,13 @@ import type { PaymentMethod } from '@core/models/order.model';
 import { BrandIconComponent } from '@shared/components/brand-icon/brand-icon.component';
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import { DialogComponent } from '@shared/components/dialog/dialog.component';
+import { EuroPipe } from '@shared/pipes/euro.pipe';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { siKlarna, siMastercard, siPaypal, siVisa } from 'simple-icons';
 
 @Component({
   selector: 'nm-payment-dialog',
-  imports: [DialogComponent, BrandIconComponent, ButtonDirective, TranslatePipe],
+  imports: [DialogComponent, BrandIconComponent, ButtonDirective, TranslatePipe, EuroPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './payment-dialog.component.html',
 })

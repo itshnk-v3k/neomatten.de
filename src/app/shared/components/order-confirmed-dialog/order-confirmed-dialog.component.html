@@ -10,9 +10,21 @@
   @if (order(); as o) {
     <p class="text-content-secondary">{{ 'order_confirmed_body' | translate }}</p>
 
-    <p class="mt-4 rounded-md bg-surface-subtle px-4 py-3 text-center font-bold text-content">
-      #{{ o.id }}
-    </p>
+    <div
+      class="mt-4 flex items-center justify-center gap-2 rounded-md bg-surface-subtle px-4 py-3 font-bold text-content">
+      <span>#{{ o.id }}</span>
+      <button
+        type="button"
+        class="text-content-muted transition-colors hover:text-primary"
+        [attr.aria-label]="'order_copy_id' | translate"
+        (click)="clipboard.copy(o.id, 'order_copy_id')">
+        @if (clipboard.isCopied(o.id)) {
+          <svg lucideCheck class="size-4 text-success" aria-hidden="true"></svg>
+        } @else {
+          <svg lucideCopy class="size-4" aria-hidden="true"></svg>
+        }
+      </button>
+    </div>
   }
 
   <div dialogFooter>

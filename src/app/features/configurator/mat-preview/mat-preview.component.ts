@@ -1,14 +1,13 @@
 /*
- * EN: Mat preview placeholder. A large CSS-rendered mat that reflects the current
- *     texture (pattern overlay), material colour (fill) and edge colour (border),
- *     with a caption showing the material · texture name. Shows a badge when a 3D
- *     mount or a heel pad (standard/3d) is selected. Purely visual feedback —
- *     admin supplies real preview renders later.
- * RU: Заглушка-превью коврика. Большой CSS-коврик, отражающий текущую фактуру
- *     (узор), цвет материала (заливка) и цвет канта (рамка), с подписью «материал ·
- *     фактура». Показывает бейдж при выборе 3D-крепления или подпятника
- *     (стандарт/3D). Чисто визуальная обратная связь — реальные рендеры добавит
- *     админ позже.
+ * EN: Mat preview. A real mat texture photo (per selected texture) tinted by the
+ *     chosen material colour (multiply overlay) with the edge trim tinted via an
+ *     edging-shaped CSS mask, plus a caption and badges for 3D mount / heel pad.
+ *     Visual simulation — admin supplies real per-SKU preview renders later
+ *     (previewUrl branch), which take over when available.
+ * RU: Превью коврика. Реальное фото фактуры (по выбранной фактуре), тонированное
+ *     цветом материала (overlay multiply), с кантом, тонированным через CSS-маску
+ *     формы канта, плюс подпись и бейджи 3D-крепления / подпятника. Визуальная
+ *     симуляция — реальные рендеры по SKU добавит админ позже (ветка previewUrl).
  */
 import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
@@ -29,6 +28,7 @@ import {
   imports: [NgOptimizedImage, ImagePlaceholderComponent, SkeletonComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './mat-preview.component.html',
+  styleUrl: './mat-preview.component.scss',
 })
 export class MatPreviewComponent {
   private readonly media = inject(MediaService);
@@ -42,6 +42,11 @@ export class MatPreviewComponent {
   readonly mounting = input.required<Mounting>();
   readonly heelPad = input.required<HeelPadAccessory>();
   readonly heelRest = input.required<HeelRest>();
+  /**
+   * Heel-rest overlay image (metal / selected rubber colour), composited above
+   * every other layer with no tint or blend — null when no heel rest is chosen.
+   */
+  readonly heelRestOverlaySrc = input<string | null>(null);
   /** Already-translated caption, e.g. "EVA · Raute". */
   readonly caption = input.required<string>();
   /** Resolved vehicle SKU + colour id, for the admin-managed preview render. */
@@ -67,22 +72,38 @@ export class MatPreviewComponent {
     this.imageFailed.set(true);
   }
 
-  /** CSS background pattern for the selected texture. */
-  protected readonly patternImage = computed(() => {
-    switch (this.texture()) {
-      case 'raute':
-        return 'repeating-linear-gradient(45deg, rgba(255,255,255,0.18) 0 6px, transparent 6px 12px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.12) 0 6px, transparent 6px 12px)';
-      case 'wabe':
-        return 'radial-gradient(rgba(255,255,255,0.22) 2px, transparent 2.5px)';
-      case 'tropfen':
-        return 'radial-gradient(circle at 4px 4px, rgba(0,0,0,0.18) 2px, transparent 3px)';
-    }
-  });
-
-  protected readonly patternSize = computed(() =>
-    this.texture() === 'raute' ? '14px 14px' : '16px 16px'
+  /** Base mat texture photo (WebP) for the selected texture (rhombus / honeycomb / drop). */
+  protected readonly textureImageSrc = computed(
+    () => `assets/images/mats/${this.texture()}-mat.webp`
   );
 
+  /**
+   * EN: Clips the mat-colour overlay to the mat body shape — the texture WebP's
+   *     own alpha is used as a CSS mask, so the colour only tints the opaque mat
+   *     (not the transparent background). Mask URL must be dynamic (per texture),
+   *     so it's an inline style; root-absolute so it resolves on any route.
+   *     `contain` + `center` mirrors the images' object-contain so they align.
+   * RU: Обрезает слой цвета по форме коврика — альфа фото-фактуры служит CSS-маской,
+   *     поэтому цвет тонирует только непрозрачный коврик (не прозрачный фон). URL
+   *     маски динамический (по фактуре) → инлайн-стиль; корневой-абсолютный, чтобы
+   *     резолвился на любом маршруте. `contain` + `center` совпадает с object-contain.
+   */
+  protected readonly matMaskStyle = computed(() => {
+    const mask = `url(/assets/images/mats/${this.texture()}-mat.webp)`;
+    return {
+      'mask-image': mask,
+      '-webkit-mask-image': mask,
+      'mask-size': 'contain',
+      '-webkit-mask-size': 'contain',
+      'mask-repeat': 'no-repeat',
+      '-webkit-mask-repeat': 'no-repeat',
+      'mask-position': 'center',
+      '-webkit-mask-position': 'center',
+      // plus-lighter additively lightens the dark mat photo toward the chosen
+      // colour, so light colours read clearly (multiply kept everything dark).
+      'mix-blend-mode': 'plus-lighter',
+    };
+  });
+
   protected readonly heelPadLabelKey = computed(() => `configurator_heel_${this.heelPad()}`);
-  protected readonly heelRestLabelKey = computed(() => `heel_rest_${this.heelRest()}`);
 }

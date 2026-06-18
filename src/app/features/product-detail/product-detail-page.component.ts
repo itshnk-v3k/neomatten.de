@@ -14,10 +14,12 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { CartService } from '@core/services/cart.service';
 import { ProductService } from '@core/services/product.service';
+import { BadgeComponent } from '@shared/components/badge/badge.component';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import { ImagePlaceholderComponent } from '@shared/components/image-placeholder/image-placeholder.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
+import { EuroPipe } from '@shared/pipes/euro.pipe';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { ToastService } from '@shared/services/toast.service';
 import { createAsyncAction } from '@shared/utils/async-action.util';
@@ -26,11 +28,13 @@ import { createAsyncAction } from '@shared/utils/async-action.util';
   selector: 'nm-product-detail-page',
   imports: [
     NgOptimizedImage,
+    BadgeComponent,
     BreadcrumbComponent,
     ButtonDirective,
     ImagePlaceholderComponent,
     SkeletonComponent,
     TranslatePipe,
+    EuroPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './product-detail-page.component.html',
@@ -65,6 +69,16 @@ export class ProductDetailPageComponent {
 
   protected onImageError(): void {
     this.imageFailed.set(true);
+  }
+
+  /**
+   * Per-thumbnail failure set: a single thumb failing shouldn't blank the others,
+   * so each broken index renders its own placeholder in the strip.
+   */
+  protected readonly failedThumbs = signal<ReadonlySet<number>>(new Set());
+
+  protected onThumbError(index: number): void {
+    this.failedThumbs.update(set => new Set(set).add(index));
   }
 
   protected select(index: number): void {

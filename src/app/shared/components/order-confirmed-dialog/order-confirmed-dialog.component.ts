@@ -12,17 +12,22 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CheckoutService } from '@core/services/checkout.service';
+import { LucideCheck, LucideCopy } from '@lucide/angular';
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import { DialogComponent } from '@shared/components/dialog/dialog.component';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
+import { ClipboardService } from '@shared/services/clipboard.service';
 
 @Component({
   selector: 'nm-order-confirmed-dialog',
-  imports: [DialogComponent, ButtonDirective, TranslatePipe],
+  imports: [DialogComponent, ButtonDirective, TranslatePipe, LucideCheck, LucideCopy],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './order-confirmed-dialog.component.html',
 })
 export class OrderConfirmedDialogComponent {
+  /** Shared copy-to-clipboard helper (order ID copy button). */
+  protected readonly clipboard = inject(ClipboardService);
+
   private readonly checkout = inject(CheckoutService);
   private readonly router = inject(Router);
 

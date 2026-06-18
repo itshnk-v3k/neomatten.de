@@ -1,0 +1,108 @@
+<!--
+  EN: Trigger (label + selected range / placeholder) plus the calendar surface —
+      a CDK-Overlay popover on desktop, a bottom sheet on mobile. The calendar is
+      defined once (#calendar) and projected into whichever surface is active: a
+      TemplatePortal into the overlay (driven from the component) on desktop, or
+      directly into the sheet on mobile.
+  RU: Триггер (метка + выбранный диапазон / плейсхолдер) и поверхность календаря —
+      поповер CDK Overlay на десктопе, нижний лист на мобиле. Календарь объявлен
+      один раз (#calendar): TemplatePortal в overlay (из компонента) на десктопе
+      или прямо в лист на мобиле.
+-->
+<div>
+  <span class="mb-1.5 block text-sm font-medium text-content">
+    {{ 'account_filter_date_range' | translate }}
+  </span>
+  <button
+    #trigger
+    type="button"
+    [attr.aria-expanded]="open()"
+    class="flex h-11 w-full items-center justify-between gap-2 rounded-md border border-border bg-surface-input px-4 text-left text-sm outline-none transition-colors hover:border-primary focus-visible:border-primary"
+    (click)="toggle()">
+    @if (label(); as l) {
+      <span class="truncate text-content">{{ l }}</span>
+    } @else {
+      <span class="truncate text-content-muted">
+        {{ 'account_filter_date_range_placeholder' | translate }}
+      </span>
+    }
+    <svg lucideCalendar aria-hidden="true" class="size-4 shrink-0 text-content-muted"></svg>
+  </button>
+</div>
+
+<!-- Mobile: bottom sheet -->
+@if (!isDesktop()) {
+  <nm-sheet [(open)]="open" side="bottom" titleKey="account_filter_date_range">
+    <ng-container [ngTemplateOutlet]="calendar" />
+  </nm-sheet>
+}
+
+<!-- ============================ Calendar surface ============================ -->
+<!--
+  Single month grid. In the desktop overlay the panel (.nm-date-range-popover) is
+  a height-capped flex column: the month grid (flex-1, min-h-0) scrolls when the
+  panel is clamped to the viewport, while the nav header and the Clear/Apply
+  footer (shrink-0) stay pinned. In the mobile sheet there's no height cap, so the
+  flex utilities are inert and the calendar renders at its natural height.
+-->
+<ng-template #calendar>
+  <div class="flex shrink-0 items-center justify-between gap-2">
+    <button
+      type="button"
+      class="grid size-9 shrink-0 place-items-center rounded-md text-content-secondary transition-colors hover:bg-surface-subtle hover:text-primary"
+      [attr.aria-label]="'date_range_prev_month' | translate"
+      (click)="prevMonth()">
+      <svg lucideChevronLeft class="size-5" aria-hidden="true"></svg>
+    </button>
+    <span class="flex-1 text-center text-sm font-bold text-content">{{ monthLabelText() }}</span>
+    <button
+      type="button"
+      class="grid size-9 shrink-0 place-items-center rounded-md text-content-secondary transition-colors hover:bg-surface-subtle hover:text-primary"
+      [attr.aria-label]="'date_range_next_month' | translate"
+      (click)="nextMonth()">
+      <svg lucideChevronRight class="size-5" aria-hidden="true"></svg>
+    </button>
+  </div>
+
+  <div
+    class="mt-3 flex min-h-0 flex-1 justify-center overflow-y-auto"
+    (mouseleave)="hover.set(null)">
+    <ng-container
+      [ngTemplateOutlet]="monthGrid"
+      [ngTemplateOutletContext]="{ cells: monthCells() }" />
+  </div>
+
+  <div class="mt-4 flex shrink-0 justify-end gap-2 border-t border-border pt-4">
+    <button type="button" nmButton variant="outline" size="sm" (click)="clear()">
+      {{ 'account_filters_clear' | translate }}
+    </button>
+    <button type="button" nmButton size="sm" (click)="apply()">
+      {{ 'account_date_range_apply' | translate }}
+    </button>
+  </div>
+</ng-template>
+
+<!-- A single month: weekday headers + day cells (Mon-first; blanks are spacers). -->
+<ng-template #monthGrid let-cells="cells">
+  <div class="grid grid-cols-7 gap-0.5">
+    @for (wd of weekdays(); track $index) {
+      <span
+        class="grid size-11 place-items-center text-xs font-medium text-content-muted md:size-10">
+        {{ wd }}
+      </span>
+    }
+    @for (cell of cells; track $index) {
+      @if (cell) {
+        <button
+          type="button"
+          [class]="dayClasses(cell)"
+          (click)="select(cell)"
+          (mouseenter)="hover.set(cell)">
+          {{ cell.getDate() }}
+        </button>
+      } @else {
+        <span class="size-11 md:size-10"></span>
+      }
+    }
+  </div>
+</ng-template>

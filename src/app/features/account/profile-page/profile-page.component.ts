@@ -9,11 +9,12 @@
  *     тост; успех сохраняет через мок AuthService (localStorage) и показывает
  *     тост. TODO(backend): PATCH /users/:id.
  */
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import type { UpdateProfileRequest } from '@core/models/user.model';
 import { AuthService } from '@core/services/auth.service';
+import { OrderService } from '@core/services/order.service';
 import { LucideAlertTriangle, LucideLogOut } from '@lucide/angular';
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import { DialogComponent } from '@shared/components/dialog/dialog.component';
@@ -29,6 +30,7 @@ import { phoneValidator } from '@shared/validators/phone.validator';
   selector: 'nm-account-profile-page',
   imports: [
     ReactiveFormsModule,
+    RouterLink,
     InputComponent,
     PhoneInputComponent,
     ButtonDirective,
@@ -47,6 +49,7 @@ import { phoneValidator } from '@shared/validators/phone.validator';
 export class ProfilePageComponent {
   private readonly fb = inject(FormBuilder);
   protected readonly auth = inject(AuthService);
+  private readonly orders = inject(OrderService);
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
 
@@ -55,6 +58,16 @@ export class ProfilePageComponent {
   /** Delete-account confirmation dialog state. */
   protected readonly deleteOpen = signal(false);
   protected readonly deleting = signal(false);
+  /** Shown instead of the confirm dialog when the account has active orders. */
+  protected readonly deleteBlockedOpen = signal(false);
+
+  /**
+   * Orders that are still in flight (anything not completed or cancelled). An
+   * account with active orders cannot be deleted — the user must contact support.
+   */
+  private readonly activeOrders = computed(() =>
+    this.orders.orders().filter(o => o.status !== 'completed' && o.status !== 'cancelled')
+  );
 
   /** Sign-out confirmation dialog state. */
   protected readonly logoutOpen = signal(false);
@@ -113,11 +126,25 @@ export class ProfilePageComponent {
     }
   }
 
+  /**
+   * Opens the delete flow: a blocking info dialog when the account still has
+   * active orders, otherwise the normal confirmation dialog.
+   */
+  protected requestDelete(): void {
+    if (this.activeOrders().length > 0) {
+      this.deleteBlockedOpen.set(true);
+      return;
+    }
+    this.deleteOpen.set(true);
+  }
+
   /** Deletes the account after confirmation, then returns to the home page. */
   protected async confirmDelete(): Promise<void> {
+    // No active orders at this point; remaining orders are completed/cancelled.
+    const orderCount = this.orders.orders().length;
     this.deleting.set(true);
     try {
-      await this.auth.deleteAccount();
+      await this.auth.deleteAccount(orderCount);
       this.toast.success('account_delete_success');
       this.deleteOpen.set(false);
       void this.router.navigateByUrl('/');

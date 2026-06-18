@@ -29,6 +29,8 @@ import { EmailService } from '@core/services/email.service';
 const SESSION_STORAGE_KEY = 'neomatten_auth';
 /** localStorage key holding the mock user registry (email → {user,password}). */
 const USERS_STORAGE_KEY = 'neomatten_users';
+/** localStorage key holding the mock account-action audit log (admin view). */
+const AUDIT_LOG_STORAGE_KEY = 'neomatten_audit_log';
 
 interface StoredUser {
   readonly user: UserDTO;
@@ -110,7 +112,7 @@ export class AuthService {
   // gives the user immediate feedback. State lives in localStorage so it survives
   // reloads within the lockout window.
   private readonly LOGIN_MAX_ATTEMPTS = 5;
-  private readonly LOGIN_LOCKOUT_MS = 5 * 60 * 1000; // 5 minutes
+  private readonly LOGIN_LOCKOUT_MS = 2 * 60 * 1000; // 2 minutes
   private readonly LOCKOUT_KEY = 'neomatten_login_lockout';
 
   /**
@@ -257,14 +259,44 @@ export class AuthService {
   }
 
   /**
-   * Deletes the signed-in account from the mock registry and signs out.
+   * Deletes the signed-in account from the mock registry, records an audit-log
+   * entry, and signs out. `orderCount` is the number of (completed/cancelled)
+   * orders the account had at deletion time — the caller checks that no active
+   * orders remain before calling this (see ProfilePageComponent).
    * TODO(backend): replace with `this.api.delete(`/users/${id}`)`.
    */
-  async deleteAccount(): Promise<void> {
+  async deleteAccount(orderCount = 0): Promise<void> {
     const current = this.sessionSignal();
     if (!current) return;
+    this.recordAccountDeletion(current.user, orderCount);
     this.saveUsers(this.users().filter(u => u.user.id !== current.user.id));
     this.logout();
+  }
+
+  /**
+   * Appends an account-deletion entry to the localStorage audit log so a future
+   * admin panel can review deleted accounts.
+   * TODO(backend): POST /api/admin/audit-log (the backend owns the audit trail).
+   * TODO(admin): show in admin panel under Users → Deleted accounts.
+   */
+  private recordAccountDeletion(user: UserDTO, orderCount: number): void {
+    const logEntry = {
+      id: crypto.randomUUID(),
+      userId: user.id,
+      userName: user.name,
+      userEmail: user.email,
+      action: 'account_deleted',
+      timestamp: new Date().toISOString(),
+      orderCount,
+    };
+    try {
+      // TODO(backend): GET /api/admin/audit-log reads this trail server-side.
+      const log = JSON.parse(localStorage.getItem(AUDIT_LOG_STORAGE_KEY) ?? '[]') as unknown[];
+      log.push(logEntry);
+      localStorage.setItem(AUDIT_LOG_STORAGE_KEY, JSON.stringify(log));
+    } catch {
+      // ignore storage errors
+    }
   }
 
   /**
