@@ -237,7 +237,7 @@
         <div class="mt-3 flex items-end justify-between gap-4 border-t border-border pt-3">
           <div class="min-w-0 flex-1">
             <!-- One line per item (vertical stack) instead of a comma-joined run. -->
-            <div class="space-y-0.5">
+            <div class="flex flex-col gap-0.5">
               @for (item of order.items; track $index) {
                 <p class="truncate text-xs font-medium text-content md:text-sm">
                   {{ item.quantity }}× {{ item.name }}
@@ -311,7 +311,7 @@
               {{ 'order_contains_items' | translate: { count: order.items.length } }}
             </p>
           }
-          <ul class="mt-3 space-y-1 border-t border-border pt-3 text-xs md:text-sm">
+          <ul class="mt-3 flex flex-col gap-1 border-t border-border pt-3 text-xs md:text-sm">
             @for (item of order.items; track $index) {
               <!-- Combined orders get a numbered label + divider per line. -->
               <li
@@ -341,7 +341,7 @@
                     <p class="truncate font-medium text-content">
                       {{ item.quantity }}× {{ item.name }}
                     </p>
-                    <dl class="mt-2 space-y-0.5 text-content-secondary">
+                    <dl class="mt-2 flex flex-col gap-0.5 text-content-secondary">
                       <!-- Vehicle/configurator detail groups: EVA Mats only. -->
                       @if (item.category === 'mats') {
                         @if (item.brand || item.model) {
@@ -466,7 +466,7 @@
 
           <!-- Explicit price breakdown so total never looks unexplained: every
                  line shown; the discount/free-shipping lines clarify the gap. -->
-          <dl class="mt-3 space-y-1 border-t border-border pt-3 text-xs md:text-sm">
+          <dl class="mt-3 flex flex-col gap-1 border-t border-border pt-3 text-xs md:text-sm">
             <div class="flex justify-between gap-3">
               <dt class="min-w-0 text-content-secondary">{{ 'cart_subtotal' | translate }}</dt>
               <dd class="shrink-0 whitespace-nowrap font-medium">{{ order.subtotal | euro }}</dd>

@@ -9,7 +9,7 @@
 
 <!-- Texture info dialog (step 04) -->
 <nm-dialog [(open)]="textureInfoOpen" titleKey="configurator_step_texture">
-  <dl class="space-y-3">
+  <dl class="flex flex-col gap-3">
     <div>
       <dt class="font-semibold text-content">{{ 'configurator_texture_rhombus' | translate }}</dt>
       <dd class="text-content-secondary">{{ 'texture_info_rhombus' | translate }}</dd>
@@ -32,7 +32,7 @@
 
 <!-- Build-your-set info dialog (step 11) -->
 <nm-dialog [(open)]="kitInfoOpen" titleKey="configurator_step_kit">
-  <dl class="space-y-3">
+  <dl class="flex flex-col gap-3">
     <div>
       <dt class="font-semibold text-content">
         {{ 'configurator_preset_full_interior' | translate }}
@@ -48,7 +48,7 @@
 
 <!-- Accessories info dialog (step 10) -->
 <nm-dialog [(open)]="accessoriesInfoOpen" titleKey="configurator_step_accessories">
-  <dl class="space-y-3">
+  <dl class="flex flex-col gap-3">
     <div>
       <dt class="font-semibold text-content">{{ 'configurator_clips_with' | translate }}</dt>
       <dd class="text-content-secondary">{{ 'configurator_clips_with_hint' | translate }}</dd>
@@ -62,7 +62,7 @@
 
 <!-- Heel-pad info dialog (step 08) -->
 <nm-dialog [(open)]="heelInfoOpen" titleKey="configurator_step_heel">
-  <dl class="space-y-3">
+  <dl class="flex flex-col gap-3">
     <div>
       <dt class="font-semibold text-content">{{ 'configurator_heel_standard' | translate }}</dt>
       <dd class="text-content-secondary">{{ 'heel_pad_info_standard' | translate }}</dd>
@@ -76,7 +76,7 @@
 
 <!-- Heel-rest info dialog (step 09) -->
 <nm-dialog [(open)]="heelRestInfoOpen" titleKey="heel_rest_title">
-  <dl class="space-y-3">
+  <dl class="flex flex-col gap-3">
     <div>
       <dt class="font-semibold text-content">{{ 'heel_rest_metal' | translate }}</dt>
       <dd class="text-content-secondary">{{ 'heel_rest_info_metal' | translate }}</dd>
