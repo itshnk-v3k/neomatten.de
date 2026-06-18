@@ -1,0 +1,36 @@
+<!--
+  EN: Horizontal payment-methods row. Each brand mark sits in a small rounded
+      white/light badge so colored logos read on both light and dark backgrounds;
+      Klarna uses its pink badge. "Pay on pickup" has no brand logo, so it shows a
+      lucide Store icon in the primary colour plus a translated label.
+  RU: Горизонтальный ряд способов оплаты. Каждая марка — в маленьком светлом
+      бейдже; Klarna — на розовом. «Оплата при получении» без логотипа: иконка
+      Store в основном цвете и переведённая подпись.
+-->
+<ul class="flex flex-wrap items-center gap-2">
+  @for (brand of brands; track brand.label) {
+    <li>
+      <span
+        [class]="
+          'inline-flex h-9 w-14 items-center justify-center rounded-md border border-border shadow-sm ' +
+          brand.badgeClass
+        "
+        role="img"
+        [attr.aria-label]="brand.label"
+        [attr.title]="brand.label">
+        <nm-brand-icon
+          [icon]="brand.icon"
+          [colored]="brand.colored"
+          [style.color]="brand.iconColor"
+          class="size-7" />
+      </span>
+    </li>
+  }
+  <li>
+    <span
+      class="inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-border bg-white px-3 text-ink shadow-sm">
+      <svg lucideStore class="size-4 text-primary" aria-hidden="true"></svg>
+      <span class="text-xs font-medium">{{ 'payment_pickup' | translate }}</span>
+    </span>
+  </li>
+</ul>

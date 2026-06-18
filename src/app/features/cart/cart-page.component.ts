@@ -40,6 +40,7 @@ import { AuthDialogComponent } from '@shared/components/auth-dialog/auth-dialog.
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import { PaymentDialogComponent } from '@shared/components/payment-dialog/payment-dialog.component';
+import { PaymentMethodsComponent } from '@shared/components/payment-methods/payment-methods.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
 import { EuroPipe } from '@shared/pipes/euro.pipe';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
@@ -60,6 +61,7 @@ import { categoryBadge } from '@shared/utils/product-category';
     ButtonDirective,
     AuthDialogComponent,
     PaymentDialogComponent,
+    PaymentMethodsComponent,
     SkeletonComponent,
     ConfigDetailsComponent,
     TranslatePipe,

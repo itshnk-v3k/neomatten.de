@@ -272,16 +272,18 @@
           <p class="mt-3 flex items-center gap-1.5 text-xs text-content-secondary md:text-sm">
             @switch (order.paymentMethod) {
               @case ('stripe_card') {
-                <svg lucideCreditCard class="size-4 text-content-muted" aria-hidden="true"></svg>
+                <nm-brand-icon [icon]="stripeIcon" [colored]="true" class="size-4" />
               }
               @case ('klarna') {
-                <svg lucideShoppingBag class="size-4 text-content-muted" aria-hidden="true"></svg>
+                <!-- Klarna's brand hex is pale pink; render its dark wordmark so it
+                     reads on the white order card. -->
+                <nm-brand-icon [icon]="klarnaIcon" class="size-4 text-ink" />
               }
               @case ('paypal') {
-                <svg lucidePackage class="size-4 text-content-muted" aria-hidden="true"></svg>
+                <nm-brand-icon [icon]="paypalIcon" [colored]="true" class="size-4" />
               }
               @default {
-                <svg lucideStore class="size-4 text-content-muted" aria-hidden="true"></svg>
+                <svg lucideStore class="size-4 text-primary" aria-hidden="true"></svg>
               }
             }
             <span class="text-content-muted">{{ 'order_payment_label' | translate }}:</span>

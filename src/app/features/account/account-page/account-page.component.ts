@@ -39,13 +39,11 @@ import {
   LucideCheck,
   LucideChevronDown,
   LucideCopy,
-  LucideCreditCard,
-  LucidePackage,
   LucideSearchX,
-  LucideShoppingBag,
   LucideSlidersHorizontal,
   LucideStore,
 } from '@lucide/angular';
+import { BrandIconComponent } from '@shared/components/brand-icon/brand-icon.component';
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import {
   type DateRange,
@@ -59,6 +57,8 @@ import { EuroPipe } from '@shared/pipes/euro.pipe';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { ClipboardService } from '@shared/services/clipboard.service';
 import { categoryBadge } from '@shared/utils/product-category';
+// Per-icon, tree-shakeable named imports from simple-icons (CC0 brand marks).
+import { siKlarna, siPaypal, siStripe } from 'simple-icons';
 
 /** Filter value = a concrete status/category or the "all" sentinel. */
 type StatusFilter = OrderStatus | 'all';
@@ -105,9 +105,7 @@ const SORT_OPTIONS: readonly SortOption[] = ['newest', 'oldest', 'price_high', '
     SkeletonComponent,
     TranslatePipe,
     EuroPipe,
-    LucideCreditCard,
-    LucideShoppingBag,
-    LucidePackage,
+    BrandIconComponent,
     LucideStore,
     LucideCopy,
     LucideCheck,
@@ -124,6 +122,10 @@ const SORT_OPTIONS: readonly SortOption[] = ['newest', 'oldest', 'price_high', '
 export class AccountPageComponent {
   /** Category chip preset (label key + classes) for an order item's category. */
   protected readonly categoryBadge = categoryBadge;
+  /** Payment brand marks for the order's payment-method line (simple-icons). */
+  protected readonly stripeIcon = siStripe;
+  protected readonly klarnaIcon = siKlarna;
+  protected readonly paypalIcon = siPaypal;
   /** Shared copy-to-clipboard helper (order ID + line SKU copy buttons). */
   protected readonly clipboard = inject(ClipboardService);
 

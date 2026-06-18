@@ -518,6 +518,7 @@
   "payment_method_card": "Card (Visa / Mastercard)",
   "payment_method_klarna": "Klarna",
   "payment_method_paypal": "PayPal",
+  "payment_stripe": "Stripe",
   "payment_error_amount": "Invalid amount.",
   "payment_error_generic": "Payment failed. Please try again.",
   "checkout_paid_success": "Thank you! Your order has been placed.",

@@ -518,6 +518,7 @@
   "payment_method_card": "Karte (Visa / Mastercard)",
   "payment_method_klarna": "Klarna",
   "payment_method_paypal": "PayPal",
+  "payment_stripe": "Stripe",
   "payment_error_amount": "Ungültiger Betrag.",
   "payment_error_generic": "Zahlung fehlgeschlagen. Bitte versuchen Sie es erneut.",
   "checkout_paid_success": "Vielen Dank! Ihre Bestellung wurde aufgegeben.",

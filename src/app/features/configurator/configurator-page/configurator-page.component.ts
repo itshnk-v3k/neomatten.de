@@ -47,6 +47,7 @@ import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.co
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import { ImagePlaceholderComponent } from '@shared/components/image-placeholder/image-placeholder.component';
 import { PaymentDialogComponent } from '@shared/components/payment-dialog/payment-dialog.component';
+import { PaymentMethodsComponent } from '@shared/components/payment-methods/payment-methods.component';
 import { SelectComponent } from '@shared/components/select/select.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
 import { TooltipDirective } from '@shared/components/tooltip/tooltip.directive';
@@ -92,6 +93,7 @@ import { ConfiguratorPreviewComponent } from '../configurator-preview/configurat
     AccordionItemComponent,
     AuthDialogComponent,
     PaymentDialogComponent,
+    PaymentMethodsComponent,
     ConfiguratorPreviewComponent,
     ConfigDetailsComponent,
     ConfiguratorInfoDialogsComponent,
