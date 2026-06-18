@@ -236,9 +236,14 @@
         <!-- Products + quantity (left), total (right). -->
         <div class="mt-3 flex items-end justify-between gap-4 border-t border-border pt-3">
           <div class="min-w-0 flex-1">
-            <p class="truncate text-xs font-medium text-content md:text-sm">
-              {{ itemSummary(order) }}
-            </p>
+            <!-- One line per item (vertical stack) instead of a comma-joined run. -->
+            <div class="space-y-0.5">
+              @for (item of order.items; track $index) {
+                <p class="truncate text-xs font-medium text-content md:text-sm">
+                  {{ item.quantity }}× {{ item.name }}
+                </p>
+              }
+            </div>
             @let itemQuantity = totalQuantity(order);
             <div class="mt-0.5 flex flex-wrap items-center gap-2">
               <p class="text-xs text-content-secondary">

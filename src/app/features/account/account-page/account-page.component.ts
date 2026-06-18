@@ -374,11 +374,6 @@ export class AccountPageComponent {
     });
   }
 
-  /** Compact "2× BMW Mats, 1× Cushion" line for the collapsed card summary. */
-  protected itemSummary(order: OrderRecord): string {
-    return order.items.map(item => `${item.quantity}× ${item.name}`).join(', ');
-  }
-
   /** Localized mat/edge colour names for a configured order line (falls back to the id). */
   protected matColourName(id: string): string {
     return this.config.matColourName(id, this.translation.currentLanguage());
