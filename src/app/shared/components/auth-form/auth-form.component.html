@@ -1,0 +1,151 @@
+<!--
+  EN: Shared auth card — title, the matching login / register Reactive form (with
+      the brute-force lockout state on login), the social-login block and a bottom
+      switch link. Identical in the account pages and the auth dialog; the host
+      provides the surrounding chrome (breadcrumb + section, or nm-dialog).
+  RU: Общая карточка авторизации — заголовок, форма входа / регистрации (с
+      блокировкой при переборе на входе), блок входа через соцсети и нижняя ссылка
+      переключения. Одинакова на страницах аккаунта и в диалоге; обрамление даёт
+      хост (крошки + секция или nm-dialog).
+-->
+<div class="rounded-2xl border border-border bg-surface p-6 shadow-soft sm:p-8">
+  <h2 class="text-2xl font-bold">
+    {{ (mode() === 'login' ? 'auth_login_tab' : 'action_register') | translate }}
+  </h2>
+
+  @if (mode() === 'login') {
+    @if (locked()) {
+      <!-- Brute-force lockout: the form is hidden until the countdown expires. -->
+      <div class="flex flex-col items-center gap-4 p-6 text-center">
+        <svg lucideShieldAlert class="size-12 text-error"></svg>
+        <h3 class="text-lg font-semibold">{{ 'auth_locked_title' | translate }}</h3>
+        <p class="text-sm text-content-muted">{{ 'auth_locked_body' | translate }}</p>
+        <div class="font-mono text-2xl font-bold text-error">{{ lockoutCountdown() }}</div>
+        <p class="text-xs text-content-muted">
+          <a
+            routerLink="/contact"
+            [queryParams]="{ topic: 'lockout' }"
+            class="text-primary underline hover:text-primary-bright"
+            (click)="dismiss.emit()">
+            {{ 'auth_locked_hint' | translate }}
+          </a>
+        </p>
+      </div>
+    } @else {
+      <form [formGroup]="loginForm" (ngSubmit)="submitLogin()" class="mt-6 flex flex-col gap-4">
+        <nm-input
+          formControlName="email"
+          type="email"
+          label="form_email"
+          placeholder="form_email_placeholder"
+          autocomplete="email"
+          [required]="true" />
+        <nm-input
+          formControlName="password"
+          type="password"
+          label="form_password"
+          autocomplete="current-password"
+          [required]="true" />
+        <div class="flex items-center justify-between">
+          <nm-checkbox formControlName="remember" label="auth_remember_me" />
+          <a routerLink="/account/forgot-password" class="text-sm text-primary hover:underline">
+            {{ 'auth_forgot_link' | translate }}
+          </a>
+        </div>
+        <button nmButton type="submit" class="mt-2" [loading]="submitting()">
+          {{ 'action_login' | translate }}
+        </button>
+      </form>
+    }
+  } @else {
+    <form [formGroup]="registerForm" (ngSubmit)="submitRegister()" class="mt-6 flex flex-col gap-4">
+      <nm-input
+        formControlName="name"
+        label="form_name"
+        placeholder="form_name_placeholder"
+        autocomplete="name"
+        [required]="true" />
+      <nm-input
+        formControlName="email"
+        type="email"
+        label="form_email"
+        placeholder="form_email_placeholder"
+        autocomplete="email"
+        [required]="true" />
+      <nm-phone-input formControlName="phone" label="form_phone" />
+      <nm-input
+        formControlName="password"
+        type="password"
+        label="form_password"
+        hint="auth_password_hint"
+        autocomplete="new-password"
+        [required]="true" />
+      <div>
+        <nm-input
+          formControlName="confirmPassword"
+          type="password"
+          label="auth_confirm_password"
+          autocomplete="new-password"
+          [required]="true" />
+        @if (showMismatch) {
+          <p class="mt-1.5 text-xs text-error">{{ 'validation_mismatch' | translate }}</p>
+        }
+      </div>
+      <nm-checkbox formControlName="terms" label="auth_terms" />
+      <div>
+        <nm-checkbox formControlName="dataConsent">
+          {{ 'register_data_consent_label' | translate }}
+          <a
+            routerLink="/privacy-policy"
+            class="ml-1 text-primary underline"
+            (click)="dismiss.emit()">
+            {{ 'register_data_consent_link' | translate }}
+          </a>
+        </nm-checkbox>
+        @if (showDataConsentError) {
+          <p class="mt-1.5 text-xs text-error">{{ 'validation_required' | translate }}</p>
+        }
+      </div>
+      <button nmButton type="submit" class="mt-2" [loading]="submitting()">
+        {{ 'action_register' | translate }}
+      </button>
+    </form>
+  }
+
+  @if (!locked()) {
+    <nm-social-login />
+  }
+
+  <!-- Switch between login / register: a router link on pages, an in-place toggle in the dialog. -->
+  <p class="mt-6 text-center text-sm text-content-secondary">
+    @if (mode() === 'login') {
+      {{ 'auth_no_account' | translate }}
+      @if (linkMode() === 'route') {
+        <a routerLink="/account/register" class="font-semibold text-primary hover:underline">
+          {{ 'action_register' | translate }}
+        </a>
+      } @else {
+        <button
+          type="button"
+          (click)="setMode('register')"
+          class="font-semibold text-primary hover:underline">
+          {{ 'action_register' | translate }}
+        </button>
+      }
+    } @else {
+      {{ 'auth_have_account' | translate }}
+      @if (linkMode() === 'route') {
+        <a routerLink="/account/login" class="font-semibold text-primary hover:underline">
+          {{ 'action_login' | translate }}
+        </a>
+      } @else {
+        <button
+          type="button"
+          (click)="setMode('login')"
+          class="font-semibold text-primary hover:underline">
+          {{ 'action_login' | translate }}
+        </button>
+      }
+    }
+  </p>
+</div>
