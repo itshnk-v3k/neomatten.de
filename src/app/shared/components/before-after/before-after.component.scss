@@ -5,23 +5,3 @@
 :host {
   display: block;
 }
-
-/*
- * EN: Safari/iOS 14 has no `aspect-ratio` — the 16/9 frame's children are all
- *     absolutely positioned, so without a height it collapses and the slider
- *     disappears. Restore the ratio with the classic padding-top box, only where
- *     aspect-ratio is unsupported. Modern browsers keep using aspect-ratio and
- *     ignore this block, so the appearance is unchanged there.
- * RU: В Safari/iOS 14 нет `aspect-ratio` — все дети кадра 16/9 спозиционированы
- *     абсолютно, поэтому без высоты он схлопывается и слайдер пропадает.
- *     Восстанавливаем пропорцию классическим padding-top только там, где
- *     aspect-ratio не поддерживается. Современные браузеры используют aspect-ratio
- *     и игнорируют этот блок — внешний вид не меняется.
- */
-@supports not (aspect-ratio: 16 / 9) {
-  .before-after__frame::before {
-    content: '';
-    display: block;
-    padding-top: 56.25%; /* 9 / 16 */
-  }
-}

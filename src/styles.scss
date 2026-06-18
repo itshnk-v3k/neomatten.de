@@ -379,3 +379,56 @@ a[nmButton][aria-busy='true']::after {
   width: 1rem;
   height: 1rem;
 }
+
+/* =====================================================================
+   aspect-ratio fallback for Safari/iOS 14.x. `aspect-ratio` ships in Safari 15 /
+   iOS 15, so on the 14.1–14.x floor Tailwind's aspect-* utilities are ignored and
+   the box collapses — and the media inside (NgOptimizedImage `fill`, `size-full`
+   <img>, nm-image-placeholder, nm-skeleton) loses all height. Restore each ratio
+   with the classic padding-top box and pin the media children to fill it. The
+   whole block is gated on `@supports not (aspect-ratio)`, so every browser WITH
+   aspect-ratio skips all of it — appearance is unchanged on all modern targets.
+   Overlay / gradient spans are deliberately NOT targeted, so they keep their own
+   absolute positioning. Child selectors were chosen per container after checking
+   each one: product-card, product-detail, gallery, gallery-album-dialog,
+   mat-preview, eva-bags, advantages, configurator, before-after (aspect-[16/9]).
+   ===================================================================== */
+@supports not (aspect-ratio: 1 / 1) {
+  .aspect-square {
+    position: relative;
+    padding-top: 100%; /* 1 / 1 */
+  }
+  .aspect-video {
+    position: relative;
+    padding-top: 56.25%; /* 9 / 16 */
+  }
+  .aspect-\[16\/9\] {
+    position: relative;
+    padding-top: 56.25%; /* 9 / 16 */
+  }
+  .aspect-\[4\/3\] {
+    position: relative;
+    padding-top: 75%; /* 3 / 4 */
+  }
+  .aspect-\[980\/480\] {
+    position: relative;
+    padding-top: 48.9796%; /* 480 / 980 */
+  }
+
+  /* Pin only the sizing media to fill the padded box; overlays keep their own
+     positioning. `fill` images already declare these, so this is a no-op there. */
+  .aspect-square,
+  .aspect-video,
+  .aspect-\[16\/9\],
+  .aspect-\[4\/3\],
+  .aspect-\[980\/480\] {
+    > img,
+    > nm-image-placeholder,
+    > nm-skeleton {
+      position: absolute;
+      inset: 0;
+      height: 100%;
+      width: 100%;
+    }
+  }
+}
