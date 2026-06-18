@@ -147,7 +147,11 @@ export class DateRangePickerComponent {
     const positionStrategy = this.overlay
       .position()
       .flexibleConnectedTo(origin)
+      // Prefer right-aligned (grows left) — the trigger sits in a right-edge
+      // sidebar — then fall back to left-aligned; below first, flipping above.
       .withPositions([
+        { originX: 'end', originY: 'bottom', overlayX: 'end', overlayY: 'top', offsetY: 4 },
+        { originX: 'end', originY: 'top', overlayX: 'end', overlayY: 'bottom', offsetY: -4 },
         { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
         { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -4 },
       ])
