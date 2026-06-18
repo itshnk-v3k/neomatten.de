@@ -10,6 +10,7 @@
  */
 import { inject, Injectable, signal } from '@angular/core';
 import { ToastService } from '@shared/services/toast.service';
+import { copyToClipboard } from '@shared/utils/clipboard.util';
 
 /** How long a copy button shows the checkmark before reverting (ms). */
 const COPIED_FLASH_MS = 2000;
@@ -28,24 +29,24 @@ export class ClipboardService {
 
   /**
    * Copy `text` to the clipboard, toast `successKey`, then flash a checkmark for
-   * {@link COPIED_FLASH_MS}. On failure shows a generic error toast.
+   * {@link COPIED_FLASH_MS}. Uses the fallback-aware {@link copyToClipboard} so it
+   * works over HTTP / a LAN IP on mobile too. On failure shows a generic error toast.
    */
   copy(text: string, successKey: string): void {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
-        this.copiedTexts.update(set => new Set(set).add(text));
-        this.toast.success(successKey);
-        setTimeout(() => {
-          this.copiedTexts.update(set => {
-            const next = new Set(set);
-            next.delete(text);
-            return next;
-          });
-        }, COPIED_FLASH_MS);
-      })
-      .catch(() => {
+    void copyToClipboard(text).then(ok => {
+      if (!ok) {
         this.toast.error('error_generic');
-      });
+        return;
+      }
+      this.copiedTexts.update(set => new Set(set).add(text));
+      this.toast.success(successKey);
+      setTimeout(() => {
+        this.copiedTexts.update(set => {
+          const next = new Set(set);
+          next.delete(text);
+          return next;
+        });
+      }, COPIED_FLASH_MS);
+    });
   }
 }

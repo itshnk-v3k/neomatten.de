@@ -1,0 +1,9 @@
+# Target browsers for the project. Angular CLI / esbuild reads this to (a) run
+# autoprefixer (adding -webkit- prefixes for Safari/iOS — backdrop-filter,
+# position: sticky, etc.) and (b) downlevel JS syntax to match the oldest target.
+# Keep in sync with the supported matrix below.
+chrome >= 99
+firefox >= 99
+edge >= 79
+safari >= 14.1
+ios_saf >= 14.5
