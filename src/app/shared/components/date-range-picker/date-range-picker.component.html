@@ -1,47 +1,33 @@
 <!--
   EN: Trigger (label + selected range / placeholder) plus the calendar surface —
-      an anchored popover on desktop, a bottom sheet on mobile. The calendar grid
-      is defined once (#calendar) and projected into whichever surface is active.
+      a CDK-Overlay popover on desktop, a bottom sheet on mobile. The calendar is
+      defined once (#calendar) and projected into whichever surface is active: a
+      TemplatePortal into the overlay (driven from the component) on desktop, or
+      directly into the sheet on mobile.
   RU: Триггер (метка + выбранный диапазон / плейсхолдер) и поверхность календаря —
-      поповер на десктопе, нижний лист на мобиле. Сетка календаря объявлена один
-      раз (#calendar) и проецируется в активную поверхность.
+      поповер CDK Overlay на десктопе, нижний лист на мобиле. Календарь объявлен
+      один раз (#calendar): TemplatePortal в overlay (из компонента) на десктопе
+      или прямо в лист на мобиле.
 -->
 <div>
   <span class="mb-1.5 block text-sm font-medium text-content">
     {{ 'account_filter_date_range' | translate }}
   </span>
-  <div class="relative">
-    <button
-      type="button"
-      [attr.aria-expanded]="open()"
-      class="flex h-11 w-full items-center justify-between gap-2 rounded-md border border-border bg-surface-input px-4 text-left text-sm outline-none transition-colors hover:border-primary focus-visible:border-primary"
-      (click)="toggle()">
-      @if (label(); as l) {
-        <span class="truncate text-content">{{ l }}</span>
-      } @else {
-        <span class="truncate text-content-muted">
-          {{ 'account_filter_date_range_placeholder' | translate }}
-        </span>
-      }
-      <svg lucideCalendar aria-hidden="true" class="size-4 shrink-0 text-content-muted"></svg>
-    </button>
-
-    <!-- Desktop: anchored popover -->
-    @if (isDesktop() && open()) {
-      <button
-        type="button"
-        class="fixed inset-0 z-popup cursor-default"
-        tabindex="-1"
-        [attr.aria-label]="'action_close' | translate"
-        (click)="close()"></button>
-      <div
-        class="absolute z-popup mt-2 w-max max-w-[calc(100vw-3rem)] rounded-xl border border-border bg-surface p-4 shadow-elev"
-        [class.left-0]="compact()"
-        [class.right-0]="!compact()">
-        <ng-container [ngTemplateOutlet]="calendar" />
-      </div>
+  <button
+    #trigger
+    type="button"
+    [attr.aria-expanded]="open()"
+    class="flex h-11 w-full items-center justify-between gap-2 rounded-md border border-border bg-surface-input px-4 text-left text-sm outline-none transition-colors hover:border-primary focus-visible:border-primary"
+    (click)="toggle()">
+    @if (label(); as l) {
+      <span class="truncate text-content">{{ l }}</span>
+    } @else {
+      <span class="truncate text-content-muted">
+        {{ 'account_filter_date_range_placeholder' | translate }}
+      </span>
     }
-  </div>
+    <svg lucideCalendar aria-hidden="true" class="size-4 shrink-0 text-content-muted"></svg>
+  </button>
 </div>
 
 <!-- Mobile: bottom sheet -->
@@ -52,8 +38,15 @@
 }
 
 <!-- ============================ Calendar surface ============================ -->
+<!--
+  Single month grid. In the desktop overlay the panel (.nm-date-range-popover) is
+  a height-capped flex column: the month grid (flex-1, min-h-0) scrolls when the
+  panel is clamped to the viewport, while the nav header and the Clear/Apply
+  footer (shrink-0) stay pinned. In the mobile sheet there's no height cap, so the
+  flex utilities are inert and the calendar renders at its natural height.
+-->
 <ng-template #calendar>
-  <div class="flex items-center justify-between gap-2">
+  <div class="flex shrink-0 items-center justify-between gap-2">
     <button
       type="button"
       class="grid size-9 shrink-0 place-items-center rounded-md text-content-secondary transition-colors hover:bg-surface-subtle hover:text-primary"
@@ -61,12 +54,7 @@
       (click)="prevMonth()">
       <svg lucideChevronLeft class="size-5" aria-hidden="true"></svg>
     </button>
-    <div class="flex flex-1 justify-around gap-8 text-center text-sm font-bold text-content">
-      <span class="flex-1">{{ leftLabel() }}</span>
-      @if (!compact()) {
-        <span class="flex-1">{{ rightLabel() }}</span>
-      }
-    </div>
+    <span class="flex-1 text-center text-sm font-bold text-content">{{ monthLabelText() }}</span>
     <button
       type="button"
       class="grid size-9 shrink-0 place-items-center rounded-md text-content-secondary transition-colors hover:bg-surface-subtle hover:text-primary"
@@ -76,18 +64,15 @@
     </button>
   </div>
 
-  <div class="mt-3 flex justify-center gap-6" (mouseleave)="hover.set(null)">
+  <div
+    class="mt-3 flex min-h-0 flex-1 justify-center overflow-y-auto"
+    (mouseleave)="hover.set(null)">
     <ng-container
       [ngTemplateOutlet]="monthGrid"
-      [ngTemplateOutletContext]="{ cells: leftCells() }" />
-    @if (!compact()) {
-      <ng-container
-        [ngTemplateOutlet]="monthGrid"
-        [ngTemplateOutletContext]="{ cells: rightCells() }" />
-    }
+      [ngTemplateOutletContext]="{ cells: monthCells() }" />
   </div>
 
-  <div class="mt-4 flex justify-end gap-2 border-t border-border pt-4">
+  <div class="mt-4 flex shrink-0 justify-end gap-2 border-t border-border pt-4">
     <button type="button" nmButton variant="outline" size="sm" (click)="clear()">
       {{ 'account_filters_clear' | translate }}
     </button>

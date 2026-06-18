@@ -6,7 +6,10 @@
       (моб.) и маршрутизируемая страница в колонке контента. Активный пункт
       подсвечен. Выход — на странице профиля (не в навигации). Иконки слева.
 -->
-<section class="mx-auto max-w-container px-6 py-8 lg:py-12">
+<!-- Wider than the marketing max-w-container on large screens: the orders view is
+     a data table (filters sidebar + order cards) that benefits from the extra
+     width, so it stretches toward the right edge instead of leaving a big margin. -->
+<section class="mx-auto max-w-container px-6 py-8 lg:max-w-[1600px] lg:py-12">
   <nm-breadcrumb />
 
   <div class="mt-6 lg:flex lg:items-start lg:gap-8">

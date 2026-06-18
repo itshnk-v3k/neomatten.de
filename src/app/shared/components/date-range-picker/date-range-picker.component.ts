@@ -1,24 +1,33 @@
 /*
- * EN: Custom inline date-range picker — no native date input. Two month grids by
- *     default, one when `compact` (narrow columns); click start then end to set
- *     an inclusive range, highlighted in primary. Opens as an anchored popover on
- *     desktop and a bottom sheet on mobile (driven by the `isDesktop` input).
- *     Emits a {start, end} range (start at 00:00, end at 23:59:59) via `value`.
- * RU: Кастомный выбор диапазона дат — без нативного input. Две сетки месяцев на
- *     десктопе (одна на мобиле); клик по началу, затем по концу задаёт включающий
- *     диапазон, подсвеченный основным цветом. Открывается поповером на десктопе и
- *     нижним листом на мобиле (вход `isDesktop`). Возвращает диапазон {start, end}
- *     (начало 00:00, конец 23:59:59) через модель `value`.
+ * EN: Custom inline date-range picker — no native date input. A single month grid
+ *     (both surfaces are narrow); click start then end to set an inclusive range,
+ *     highlighted in primary. Opens as a CDK-Overlay popover on desktop (flexibly
+ *     anchored to the trigger — prefers below, flips above, shrinks + scrolls to
+ *     fit so it never falls off-screen) and a bottom sheet on mobile (driven by
+ *     the `isDesktop` input). Emits {start, end} (00:00 → 23:59:59) via `value`.
+ * RU: Кастомный выбор диапазона дат — без нативного input. Одна сетка месяца (обе
+ *     поверхности узкие); клик по началу, затем по концу задаёт включающий
+ *     диапазон, подсвеченный основным цветом. Открывается поповером CDK Overlay на
+ *     десктопе (привязан к триггеру — снизу, при нехватке места сверху, сжимается и
+ *     прокручивается, чтобы не уезжать за экран) и нижним листом на мобиле (вход
+ *     `isDesktop`). Возвращает {start, end} (00:00 → 23:59:59) через модель `value`.
  */
+import { Overlay, type OverlayRef } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
 import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
+  type ElementRef,
   inject,
   input,
   model,
   signal,
+  type TemplateRef,
+  viewChild,
+  ViewContainerRef,
 } from '@angular/core';
 import { TranslationService } from '@core/i18n/translation.service';
 import { LucideCalendar, LucideChevronLeft, LucideChevronRight } from '@lucide/angular';
@@ -48,17 +57,20 @@ export interface DateRange {
 })
 export class DateRangePickerComponent {
   private readonly translation = inject(TranslationService);
+  private readonly overlay = inject(Overlay);
+  private readonly vcr = inject(ViewContainerRef);
+  private readonly destroyRef = inject(DestroyRef);
 
   /** Two-way selected range (null when no range is active). */
   readonly value = model<DateRange | null>(null);
-  /** lg+ gate: popover when true, bottom sheet when false. */
+  /** lg+ gate: CDK-Overlay popover when true, bottom sheet when false. */
   readonly isDesktop = input<boolean>(true);
-  /**
-   * Single-month, narrow layout — set when the picker lives in a tight column
-   * (e.g. the orders filters sidebar) where two months would overflow. The
-   * popover then opens left-aligned (growing right) instead of right-aligned.
-   */
-  readonly compact = input<boolean>(false);
+
+  /** Trigger button (overlay anchor) and the calendar template (portal content). */
+  private readonly trigger = viewChild<ElementRef<HTMLButtonElement>>('trigger');
+  private readonly calendarTpl = viewChild<TemplateRef<unknown>>('calendar');
+  /** The live desktop popover overlay, or null when closed. */
+  private overlayRef: OverlayRef | null = null;
 
   /** Popover / sheet open state. */
   protected readonly open = signal(false);
@@ -77,12 +89,12 @@ export class DateRangePickerComponent {
     return Array.from({ length: 7 }, (_, i) => fmt.format(new Date(2024, 0, 1 + i)));
   });
 
-  protected readonly leftLabel = computed(() => this.monthLabel(this.viewMonth()));
-  protected readonly rightLabel = computed(() =>
-    this.monthLabel(this.addMonths(this.viewMonth(), 1))
-  );
-  protected readonly leftCells = computed(() => this.cells(this.viewMonth()));
-  protected readonly rightCells = computed(() => this.cells(this.addMonths(this.viewMonth(), 1)));
+  protected readonly monthLabelText = computed(() => this.monthLabel(this.viewMonth()));
+  protected readonly monthCells = computed(() => this.cells(this.viewMonth()));
+
+  constructor() {
+    this.destroyRef.onDestroy(() => this.overlayRef?.dispose());
+  }
 
   /** Trigger label, e.g. "01.06 – 17.06.2026" (empty when no range). */
   protected readonly label = computed(() => {
@@ -105,11 +117,62 @@ export class DateRangePickerComponent {
     this.draftEnd.set(v?.end ?? null);
     this.viewMonth.set(this.startOfMonth(v?.start ?? new Date()));
     this.open.set(true);
+    if (this.isDesktop()) {
+      this.openPopover();
+    }
   }
 
   protected close(): void {
+    // dispose() detaches the overlay; the detachments() handler clears state.
+    this.overlayRef?.dispose();
     this.open.set(false);
     this.hover.set(null);
+  }
+
+  /**
+   * Desktop popover via CDK Overlay — anchored to the trigger and shown at the
+   * calendar's natural height (no flexible-dimensions clamping, which was forcing
+   * an unnecessary inner scroll). It prefers opening below, flips above when
+   * there's no room, and is pushed back into the viewport if it would overflow;
+   * the panel only scrolls when the viewport is too short (the CSS max-height
+   * cap). Closes on scroll and backdrop. growAfterOpen keeps it positioned when
+   * navigating to a month with a different number of week rows.
+   */
+  private openPopover(): void {
+    const origin = this.trigger();
+    const tpl = this.calendarTpl();
+    if (!origin || !tpl) {
+      return;
+    }
+    const positionStrategy = this.overlay
+      .position()
+      .flexibleConnectedTo(origin)
+      .withPositions([
+        { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
+        { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -4 },
+      ])
+      .withGrowAfterOpen(true)
+      .withViewportMargin(8)
+      .withPush(true);
+
+    const overlayRef = this.overlay.create({
+      positionStrategy,
+      scrollStrategy: this.overlay.scrollStrategies.close(),
+      hasBackdrop: true,
+      backdropClass: 'cdk-overlay-transparent-backdrop',
+      panelClass: 'nm-date-range-popover',
+      // Pin to the trigger width but keep a usable minimum for a single month.
+      width: Math.max(origin.nativeElement.offsetWidth, 300),
+    });
+    overlayRef.attach(new TemplatePortal(tpl, this.vcr));
+    overlayRef.backdropClick().subscribe(() => this.close());
+    // Fires on scroll-close too — sync state without re-disposing.
+    overlayRef.detachments().subscribe(() => {
+      this.open.set(false);
+      this.hover.set(null);
+      this.overlayRef = null;
+    });
+    this.overlayRef = overlayRef;
   }
 
   protected prevMonth(): void {

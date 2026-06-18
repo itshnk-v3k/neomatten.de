@@ -34,12 +34,7 @@
         [formControl]="sortControl"
         label="account_filter_sort"
         [options]="sortOptions()" />
-      <!-- compact = isDesktop(): the desktop sidebar is narrow (single month);
-           the mobile sheet has room for two. -->
-      <nm-date-range-picker
-        [(value)]="dateRange"
-        [isDesktop]="isDesktop()"
-        [compact]="isDesktop()" />
+      <nm-date-range-picker [(value)]="dateRange" [isDesktop]="isDesktop()" />
     </ng-template>
 
     @if (orders.loading()) {

@@ -311,6 +311,34 @@ a[nmButton][aria-busy='true']::after {
 }
 
 /* =====================================================================
+   Date-range picker desktop popover. Styles the CDK overlay pane (panelClass
+   `nm-date-range-popover`) — created by CDK, so styled globally (no ng-deep).
+   A height-capped flex column: the month grid scrolls when the panel is clamped
+   to the viewport while the nav header + Clear/Apply footer stay pinned, so the
+   calendar can never fall off the bottom of the screen.
+   ===================================================================== */
+.nm-date-range-popover {
+  display: flex;
+  flex-direction: column;
+  max-width: calc(100vw - 1rem);
+  padding: 16px;
+  overflow: hidden; /* the container never scrolls — only the month grid does */
+  background: theme('colors.surface.DEFAULT');
+  border: 1px solid theme('colors.border.DEFAULT');
+  border-radius: 12px;
+  box-shadow: theme('boxShadow.elev');
+}
+
+/* Compressed-viewport fallback only: the popover opens at its natural height
+   (no withFlexibleDimensions), so this cap engages — and the month grid scrolls —
+   solely when the viewport is too short to fit the calendar. vh (not %) so it's
+   viewport-relative; the two-class selector outweighs CDK's
+   `.cdk-overlay-pane { max-height: 100% }`. */
+.cdk-overlay-pane.nm-date-range-popover {
+  max-height: calc(100vh - 2rem);
+}
+
+/* =====================================================================
    ngx-sonner toaster overrides. ngx-sonner is a third-party component that
    renders its own markup (and classes we don't author), so styling it from a
    component stylesheet would require piercing encapsulation (the deprecated
