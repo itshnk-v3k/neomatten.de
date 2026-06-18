@@ -35,7 +35,9 @@
         [attr.aria-label]="'action_close' | translate"
         (click)="close()"></button>
       <div
-        class="absolute right-0 z-popup mt-2 w-max max-w-[calc(100vw-3rem)] rounded-xl border border-border bg-surface p-4 shadow-elev">
+        class="absolute z-popup mt-2 w-max max-w-[calc(100vw-3rem)] rounded-xl border border-border bg-surface p-4 shadow-elev"
+        [class.left-0]="compact()"
+        [class.right-0]="!compact()">
         <ng-container [ngTemplateOutlet]="calendar" />
       </div>
     }
@@ -61,7 +63,7 @@
     </button>
     <div class="flex flex-1 justify-around gap-8 text-center text-sm font-bold text-content">
       <span class="flex-1">{{ leftLabel() }}</span>
-      @if (isDesktop()) {
+      @if (!compact()) {
         <span class="flex-1">{{ rightLabel() }}</span>
       }
     </div>
@@ -78,7 +80,7 @@
     <ng-container
       [ngTemplateOutlet]="monthGrid"
       [ngTemplateOutletContext]="{ cells: leftCells() }" />
-    @if (isDesktop()) {
+    @if (!compact()) {
       <ng-container
         [ngTemplateOutlet]="monthGrid"
         [ngTemplateOutletContext]="{ cells: rightCells() }" />

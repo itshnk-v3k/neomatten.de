@@ -34,7 +34,12 @@
         [formControl]="sortControl"
         label="account_filter_sort"
         [options]="sortOptions()" />
-      <nm-date-range-picker [(value)]="dateRange" [isDesktop]="isDesktop()" />
+      <!-- compact = isDesktop(): the desktop sidebar is narrow (single month);
+           the mobile sheet has room for two. -->
+      <nm-date-range-picker
+        [(value)]="dateRange"
+        [isDesktop]="isDesktop()"
+        [compact]="isDesktop()" />
     </ng-template>
 
     @if (orders.loading()) {
@@ -58,15 +63,23 @@
         </a>
       </div>
     } @else {
-      <!-- Two-column at lg+: filters in a sticky left sidebar, orders list takes
-           the rest. Below lg it collapses to one column with a full-width sticky
-           "Filter & Sort" bar that opens the bottom sheet. -->
+      <!-- Two-column at lg+: filters in a sticky left sidebar (220px), orders list
+           takes the rest, with the date group headers breaking out to span the
+           full content-column width above both. Below lg it collapses to one
+           column with a full-width sticky "Filter & Sort" bar opening the sheet.
+           Sidebar width (220) + gap (lg:gap-8 = 32) = the 252px header breakout. -->
       <div class="mt-4 lg:flex lg:gap-8">
         <!-- Desktop filter sidebar. Gated by isDesktop() (not just hidden) so a
              single nm-select binds each control — the bottom sheet owns them on
-             mobile. Sticky below the header; height collapses to its content. -->
+             mobile. The full-width date header sits above it, so both its sticky
+             top and its initial margin are pushed down by the header height
+             (+ the header's own my-4/first:mt-3 gaps) so filters line up with the
+             first order card and never sit under the breakout band. -->
         @if (isDesktop()) {
-          <aside class="sticky top-[72px] hidden h-fit w-[220px] shrink-0 self-start lg:block">
+          <aside
+            class="sticky hidden h-fit w-[220px] shrink-0 self-start lg:block"
+            [style.top.px]="headerHeight + dateHeaderHeight()"
+            [style.margin-top.px]="dateHeaderHeight() ? dateHeaderHeight() + 28 : 16">
             <div class="flex flex-col gap-3">
               <ng-container [ngTemplateOutlet]="filterControls" />
               @if (activeFilterCount() > 0) {
@@ -125,10 +138,14 @@
             </div>
           } @else if (isGrouped()) {
             @for (group of orderGroups(); track group.key) {
-              <!-- Edge-to-edge breakout on mobile (matches the filter bar); reset
-                   to the column on desktop where there's no full-width bar. -->
+              <!-- Full-width date header. Mobile: breaks out to the viewport edges
+                   (-mx-6, matching the filter bar). Desktop: breaks out left by
+                   the sidebar width + gap (220 + 32 = 252px) so it spans the whole
+                   content column above both the filters and the orders list; the
+                   right edge stays aligned with the order cards. -->
               <h3
-                class="sticky z-10 -mx-6 my-4 flex items-center justify-between gap-3 border-b border-border bg-surface/95 px-6 py-2.5 backdrop-blur first:mt-3 lg:mx-0 lg:px-0"
+                #dateHeader
+                class="sticky z-10 -mx-6 my-4 flex items-center justify-between gap-3 border-b border-border bg-surface/95 px-6 py-2.5 backdrop-blur first:mt-3 lg:-ml-[252px] lg:mr-0 lg:px-0"
                 [style.top.px]="headerHeight + filtersBarHeight()">
                 <span class="flex items-center gap-2.5">
                   <span class="h-5 w-1 shrink-0 rounded-full bg-primary"></span>

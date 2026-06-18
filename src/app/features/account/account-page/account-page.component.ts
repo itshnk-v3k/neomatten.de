@@ -169,6 +169,11 @@ export class AccountPageComponent {
   /** Measured filters-bar height (px) so date headers stick directly beneath it. */
   protected readonly filtersBarHeight = signal(0);
 
+  /** First date-group header; its height pushes the desktop filters sidebar down. */
+  private readonly dateHeader = viewChild<ElementRef<HTMLElement>>('dateHeader');
+  /** Measured date-header height (px); 0 when none is rendered (ungrouped/empty). */
+  protected readonly dateHeaderHeight = signal(0);
+
   /**
    * lg breakpoint gate: at lg+ the filters render as an inline row, below it
    * they move into the bottom sheet. Rendering one branch at a time keeps a
@@ -205,6 +210,22 @@ export class AccountPageComponent {
       observer.observe(el);
     });
     this.destroyRef.onDestroy(() => observer?.disconnect());
+
+    // On desktop the full-width date header sits above the filters sidebar; its
+    // measured height both offsets the sidebar's sticky top and pushes its
+    // initial position below the first header (no overlap of the breakout band).
+    let headerObserver: ResizeObserver | undefined;
+    effect(() => {
+      const el = this.dateHeader()?.nativeElement;
+      headerObserver?.disconnect();
+      if (!el || typeof ResizeObserver === 'undefined') {
+        this.dateHeaderHeight.set(0);
+        return;
+      }
+      headerObserver = new ResizeObserver(() => this.dateHeaderHeight.set(el.offsetHeight));
+      headerObserver.observe(el);
+    });
+    this.destroyRef.onDestroy(() => headerObserver?.disconnect());
   }
 
   /** Select options (labels re-resolve on language change). */

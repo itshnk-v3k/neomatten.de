@@ -1,9 +1,9 @@
 /*
- * EN: Custom inline date-range picker — no native date input. Two month grids on
- *     desktop (one on mobile), click start then end to set an inclusive range,
- *     highlighted in primary. Opens as an anchored popover on desktop and a
- *     bottom sheet on mobile (driven by the `isDesktop` input). Emits a
- *     {start, end} range (start at 00:00, end at 23:59:59) via the `value` model.
+ * EN: Custom inline date-range picker — no native date input. Two month grids by
+ *     default, one when `compact` (narrow columns); click start then end to set
+ *     an inclusive range, highlighted in primary. Opens as an anchored popover on
+ *     desktop and a bottom sheet on mobile (driven by the `isDesktop` input).
+ *     Emits a {start, end} range (start at 00:00, end at 23:59:59) via `value`.
  * RU: Кастомный выбор диапазона дат — без нативного input. Две сетки месяцев на
  *     десктопе (одна на мобиле); клик по началу, затем по концу задаёт включающий
  *     диапазон, подсвеченный основным цветом. Открывается поповером на десктопе и
@@ -53,6 +53,12 @@ export class DateRangePickerComponent {
   readonly value = model<DateRange | null>(null);
   /** lg+ gate: popover when true, bottom sheet when false. */
   readonly isDesktop = input<boolean>(true);
+  /**
+   * Single-month, narrow layout — set when the picker lives in a tight column
+   * (e.g. the orders filters sidebar) where two months would overflow. The
+   * popover then opens left-aligned (growing right) instead of right-aligned.
+   */
+  readonly compact = input<boolean>(false);
 
   /** Popover / sheet open state. */
   protected readonly open = signal(false);
