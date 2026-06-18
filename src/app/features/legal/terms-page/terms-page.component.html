@@ -1,6 +1,10 @@
 <!--
-  EN: Terms & Conditions — breadcrumb, title, intro and structured sections (i18n).
-  RU: AGB — крошки, заголовок, вступление и структурированные секции (i18n).
+  EN: Terms & Conditions (AGB) — breadcrumb + i18n title, then the full German
+      terms (§ 1–§ 10). Body is static German (lang="de") for legal accuracy;
+      outstanding client data is flagged with <nm-todo-admin> + TODO(admin)
+      comments. The § 5 no-withdrawal note is rendered as a primary callout.
+  RU: AGB — крошки + заголовок (i18n), затем полный немецкий текст (§ 1–§ 10).
+      Тело статично (lang="de"); недостающие данные помечены <nm-todo-admin>.
 -->
 <section class="mx-auto max-w-3xl px-6 py-12 lg:py-16">
   <nm-breadcrumb />
@@ -14,32 +18,166 @@
       }
     </div>
   } @else {
-    <p class="mt-4 text-content-secondary">{{ 'terms_intro' | translate }}</p>
+    <div lang="de" class="mt-8 space-y-8 leading-relaxed">
+      <!-- § 1 Geltungsbereich -->
+      <section>
+        <h2 class="text-xl font-bold">§ 1 Geltungsbereich</h2>
+        <p class="mt-2 text-content-secondary">
+          Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Bestellungen, die Verbraucher
+          und Unternehmer über unseren Online-Shop und Konfigurator abschließen. Vertragspartner
+          ist:
+        </p>
+        <p class="mt-2 text-content-secondary">
+          <!-- TODO(admin): Name / Firma des Vertragspartners -->
+          <nm-todo-admin>Name / Firma des Vertragspartners</nm-todo-admin>
+          <br />
+          Musterstraße 42
+          <br />
+          10115 Berlin, Deutschland
+          <br />
+          E-Mail: neomatten.de@gmail.com
+        </p>
+        <!-- TODO(admin): Echte Anschrift des Vertragspartners (Musterstraße ist Platzhalter) -->
+        <p class="mt-3">
+          <nm-todo-admin>Echte Anschrift des Vertragspartners ergänzen</nm-todo-admin>
+        </p>
+      </section>
 
-    <div class="mt-8 space-y-8">
+      <!-- § 2 Leistungsbeschreibung -->
       <section>
-        <h2 class="text-xl font-bold">{{ 'terms_scope_heading' | translate }}</h2>
-        <p class="mt-2 text-content-secondary">{{ 'terms_scope' | translate }}</p>
+        <h2 class="text-xl font-bold">§ 2 Leistungsbeschreibung</h2>
+        <p class="mt-2 text-content-secondary">
+          Wir fertigen maßgefertigte EVA-Automatten in Handarbeit nach Kundenspezifikation (u. a.
+          Fahrzeugmodell, Baujahr, Mattenfarbe und Kantenfarbe). Geringfügige Farb- und
+          Maßabweichungen sind technisch bedingt und stellen keinen Sachmangel dar.
+        </p>
       </section>
+
+      <!-- § 3 Vertragsschluss -->
       <section>
-        <h2 class="text-xl font-bold">{{ 'terms_order_heading' | translate }}</h2>
-        <p class="mt-2 text-content-secondary">{{ 'terms_order' | translate }}</p>
+        <h2 class="text-xl font-bold">§ 3 Vertragsschluss</h2>
+        <p class="mt-2 text-content-secondary">
+          Die Darstellung der Produkte im Shop und Konfigurator stellt kein rechtlich bindendes
+          Angebot, sondern eine Aufforderung zur Abgabe einer Bestellung dar. Mit dem Absenden der
+          Bestellung geben Sie ein verbindliches Angebot ab. Der Vertrag kommt mit unserer
+          Auftragsbestätigung per E-Mail oder mit dem Beginn der Produktion zustande.
+        </p>
       </section>
+
+      <!-- § 4 Preise und Zahlung -->
       <section>
-        <h2 class="text-xl font-bold">{{ 'terms_prices_heading' | translate }}</h2>
-        <p class="mt-2 text-content-secondary">{{ 'terms_prices' | translate }}</p>
+        <h2 class="text-xl font-bold">§ 4 Preise und Zahlung</h2>
+        <p class="mt-2 text-content-secondary">
+          Alle Preise verstehen sich inklusive der gesetzlichen Mehrwertsteuer zzgl. Versandkosten,
+          die vor Abschluss der Bestellung gesondert ausgewiesen werden.
+        </p>
+        <p class="mt-2 text-content-secondary">
+          Die Produktion erfolgt ausschließlich gegen Vorkasse. Mit der Bearbeitung Ihres Auftrags
+          beginnen wir nach vollständigem Zahlungseingang.
+        </p>
+        <p class="mt-2 text-content-secondary">Folgende Zahlungsarten stehen zur Verfügung:</p>
+        <!-- TODO(admin): Verfügbare Zahlungsarten (z. B. PayPal, Kreditkarte, Klarna) -->
+        <p class="mt-2">
+          <nm-todo-admin>Zahlungsarten (z. B. PayPal, Kreditkarte, Klarna)</nm-todo-admin>
+        </p>
       </section>
+
+      <!-- § 5 Individualanfertigung und Ausschluss des Widerrufsrechts -->
       <section>
-        <h2 class="text-xl font-bold">{{ 'terms_delivery_heading' | translate }}</h2>
-        <p class="mt-2 text-content-secondary">{{ 'terms_delivery' | translate }}</p>
+        <h2 class="text-xl font-bold">
+          § 5 Individualanfertigung und Ausschluss des Widerrufsrechts
+        </h2>
+        <div class="mt-2 rounded-lg border-l-4 border-primary bg-primary/5 p-4 text-content">
+          <p>
+            <span class="font-bold">Wichtiger Hinweis:</span>
+            Alle EVA-Matten werden individuell und in Handarbeit nach Ihren Vorgaben gefertigt. Es
+            handelt sich um Waren, die nicht vorgefertigt sind und für deren Herstellung eine
+            individuelle Auswahl oder Bestimmung durch den Verbraucher maßgeblich ist. Das
+            Widerrufsrecht besteht daher gemäß § 312g Abs. 2 Nr. 1 BGB
+            <span class="font-bold">nicht.</span>
+          </p>
+        </div>
       </section>
+
+      <!-- § 6 Lieferbedingungen und Eigentumsvorbehalt -->
       <section>
-        <h2 class="text-xl font-bold">{{ 'terms_warranty_heading' | translate }}</h2>
-        <p class="mt-2 text-content-secondary">{{ 'terms_warranty' | translate }}</p>
+        <h2 class="text-xl font-bold">§ 6 Lieferbedingungen und Eigentumsvorbehalt</h2>
+        <p class="mt-2 text-content-secondary">
+          Die Lieferung erfolgt nach Zahlungseingang innerhalb der angegebenen Lieferzeit:
+        </p>
+        <!-- TODO(admin): Lieferzeit X–Y Werktage nach Zahlungseingang -->
+        <p class="mt-2">
+          <nm-todo-admin>Lieferzeit: X–Y Werktage nach Zahlungseingang</nm-todo-admin>
+        </p>
+        <p class="mt-2 text-content-secondary">
+          Der Versand erfolgt durch den folgenden Versanddienstleister:
+        </p>
+        <!-- TODO(admin): Versanddienstleister -->
+        <p class="mt-2"><nm-todo-admin>Versanddienstleister</nm-todo-admin></p>
+        <p class="mt-2 text-content-secondary">
+          Die gelieferte Ware bleibt bis zur vollständigen Bezahlung unser Eigentum
+          (Eigentumsvorbehalt).
+        </p>
       </section>
+
+      <!-- § 7 Gewährleistung -->
       <section>
-        <h2 class="text-xl font-bold">{{ 'terms_withdrawal_heading' | translate }}</h2>
-        <p class="mt-2 text-content-secondary">{{ 'terms_withdrawal' | translate }}</p>
+        <h2 class="text-xl font-bold">§ 7 Gewährleistung</h2>
+        <p class="mt-2 text-content-secondary">
+          Es gelten die gesetzlichen Gewährleistungsrechte für herstellungsbedingte Mängel.
+        </p>
+        <h3 class="mt-4 text-lg font-semibold">
+          § 7.2 Ausschluss bei fehlerhaften Fahrzeugangaben
+        </h3>
+        <p class="mt-2 text-content-secondary">
+          Von der Gewährleistung ausgeschlossen sind Passformfehler, die auf falsche oder
+          unvollständige Fahrzeugangaben des Kunden zurückzuführen sind.
+        </p>
+        <h3 class="mt-4 text-lg font-semibold">§ 7.3 Ausschluss bei unsachgemäßer Behandlung</h3>
+        <p class="mt-2 text-content-secondary">
+          Ebenfalls ausgeschlossen sind Schäden durch unsachgemäße Handhabung, mechanische
+          Beschädigung, normalen Verschleiß sowie unsachgemäße Reinigung mit aggressiven
+          Chemikalien. Der Kunde hat im Gewährleistungsfall einen Produktionsfehler nachzuweisen.
+        </p>
+      </section>
+
+      <!-- § 8 Haftungsbeschränkung -->
+      <section>
+        <h2 class="text-xl font-bold">§ 8 Haftungsbeschränkung</h2>
+        <p class="mt-2 text-content-secondary">
+          Wir haften unbeschränkt für Schäden aus Vorsatz und grober Fahrlässigkeit, nach dem
+          Produkthaftungsgesetz sowie bei der Verletzung von Leben, Körper oder Gesundheit. Bei
+          leichter Fahrlässigkeit haften wir nur bei der Verletzung einer wesentlichen
+          Vertragspflicht (Kardinalpflicht), deren Erfüllung die ordnungsgemäße Durchführung des
+          Vertrags überhaupt erst ermöglicht; die Haftung ist in diesem Fall auf den
+          vertragstypischen, vorhersehbaren Schaden begrenzt.
+        </p>
+      </section>
+
+      <!-- § 9 Streitbeilegung -->
+      <section>
+        <h2 class="text-xl font-bold">§ 9 Streitbeilegung</h2>
+        <p class="mt-2 text-content-secondary">
+          Die Plattform der Europäischen Kommission zur Online-Streitbeilegung (OS) wurde zum 20.
+          Juli 2025 eingestellt. Wir sind nicht bereit und nicht verpflichtet, an einem
+          Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+        </p>
+      </section>
+
+      <!-- § 10 Schlussbestimmungen -->
+      <section>
+        <h2 class="text-xl font-bold">§ 10 Schlussbestimmungen</h2>
+        <p class="mt-2 text-content-secondary">
+          Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts
+          (CISG). Ist der Kunde Kaufmann, juristische Person des öffentlichen Rechts oder
+          öffentlich-rechtliches Sondervermögen, ist Gerichtsstand unser Geschäftssitz:
+        </p>
+        <!-- TODO(admin): Gerichtsstand (Geschäftssitz) -->
+        <p class="mt-2"><nm-todo-admin>Gerichtsstand (Geschäftssitz)</nm-todo-admin></p>
+        <p class="mt-2 text-content-secondary">
+          Sollten einzelne Bestimmungen dieser AGB unwirksam sein, bleibt die Wirksamkeit der
+          übrigen Bestimmungen unberührt.
+        </p>
       </section>
     </div>
   }

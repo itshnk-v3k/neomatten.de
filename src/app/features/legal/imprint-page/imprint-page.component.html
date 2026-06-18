@@ -1,6 +1,11 @@
 <!--
-  EN: Imprint — breadcrumb, title and structured sections. All copy via i18n.
-  RU: Impressum — крошки, заголовок и структурированные секции. Текст через i18n.
+  EN: Imprint (Impressum) — breadcrumb + i18n title, then the full German legal
+      text per § 5 DDG. The legal body is static German (lang="de") for legal
+      accuracy; fields the client still owes are flagged with <nm-todo-admin>
+      badges plus matching TODO(admin) comments.
+  RU: Impressum — крошки + заголовок (i18n), затем полный немецкий юридический
+      текст по § 5 DDG. Тело статично (lang="de"); недостающие данные помечены
+      <nm-todo-admin> и комментариями TODO(admin).
 -->
 <section class="mx-auto max-w-3xl px-6 py-12 lg:py-16">
   <nm-breadcrumb />
@@ -14,40 +19,110 @@
       }
     </div>
   } @else {
-    <div class="mt-8 space-y-8">
+    <div lang="de" class="mt-8 space-y-8 leading-relaxed">
+      <!-- Anbieter / § 5 DDG -->
       <section>
-        <h2 class="text-xl font-bold">{{ 'imprint_company_heading' | translate }}</h2>
-        <p class="mt-2 whitespace-pre-line text-content-secondary">
-          {{ 'imprint_company' | translate }}
+        <h2 class="text-xl font-bold">Angaben gemäß § 5 DDG</h2>
+        <p class="mt-2 text-content-secondary">Anbieter:</p>
+        <p class="mt-2 text-content-secondary">
+          <!-- TODO(admin): Vollständiger Name / Firmenname des Anbieters -->
+          <nm-todo-admin>Vollständiger Name / Firmenname</nm-todo-admin>
+          <br />
+          Musterstraße 42
+          <br />
+          10115 Berlin, Deutschland
+        </p>
+        <!-- TODO(admin): Echte Straßenadresse (Straße, Hausnummer, PLZ) — ersetzt den Platzhalter -->
+        <p class="mt-3">
+          <nm-todo-admin>
+            Echte Straßenadresse ergänzen (Musterstraße 42 ist ein Platzhalter)
+          </nm-todo-admin>
         </p>
       </section>
+
+      <!-- Kontakt -->
       <section>
-        <h2 class="text-xl font-bold">{{ 'imprint_address_heading' | translate }}</h2>
-        <p class="mt-2 whitespace-pre-line text-content-secondary">
-          {{ 'imprint_address' | translate }}
+        <h2 class="text-xl font-bold">Kontakt</h2>
+        <p class="mt-2 text-content-secondary">
+          Telefon: +49 177 2140083
+          <br />
+          E-Mail: neomatten.de@gmail.com
+          <br />
+          Website: neomatten.de
         </p>
       </section>
+
+      <!-- USt-IdNr. -->
       <section>
-        <h2 class="text-xl font-bold">{{ 'imprint_contact_heading' | translate }}</h2>
-        <p class="mt-2 whitespace-pre-line text-content-secondary">
-          {{ 'imprint_contact' | translate }}
+        <h2 class="text-xl font-bold">Umsatzsteuer-Identifikationsnummer</h2>
+        <p class="mt-2 text-content-secondary">
+          Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:
+        </p>
+        <!-- TODO(admin): USt-IdNr. -->
+        <p class="mt-2"><nm-todo-admin>USt-IdNr.</nm-todo-admin></p>
+      </section>
+
+      <!-- Wirtschafts-IdNr. -->
+      <section>
+        <h2 class="text-xl font-bold">Wirtschafts-Identifikationsnummer</h2>
+        <!-- TODO(admin): Wirtschafts-IdNr. (vergeben seit November 2024) -->
+        <p class="mt-2">
+          <nm-todo-admin>Wirtschafts-IdNr. (seit November 2024)</nm-todo-admin>
         </p>
       </section>
+
+      <!-- Inhaltlich Verantwortlicher -->
       <section>
-        <h2 class="text-xl font-bold">{{ 'imprint_register_heading' | translate }}</h2>
-        <p class="mt-2 whitespace-pre-line text-content-secondary">
-          {{ 'imprint_register' | translate }}
+        <h2 class="text-xl font-bold">Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+        <!-- TODO(admin): Verantwortliche Person nach § 18 Abs. 2 MStV (Name, Anschrift) -->
+        <p class="mt-2">
+          <nm-todo-admin>Verantwortliche Person (Name, Anschrift)</nm-todo-admin>
         </p>
       </section>
+
+      <!-- Online-Streitbeilegung -->
       <section>
-        <h2 class="text-xl font-bold">{{ 'imprint_vat_heading' | translate }}</h2>
-        <p class="mt-2 whitespace-pre-line text-content-secondary">
-          {{ 'imprint_vat' | translate }}
+        <h2 class="text-xl font-bold">Online-Streitbeilegung</h2>
+        <p class="mt-2 text-content-secondary">
+          Die Europäische Kommission hat die Plattform zur Online-Streitbeilegung (OS) zum 20. Juli
+          2025 eingestellt. Eine Verlinkung ist daher nicht mehr erforderlich. Wir sind nicht bereit
+          und nicht verpflichtet, an Streitbeilegungsverfahren vor einer
+          Verbraucherschlichtungsstelle teilzunehmen.
         </p>
       </section>
+
+      <!-- Haftungsausschluss -->
       <section>
-        <h2 class="text-xl font-bold">{{ 'imprint_disclaimer_heading' | translate }}</h2>
-        <p class="mt-2 text-content-secondary">{{ 'imprint_disclaimer' | translate }}</p>
+        <h2 class="text-xl font-bold">Haftungsausschluss</h2>
+        <h3 class="mt-4 text-lg font-semibold">Haftung für Inhalte</h3>
+        <p class="mt-2 text-content-secondary">
+          Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG für eigene Inhalte auf diesen Seiten
+          nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG sind wir als
+          Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde
+          Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige
+          Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von
+          Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt.
+        </p>
+        <h3 class="mt-4 text-lg font-semibold">Haftung für Links</h3>
+        <p class="mt-2 text-content-secondary">
+          Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen
+          Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen.
+          Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der
+          Seiten verantwortlich. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links
+          umgehend entfernen.
+        </p>
+      </section>
+
+      <!-- Urheberrecht -->
+      <section>
+        <h2 class="text-xl font-bold">Urheberrecht</h2>
+        <p class="mt-2 text-content-secondary">
+          Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen
+          dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art
+          der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen
+          Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind
+          nur für den privaten, nicht kommerziellen Gebrauch gestattet.
+        </p>
       </section>
     </div>
   }
