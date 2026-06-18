@@ -1,10 +1,10 @@
 /*
  * EN: Custom inline date-range picker — no native date input. A single month grid
  *     (both surfaces are narrow); click start then end to set an inclusive range,
- *     highlighted in primary. Opens as a CDK-Overlay popover on desktop (flexibly
- *     anchored to the trigger — prefers below, flips above, shrinks + scrolls to
- *     fit so it never falls off-screen) and a bottom sheet on mobile (driven by
- *     the `isDesktop` input). Emits {start, end} (00:00 → 23:59:59) via `value`.
+ *     highlighted in primary. Opens as a compact CDK-Overlay popover on desktop
+ *     (anchored to the trigger — prefers below, flips above, pushed back into the
+ *     viewport so it never falls off-screen) and a bottom sheet on mobile (driven
+ *     by the `isDesktop` input). Emits {start, end} (00:00 → 23:59:59) via `value`.
  * RU: Кастомный выбор диапазона дат — без нативного input. Одна сетка месяца (обе
  *     поверхности узкие); клик по началу, затем по концу задаёт включающий
  *     диапазон, подсвеченный основным цветом. Открывается поповером CDK Overlay на
@@ -130,13 +130,12 @@ export class DateRangePickerComponent {
   }
 
   /**
-   * Desktop popover via CDK Overlay — anchored to the trigger and shown at the
-   * calendar's natural height (no flexible-dimensions clamping, which was forcing
-   * an unnecessary inner scroll). It prefers opening below, flips above when
-   * there's no room, and is pushed back into the viewport if it would overflow;
-   * the panel only scrolls when the viewport is too short (the CSS max-height
-   * cap). Closes on scroll and backdrop. growAfterOpen keeps it positioned when
-   * navigating to a month with a different number of week rows.
+   * Desktop popover via CDK Overlay — a compact card anchored to the trigger and
+   * shown at the calendar's natural height (no inner scroll). It prefers opening
+   * below the trigger, flips above when there's no room, and is pushed back into
+   * the viewport if it would overflow. Closes on scroll and backdrop.
+   * growAfterOpen keeps it positioned when navigating to a month with a different
+   * number of week rows.
    */
   private openPopover(): void {
     const origin = this.trigger();
@@ -165,8 +164,9 @@ export class DateRangePickerComponent {
       hasBackdrop: true,
       backdropClass: 'cdk-overlay-transparent-backdrop',
       panelClass: 'nm-date-range-popover',
-      // Pin to the trigger width but keep a usable minimum for a single month.
-      width: Math.max(origin.nativeElement.offsetWidth, 300),
+      // Compact single-month width — anchored to the trigger, not the full
+      // sidebar width (which made the popover read as a centered panel).
+      width: 280,
     });
     overlayRef.attach(new TemplatePortal(tpl, this.vcr));
     overlayRef.backdropClick().subscribe(() => this.close());
@@ -223,14 +223,17 @@ export class DateRangePickerComponent {
     this.close();
   }
 
-  /** Tailwind classes for a day cell given its selection/range state. */
+  /** Tailwind classes for a day cell given its selection/range/today state. */
   protected dayClasses(day: Date): string {
-    const base = 'grid size-11 place-items-center rounded-md text-sm transition-colors md:size-10';
+    const base = 'grid size-8 place-items-center rounded-md text-sm transition-colors';
     if (this.isStart(day) || this.isEnd(day)) {
       return `${base} bg-primary font-semibold text-white`;
     }
     if (this.inRange(day)) {
       return `${base} bg-primary/10 text-primary`;
+    }
+    if (this.isToday(day)) {
+      return `${base} font-semibold text-primary ring-1 ring-inset ring-primary/40 hover:bg-surface-subtle`;
     }
     return `${base} text-content hover:bg-surface-subtle`;
   }
@@ -242,6 +245,9 @@ export class DateRangePickerComponent {
   protected isEnd(day: Date): boolean {
     const e = this.draftEnd();
     return !!e && this.sameDay(day, e);
+  }
+  protected isToday(day: Date): boolean {
+    return this.sameDay(day, new Date());
   }
   protected inRange(day: Date): boolean {
     const start = this.draftStart();

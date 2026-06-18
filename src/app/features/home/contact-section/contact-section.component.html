@@ -9,13 +9,13 @@
     </div>
 
     <div class="grid items-start gap-10 lg:grid-cols-2" nmReveal>
-      <div class="space-y-3 text-content-secondary">
+      <div class="flex flex-col gap-3 text-content-secondary">
         <p class="font-semibold text-content">{{ 'footer_country' | translate }}</p>
         <a
           [href]="mapsUrl"
           target="_blank"
           rel="noopener noreferrer"
-          class="flex items-center gap-2 font-semibold text-primary hover:text-primary-bright">
+          class="inline-flex w-fit items-center gap-2 font-semibold text-primary hover:text-primary-bright">
           <svg lucideMapPin class="size-5 shrink-0"></svg>
           {{ company.address.street }}, {{ company.address.city }}
         </a>
@@ -23,13 +23,13 @@
         <p>{{ 'home_contact_hours' | translate }}</p>
         <a
           [href]="phoneHref"
-          class="flex items-center gap-2 font-semibold text-primary hover:text-primary-bright">
+          class="inline-flex w-fit items-center gap-2 font-semibold text-primary hover:text-primary-bright">
           <svg lucidePhone class="size-5 shrink-0"></svg>
           {{ company.phone }}
         </a>
         <a
           [href]="'mailto:' + company.email"
-          class="flex items-center gap-2 font-semibold text-primary hover:text-primary-bright">
+          class="inline-flex w-fit items-center gap-2 font-semibold text-primary hover:text-primary-bright">
           <svg lucideMail class="size-5 shrink-0"></svg>
           {{ company.email }}
         </a>

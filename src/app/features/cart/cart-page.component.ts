@@ -18,6 +18,7 @@ import type { PaymentMethod } from '@core/models/order.model';
 import { AuthService } from '@core/services/auth.service';
 import { CartService } from '@core/services/cart.service';
 import { CheckoutService } from '@core/services/checkout.service';
+import { ProductService } from '@core/services/product.service';
 import {
   ConfigDetailsComponent,
   type ConfigDetailsVM,
@@ -40,6 +41,7 @@ import { AuthDialogComponent } from '@shared/components/auth-dialog/auth-dialog.
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import { PaymentDialogComponent } from '@shared/components/payment-dialog/payment-dialog.component';
+import { PaymentMethodsComponent } from '@shared/components/payment-methods/payment-methods.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
 import { EuroPipe } from '@shared/pipes/euro.pipe';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
@@ -60,6 +62,7 @@ import { categoryBadge } from '@shared/utils/product-category';
     ButtonDirective,
     AuthDialogComponent,
     PaymentDialogComponent,
+    PaymentMethodsComponent,
     SkeletonComponent,
     ConfigDetailsComponent,
     TranslatePipe,
@@ -80,6 +83,20 @@ export class CartPageComponent {
   private readonly auth = inject(AuthService);
   private readonly config = inject(ConfiguratorService);
   private readonly translation = inject(TranslationService);
+  private readonly products = inject(ProductService);
+
+  /**
+   * Catalogue description for a simple (non-configured) product line, resolved by
+   * SKU from products.json and translated. Returns null when the product or its
+   * description i18n key can't be resolved (so nothing renders).
+   */
+  protected productDescription(item: CartItem): string | null {
+    if (!item.sku) return null;
+    const product = this.products.products().find(p => p.sku === item.sku);
+    if (!product?.description) return null;
+    const text = this.translation.translate(product.description);
+    return text === product.description ? null : text;
+  }
 
   /** Cart line ids whose configuration details are currently expanded (collapsed by default). */
   private readonly expandedIds = signal(new Set<string>());

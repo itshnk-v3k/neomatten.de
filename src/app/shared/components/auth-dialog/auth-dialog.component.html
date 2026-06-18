@@ -1,115 +1,16 @@
 <!--
-  EN: Auth dialog content — a tab switch (Sign in / Register) above the matching
-      Reactive form. Submitting runs the mock AuthService; success closes and
-      emits `authenticated`.
-  RU: Содержимое диалога авторизации — переключатель вкладок (Вход / Регистрация)
-      над соответствующей формой. Отправка вызывает мок AuthService; успех
-      закрывает диалог и эмитит `authenticated`.
+  EN: Auth dialog content — the shared nm-auth-form, with its bottom switch link
+      toggling login / register in place. Success closes the dialog and emits
+      `authenticated`; an in-form navigation link (privacy policy, lockout hint)
+      also closes it.
+  RU: Содержимое диалога — общая nm-auth-form; нижняя ссылка переключает вход /
+      регистрацию на месте. Успех закрывает диалог и эмитит `authenticated`;
+      ссылка-переход внутри формы (политика, подсказка блокировки) тоже закрывает.
 -->
 <nm-dialog [(open)]="open" titleKey="auth_dialog_title">
-  <div class="mb-5 flex rounded-lg bg-surface-subtle p-1">
-    <button
-      type="button"
-      (click)="setMode('login')"
-      [class]="
-        'flex-1 rounded-md py-2 text-sm font-semibold transition-colors ' +
-        (mode() === 'login' ? 'bg-surface text-primary shadow-soft' : 'text-content-secondary')
-      ">
-      {{ 'auth_login_tab' | translate }}
-    </button>
-    <button
-      type="button"
-      (click)="setMode('register')"
-      [class]="
-        'flex-1 rounded-md py-2 text-sm font-semibold transition-colors ' +
-        (mode() === 'register' ? 'bg-surface text-primary shadow-soft' : 'text-content-secondary')
-      ">
-      {{ 'auth_register_tab' | translate }}
-    </button>
-  </div>
-
-  @if (mode() === 'login') {
-    @if (locked()) {
-      <!-- Brute-force lockout: the login form is hidden until the countdown expires. -->
-      <div class="flex flex-col items-center gap-4 p-6 text-center">
-        <svg lucideShieldAlert class="size-12 text-error"></svg>
-        <h3 class="text-lg font-semibold">{{ 'auth_locked_title' | translate }}</h3>
-        <p class="text-sm text-content-muted">{{ 'auth_locked_body' | translate }}</p>
-        <div class="font-mono text-2xl font-bold text-error">{{ lockoutCountdown() }}</div>
-        <p class="text-xs text-content-muted">
-          <a
-            routerLink="/contact"
-            [queryParams]="{ topic: 'lockout' }"
-            class="text-primary underline hover:text-primary-bright"
-            (click)="open.set(false)">
-            {{ 'auth_locked_hint' | translate }}
-          </a>
-        </p>
-      </div>
-    } @else {
-      <form [formGroup]="loginForm" (ngSubmit)="submitLogin()" class="flex flex-col gap-4">
-        <nm-input
-          formControlName="email"
-          type="email"
-          label="form_email"
-          placeholder="form_email_placeholder"
-          autocomplete="email"
-          [required]="true" />
-        <nm-input
-          formControlName="password"
-          type="password"
-          label="form_password"
-          autocomplete="current-password"
-          [required]="true" />
-        <button nmButton type="submit" class="mt-2" [loading]="submitting()">
-          {{ 'action_login' | translate }}
-        </button>
-      </form>
-    }
-  } @else {
-    <form [formGroup]="registerForm" (ngSubmit)="submitRegister()" class="flex flex-col gap-4">
-      <nm-input
-        formControlName="name"
-        label="form_name"
-        placeholder="form_name_placeholder"
-        autocomplete="name"
-        [required]="true" />
-      <nm-input
-        formControlName="email"
-        type="email"
-        label="form_email"
-        placeholder="form_email_placeholder"
-        autocomplete="email"
-        [required]="true" />
-      <nm-phone-input formControlName="phone" label="form_phone" />
-      <nm-input
-        formControlName="password"
-        type="password"
-        label="form_password"
-        hint="auth_password_hint"
-        autocomplete="new-password"
-        [required]="true" />
-      <div>
-        <nm-checkbox formControlName="dataConsent">
-          {{ 'register_data_consent_label' | translate }}
-          <a
-            routerLink="/privacy-policy"
-            class="ml-1 text-primary underline"
-            (click)="open.set(false)">
-            {{ 'register_data_consent_link' | translate }}
-          </a>
-        </nm-checkbox>
-        @if (showDataConsentError) {
-          <p class="mt-1.5 text-xs text-error">{{ 'validation_required' | translate }}</p>
-        }
-      </div>
-      <button nmButton type="submit" class="mt-2" [loading]="submitting()">
-        {{ 'action_register' | translate }}
-      </button>
-    </form>
-  }
-
-  @if (!locked()) {
-    <nm-social-login />
-  }
+  <nm-auth-form
+    [(mode)]="mode"
+    linkMode="toggle"
+    (succeeded)="onSucceeded()"
+    (dismiss)="open.set(false)" />
 </nm-dialog>

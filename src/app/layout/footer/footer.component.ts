@@ -12,23 +12,15 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { COMPANY_INFO, COMPANY_MAPS_URL, COMPANY_PHONE_HREF } from '@core/config/company-info';
 import { ScrollService } from '@core/services/scroll.service';
 import { FOOTER_LEGAL, FOOTER_NAV, type NavLink } from '@layout/navigation';
-import { LucideMail, LucideMapPin, LucidePhone, LucideStore } from '@lucide/angular';
+import { LucideMail, LucideMapPin, LucidePhone } from '@lucide/angular';
 import {
   type BrandIcon,
   BrandIconComponent,
 } from '@shared/components/brand-icon/brand-icon.component';
+import { PaymentMethodsComponent } from '@shared/components/payment-methods/payment-methods.component';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 // Per-icon, tree-shakeable named imports from simple-icons (CC0 brand marks).
-import {
-  siInstagram,
-  siKlarna,
-  siMastercard,
-  siPaypal,
-  siTelegram,
-  siTiktok,
-  siVisa,
-  siWhatsapp,
-} from 'simple-icons';
+import { siInstagram, siTelegram, siTiktok, siWhatsapp } from 'simple-icons';
 
 @Component({
   selector: 'nm-footer',
@@ -37,11 +29,11 @@ import {
     RouterLink,
     RouterLinkActive,
     BrandIconComponent,
+    PaymentMethodsComponent,
     TranslatePipe,
     LucideMapPin,
     LucidePhone,
     LucideMail,
-    LucideStore,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './footer.component.html',
@@ -72,12 +64,4 @@ export class FooterComponent {
   };
   /** Current year, computed once on init (interpolated into the copyright line). */
   protected readonly currentYear = new Date().getFullYear();
-
-  /** Brand payment marks rendered as pills (brand names are not translated). */
-  protected readonly paymentBrands: readonly { icon: BrandIcon; label: string }[] = [
-    { icon: siVisa, label: 'Visa' },
-    { icon: siMastercard, label: 'Mastercard' },
-    { icon: siPaypal, label: 'PayPal' },
-    { icon: siKlarna, label: 'Klarna' },
-  ];
 }

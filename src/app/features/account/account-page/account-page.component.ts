@@ -27,6 +27,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslationService } from '@core/i18n/translation.service';
 import type {
+  OrderItemDTO,
   OrderRecord,
   OrderStatus,
   PaymentMethod,
@@ -34,18 +35,17 @@ import type {
 } from '@core/models/order.model';
 import { AuthService } from '@core/services/auth.service';
 import { OrderService } from '@core/services/order.service';
+import { ProductService } from '@core/services/product.service';
 import { ConfiguratorService } from '@features/configurator/configurator.service';
 import {
   LucideCheck,
   LucideChevronDown,
   LucideCopy,
-  LucideCreditCard,
-  LucidePackage,
   LucideSearchX,
-  LucideShoppingBag,
   LucideSlidersHorizontal,
   LucideStore,
 } from '@lucide/angular';
+import { BrandIconComponent } from '@shared/components/brand-icon/brand-icon.component';
 import { ButtonDirective } from '@shared/components/button/button.directive';
 import {
   type DateRange,
@@ -59,6 +59,8 @@ import { EuroPipe } from '@shared/pipes/euro.pipe';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 import { ClipboardService } from '@shared/services/clipboard.service';
 import { categoryBadge } from '@shared/utils/product-category';
+// Per-icon, tree-shakeable named imports from simple-icons (CC0 brand marks).
+import { siKlarna, siPaypal, siStripe } from 'simple-icons';
 
 /** Filter value = a concrete status/category or the "all" sentinel. */
 type StatusFilter = OrderStatus | 'all';
@@ -105,9 +107,7 @@ const SORT_OPTIONS: readonly SortOption[] = ['newest', 'oldest', 'price_high', '
     SkeletonComponent,
     TranslatePipe,
     EuroPipe,
-    LucideCreditCard,
-    LucideShoppingBag,
-    LucidePackage,
+    BrandIconComponent,
     LucideStore,
     LucideCopy,
     LucideCheck,
@@ -124,6 +124,10 @@ const SORT_OPTIONS: readonly SortOption[] = ['newest', 'oldest', 'price_high', '
 export class AccountPageComponent {
   /** Category chip preset (label key + classes) for an order item's category. */
   protected readonly categoryBadge = categoryBadge;
+  /** Payment brand marks for the order's payment-method line (simple-icons). */
+  protected readonly stripeIcon = siStripe;
+  protected readonly klarnaIcon = siKlarna;
+  protected readonly paypalIcon = siPaypal;
   /** Shared copy-to-clipboard helper (order ID + line SKU copy buttons). */
   protected readonly clipboard = inject(ClipboardService);
 
@@ -132,6 +136,20 @@ export class AccountPageComponent {
   private readonly translation = inject(TranslationService);
   private readonly destroyRef = inject(DestroyRef);
   protected readonly orders = inject(OrderService);
+  private readonly products = inject(ProductService);
+
+  /**
+   * Catalogue description for a simple (non-configured) product line, resolved by
+   * SKU from products.json and translated. Returns null when the product or its
+   * description i18n key can't be resolved (so nothing renders).
+   */
+  protected productDescription(item: OrderItemDTO): string | null {
+    if (!item.sku) return null;
+    const product = this.products.products().find(p => p.sku === item.sku);
+    if (!product?.description) return null;
+    const text = this.translation.translate(product.description);
+    return text === product.description ? null : text;
+  }
 
   protected readonly user = this.auth.user;
   protected readonly orderList = this.orders.orders;
@@ -354,11 +372,6 @@ export class AccountPageComponent {
       }
       return next;
     });
-  }
-
-  /** Compact "2× BMW Mats, 1× Cushion" line for the collapsed card summary. */
-  protected itemSummary(order: OrderRecord): string {
-    return order.items.map(item => `${item.quantity}× ${item.name}`).join(', ');
   }
 
   /** Localized mat/edge colour names for a configured order line (falls back to the id). */

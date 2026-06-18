@@ -39,46 +39,45 @@
 
 <!-- ============================ Calendar surface ============================ -->
 <!--
-  Single month grid. In the desktop overlay the panel (.nm-date-range-popover) is
-  a height-capped flex column: the month grid (flex-1, min-h-0) scrolls when the
-  panel is clamped to the viewport, while the nav header and the Clear/Apply
-  footer (shrink-0) stay pinned. In the mobile sheet there's no height cap, so the
-  flex utilities are inert and the calendar renders at its natural height.
+  Single compact month grid (≤280px). Everything is visible at once — no inner
+  scroll: the nav header, the month grid and the Clear/Apply footer simply stack
+  at their natural height in both the desktop overlay and the mobile sheet. The
+  max-w wrapper keeps it from stretching full-width inside the mobile sheet.
 -->
 <ng-template #calendar>
-  <div class="flex shrink-0 items-center justify-between gap-2">
-    <button
-      type="button"
-      class="grid size-9 shrink-0 place-items-center rounded-md text-content-secondary transition-colors hover:bg-surface-subtle hover:text-primary"
-      [attr.aria-label]="'date_range_prev_month' | translate"
-      (click)="prevMonth()">
-      <svg lucideChevronLeft class="size-5" aria-hidden="true"></svg>
-    </button>
-    <span class="flex-1 text-center text-sm font-bold text-content">{{ monthLabelText() }}</span>
-    <button
-      type="button"
-      class="grid size-9 shrink-0 place-items-center rounded-md text-content-secondary transition-colors hover:bg-surface-subtle hover:text-primary"
-      [attr.aria-label]="'date_range_next_month' | translate"
-      (click)="nextMonth()">
-      <svg lucideChevronRight class="size-5" aria-hidden="true"></svg>
-    </button>
-  </div>
+  <div class="mx-auto w-full max-w-[280px]">
+    <div class="flex items-center justify-between gap-2">
+      <button
+        type="button"
+        class="grid size-7 shrink-0 place-items-center rounded-md text-content-secondary transition-colors hover:bg-surface-subtle hover:text-primary"
+        [attr.aria-label]="'date_range_prev_month' | translate"
+        (click)="prevMonth()">
+        <svg lucideChevronLeft class="size-4" aria-hidden="true"></svg>
+      </button>
+      <span class="flex-1 text-center text-sm font-bold text-content">{{ monthLabelText() }}</span>
+      <button
+        type="button"
+        class="grid size-7 shrink-0 place-items-center rounded-md text-content-secondary transition-colors hover:bg-surface-subtle hover:text-primary"
+        [attr.aria-label]="'date_range_next_month' | translate"
+        (click)="nextMonth()">
+        <svg lucideChevronRight class="size-4" aria-hidden="true"></svg>
+      </button>
+    </div>
 
-  <div
-    class="mt-3 flex min-h-0 flex-1 justify-center overflow-y-auto"
-    (mouseleave)="hover.set(null)">
-    <ng-container
-      [ngTemplateOutlet]="monthGrid"
-      [ngTemplateOutletContext]="{ cells: monthCells() }" />
-  </div>
+    <div class="mt-2 flex justify-center" (mouseleave)="hover.set(null)">
+      <ng-container
+        [ngTemplateOutlet]="monthGrid"
+        [ngTemplateOutletContext]="{ cells: monthCells() }" />
+    </div>
 
-  <div class="mt-4 flex shrink-0 justify-end gap-2 border-t border-border pt-4">
-    <button type="button" nmButton variant="outline" size="sm" (click)="clear()">
-      {{ 'account_filters_clear' | translate }}
-    </button>
-    <button type="button" nmButton size="sm" (click)="apply()">
-      {{ 'account_date_range_apply' | translate }}
-    </button>
+    <div class="mt-3 flex justify-end gap-2 border-t border-border pt-3">
+      <button type="button" nmButton variant="outline" size="sm" (click)="clear()">
+        {{ 'account_filters_clear' | translate }}
+      </button>
+      <button type="button" nmButton size="sm" (click)="apply()">
+        {{ 'account_date_range_apply' | translate }}
+      </button>
+    </div>
   </div>
 </ng-template>
 
@@ -86,8 +85,7 @@
 <ng-template #monthGrid let-cells="cells">
   <div class="grid grid-cols-7 gap-0.5">
     @for (wd of weekdays(); track $index) {
-      <span
-        class="grid size-11 place-items-center text-xs font-medium text-content-muted md:size-10">
+      <span class="grid size-8 place-items-center text-xs font-medium text-content-muted">
         {{ wd }}
       </span>
     }
@@ -101,7 +99,7 @@
           {{ cell.getDate() }}
         </button>
       } @else {
-        <span class="size-11 md:size-10"></span>
+        <span class="size-8"></span>
       }
     }
   </div>

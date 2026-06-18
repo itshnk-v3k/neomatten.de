@@ -52,7 +52,7 @@
         <h3 class="text-sm font-semibold uppercase tracking-wide">
           {{ 'footer_nav_heading' | translate }}
         </h3>
-        <ul class="mt-3 space-y-2 text-sm">
+        <ul class="mt-3 flex flex-col gap-2 text-sm">
           @for (link of nav; track link.path + (link.sectionId ?? '')) {
             <li>
               @if (link.sectionId) {
@@ -82,7 +82,7 @@
         <h3 class="text-sm font-semibold uppercase tracking-wide">
           {{ 'footer_legal' | translate }}
         </h3>
-        <ul class="mt-3 space-y-2 text-sm">
+        <ul class="mt-3 flex flex-col gap-2 text-sm">
           @for (link of legal; track link.path) {
             <li>
               <a
@@ -102,7 +102,7 @@
         <h3 class="text-sm font-semibold uppercase tracking-wide">
           {{ 'footer_contact_heading' | translate }}
         </h3>
-        <address class="mt-3 space-y-3 text-sm not-italic text-content-inverse/70">
+        <address class="mt-3 flex flex-col gap-3 text-sm not-italic text-content-inverse/70">
           <div class="flex items-start gap-2">
             <svg lucideMapPin class="mt-0.5 size-4 shrink-0 text-primary-300"></svg>
             <a
@@ -139,7 +139,7 @@
         <h3 class="text-sm font-semibold uppercase tracking-wide">
           {{ 'footer_hours_heading' | translate }}
         </h3>
-        <ul class="mt-3 space-y-1 text-sm text-content-inverse/70">
+        <ul class="mt-3 flex flex-col gap-1 text-sm text-content-inverse/70">
           <li>{{ 'footer_hours_weekdays' | translate }}</li>
           <li>{{ 'footer_hours_saturday' | translate }}</li>
           <li>{{ 'footer_orders_24_7' | translate }}</li>
@@ -150,24 +150,7 @@
         <h3 class="text-sm font-semibold uppercase tracking-wide">
           {{ 'footer_payment_title' | translate }}
         </h3>
-        <ul class="mt-3 flex flex-wrap gap-2">
-          @for (brand of paymentBrands; track brand.label) {
-            <li>
-              <span
-                class="inline-flex items-center gap-2 rounded-md border border-border bg-white px-3 py-1.5 text-xs font-medium text-ink shadow-sm">
-                <nm-brand-icon [icon]="brand.icon" [colored]="true" class="size-4" />
-                {{ brand.label }}
-              </span>
-            </li>
-          }
-          <li>
-            <span
-              class="inline-flex items-center gap-2 rounded-md border border-border bg-white px-3 py-1.5 text-xs font-medium text-ink shadow-sm">
-              <svg lucideStore class="size-4"></svg>
-              {{ 'footer_payment_pickup' | translate }}
-            </span>
-          </li>
-        </ul>
+        <nm-payment-methods class="mt-3 block" />
       </div>
     </div>
 

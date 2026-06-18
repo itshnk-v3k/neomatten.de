@@ -52,9 +52,11 @@
             <!-- Top row: name + SKU (left), line total (right). -->
             <div class="flex min-w-0 items-start justify-between gap-4">
               <div class="min-w-0 flex-1">
-                <h2 class="truncate font-bold">{{ item.name }}</h2>
+                <!-- Category chip sits above the title (tags-above-card pattern):
+                     category → name → SKU. -->
                 @let cartCat = categoryBadge(item.category);
-                <span class="mt-1 {{ cartCat.chipClass }}">{{ cartCat.labelKey | translate }}</span>
+                <span class="mb-1 {{ cartCat.chipClass }}">{{ cartCat.labelKey | translate }}</span>
+                <h2 class="truncate font-bold">{{ item.name }}</h2>
                 @if (item.sku; as sku) {
                   <p class="mt-0.5 flex min-w-0 items-center gap-1 text-xs text-content-muted">
                     <span class="shrink-0 font-medium">{{ 'order_sku_label' | translate }}:</span>
@@ -99,6 +101,13 @@
                   [class.rotate-180]="isExpanded(item.id)"
                   aria-hidden="true"></svg>
               </button>
+            } @else {
+              <!-- Simple products (bags, cushions, leather): no configurator
+                   fields — show the catalogue description if one exists. -->
+              @let cartDesc = productDescription(item);
+              @if (cartDesc) {
+                <p class="text-sm text-content-secondary">{{ cartDesc }}</p>
+              }
             }
 
             <!-- Bottom row: quantity stepper (left) + remove (right). -->
@@ -138,7 +147,7 @@
       <aside class="lg:sticky lg:top-24 lg:self-start">
         <div class="rounded-2xl border border-border bg-surface p-6 shadow-soft">
           <h2 class="text-base font-bold md:text-lg">{{ 'cart_summary_title' | translate }}</h2>
-          <dl class="mt-4 space-y-2 text-xs md:text-sm">
+          <dl class="mt-4 flex flex-col gap-2 text-xs md:text-sm">
             <div class="flex justify-between gap-3">
               <dt class="min-w-0 text-content-secondary">{{ 'cart_subtotal' | translate }}</dt>
               <dd class="shrink-0 whitespace-nowrap font-medium">{{ subtotal() | euro }}</dd>
@@ -183,6 +192,14 @@
                 {{ 'cart_auth_hint' | translate }}
               </p>
             }
+          </div>
+
+          <!-- Accepted payment methods (informational; checkout opens the dialog). -->
+          <div class="mt-5 border-t border-border pt-4">
+            <p class="mb-2 text-xs font-medium text-content-secondary">
+              {{ 'footer_payment_methods' | translate }}
+            </p>
+            <nm-payment-methods />
           </div>
         </div>
       </aside>

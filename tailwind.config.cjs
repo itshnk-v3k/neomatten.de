@@ -8,9 +8,18 @@
  *     градиенты/брейкпоинты). Файл .cjs, чтобы грузиться как CommonJS при
  *     "type": "module".
  */
+const plugin = require('tailwindcss/plugin');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.{html,ts,scss}'],
+  // The default `inset` core plugin emits the `inset` shorthand for `inset-*`
+  // (e.g. `inset-0 { inset: 0 }`), unsupported in Safari < 14.1 / iOS < 14.5.
+  // Disable it and re-emit every inset utility as top/right/bottom/left longhand
+  // via the plugin below (inset-x/inset-y/top/right/bottom/left stay identical).
+  corePlugins: {
+    inset: false,
+  },
   theme: {
     fontFamily: {
       // Montserrat is the single project typeface (display + body).
@@ -131,5 +140,35 @@ module.exports = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    // Re-implement the disabled `inset` core plugin so `inset-*` emits longhand
+    // (top/right/bottom/left) instead of the `inset` shorthand. inset-x/inset-y
+    // and top/right/bottom/left are reproduced verbatim from the core plugin, so
+    // every existing positioning utility (incl. negatives + arbitrary values)
+    // keeps working unchanged — only `inset-*` switches to longhand.
+    plugin(function ({ matchUtilities, theme }) {
+      const opts = { values: theme('inset'), supportsNegativeValues: true };
+      matchUtilities(
+        { inset: value => ({ top: value, right: value, bottom: value, left: value }) },
+        opts
+      );
+      matchUtilities(
+        {
+          'inset-x': value => ({ left: value, right: value }),
+          'inset-y': value => ({ top: value, bottom: value }),
+        },
+        opts
+      );
+      matchUtilities(
+        {
+          top: value => ({ top: value }),
+          right: value => ({ right: value }),
+          bottom: value => ({ bottom: value }),
+          left: value => ({ left: value }),
+        },
+        opts
+      );
+    }),
+  ],
 };

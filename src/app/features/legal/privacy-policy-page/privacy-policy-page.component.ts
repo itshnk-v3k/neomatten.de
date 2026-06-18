@@ -1,17 +1,21 @@
 /*
- * EN: Privacy Policy (Datenschutzerklärung) legal page. Static structured
- *     sections, all text via translate keys. Breadcrumb: Home › Legal › Privacy.
- * RU: Юридическая страница «Политика конфиденциальности». Статичные секции,
- *     весь текст через ключи перевода. Крошки: Главная › Юридическое › Политика.
+ * EN: Privacy Policy (Datenschutzerklärung) legal page. Full German GDPR text,
+ *     static (lang="de") for legal accuracy; the i18n title + breadcrumb stay
+ *     bilingual. Outstanding client data is marked with <nm-todo-admin> badges.
+ *     Breadcrumb: Home › Legal › Privacy.
+ * RU: Юридическая страница «Политика конфиденциальности». Полный немецкий текст
+ *     по DSGVO, статично (lang="de"); заголовок и крошки двуязычные. Недостающие
+ *     данные помечены <nm-todo-admin>. Крошки: Главная › Юридическое › Политика.
  */
 import { afterNextRender, ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 import { SkeletonComponent } from '@shared/components/skeleton/skeleton.component';
+import { TodoAdminComponent } from '@shared/components/todo-admin/todo-admin.component';
 import { TranslatePipe } from '@shared/pipes/translate.pipe';
 
 @Component({
   selector: 'nm-privacy-policy-page',
-  imports: [BreadcrumbComponent, SkeletonComponent, TranslatePipe],
+  imports: [BreadcrumbComponent, SkeletonComponent, TodoAdminComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './privacy-policy-page.component.html',
   styleUrl: './privacy-policy-page.component.scss',

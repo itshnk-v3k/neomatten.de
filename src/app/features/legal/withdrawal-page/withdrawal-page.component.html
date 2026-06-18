@@ -1,6 +1,13 @@
 <!--
-  EN: Right of Withdrawal — breadcrumb, title, intro and structured sections (i18n).
-  RU: Widerrufsbelehrung — крошки, заголовок, вступление и секции (i18n).
+  EN: Right of Withdrawal (Widerrufsbelehrung) — breadcrumb + i18n title, then the
+      full German text: right, how to exercise it, consequences, the
+      § 312g Abs. 2 Nr. 1 BGB exclusion (primary callout) and the statutory model
+      withdrawal form. Body is static German (lang="de"); outstanding client data
+      is flagged with <nm-todo-admin> + TODO(admin) comments.
+  RU: Widerrufsbelehrung — крошки + заголовок (i18n), затем полный немецкий текст:
+      право, его осуществление, последствия, исключение по § 312g Abs. 2 Nr. 1 BGB
+      и образец формы. Тело статично (lang="de"); недостающее помечено
+      <nm-todo-admin>.
 -->
 <section class="mx-auto max-w-3xl px-6 py-12 lg:py-16">
   <nm-breadcrumb />
@@ -14,26 +21,109 @@
       }
     </div>
   } @else {
-    <p class="mt-4 text-content-secondary">{{ 'withdrawal_intro' | translate }}</p>
-
-    <div class="mt-8 space-y-8">
+    <div lang="de" class="mt-8 flex flex-col gap-8 leading-relaxed">
+      <!-- Widerrufsrecht -->
       <section>
-        <h2 class="text-xl font-bold">{{ 'withdrawal_right_heading' | translate }}</h2>
-        <p class="mt-2 text-content-secondary">{{ 'withdrawal_right' | translate }}</p>
-      </section>
-      <section>
-        <h2 class="text-xl font-bold">{{ 'withdrawal_period_heading' | translate }}</h2>
-        <p class="mt-2 text-content-secondary">{{ 'withdrawal_period' | translate }}</p>
-      </section>
-      <section>
-        <h2 class="text-xl font-bold">{{ 'withdrawal_exercise_heading' | translate }}</h2>
-        <p class="mt-2 whitespace-pre-line text-content-secondary">
-          {{ 'withdrawal_exercise' | translate }}
+        <h2 class="text-xl font-bold">Widerrufsrecht</h2>
+        <p class="mt-2 text-content-secondary">
+          Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu
+          widerrufen. Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag, an dem Sie oder ein von
+          Ihnen benannter Dritter, der nicht der Beförderer ist, die Waren in Besitz genommen haben.
         </p>
       </section>
+
+      <!-- Ausübung des Widerrufs -->
       <section>
-        <h2 class="text-xl font-bold">{{ 'withdrawal_consequences_heading' | translate }}</h2>
-        <p class="mt-2 text-content-secondary">{{ 'withdrawal_consequences' | translate }}</p>
+        <h2 class="text-xl font-bold">Ausübung des Widerrufs</h2>
+        <p class="mt-2 text-content-secondary">
+          Um Ihr Widerrufsrecht auszuüben, müssen Sie uns mittels einer eindeutigen Erklärung (z. B.
+          ein mit der Post versandter Brief oder eine E-Mail) über Ihren Entschluss, diesen Vertrag
+          zu widerrufen, informieren:
+        </p>
+        <p class="mt-2 text-content-secondary">
+          <!-- TODO(admin): Vollständiger Name / Firma + Anschrift für die Widerrufserklärung -->
+          <nm-todo-admin>Vollständiger Name / Firma</nm-todo-admin>
+          <br />
+          <nm-todo-admin>Anschrift</nm-todo-admin>
+          <br />
+          E-Mail: neomatten.de@gmail.com
+          <br />
+          Telefon: +49 177 2140083
+        </p>
+        <p class="mt-2 text-content-secondary">
+          Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung
+          des Widerrufsrechts vor Ablauf der Widerrufsfrist absenden.
+        </p>
+      </section>
+
+      <!-- Folgen des Widerrufs -->
+      <section>
+        <h2 class="text-xl font-bold">Folgen des Widerrufs</h2>
+        <p class="mt-2 text-content-secondary">
+          Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen
+          erhalten haben, einschließlich der Lieferkosten (mit Ausnahme der zusätzlichen Kosten, die
+          sich daraus ergeben, dass Sie eine andere Art der Lieferung als die von uns angebotene,
+          günstigste Standardlieferung gewählt haben), unverzüglich und spätestens binnen vierzehn
+          Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über Ihren Widerruf dieses Vertrags
+          bei uns eingegangen ist. Für diese Rückzahlung verwenden wir dasselbe Zahlungsmittel, das
+          Sie bei der ursprünglichen Transaktion eingesetzt haben, es sei denn, mit Ihnen wurde
+          ausdrücklich etwas anderes vereinbart; in keinem Fall werden Ihnen wegen dieser
+          Rückzahlung Entgelte berechnet.
+        </p>
+        <p class="mt-2 text-content-secondary">
+          Wir können die Rückzahlung verweigern, bis wir die Waren wieder zurückerhalten haben oder
+          bis Sie den Nachweis erbracht haben, dass Sie die Waren zurückgesandt haben, je nachdem,
+          welches der frühere Zeitpunkt ist. Sie tragen die unmittelbaren Kosten der Rücksendung der
+          Waren.
+        </p>
+      </section>
+
+      <!-- Wichtiger Ausschluss — § 312g Abs. 2 Nr. 1 BGB -->
+      <section>
+        <h2 class="text-xl font-bold">
+          Wichtiger Ausschluss des Widerrufsrechts (§ 312g Abs. 2 Nr. 1 BGB)
+        </h2>
+        <div class="mt-2 rounded-lg border-l-4 border-primary bg-primary/5 p-4 text-content">
+          <p>
+            Das Widerrufsrecht besteht
+            <span class="font-bold">nicht</span>
+            bei Verträgen zur Lieferung von Waren, die nicht vorgefertigt sind und für deren
+            Herstellung eine individuelle Auswahl oder Bestimmung durch den Verbraucher maßgeblich
+            ist. Da unsere EVA-Matten individuell nach Ihren Fahrzeugdaten und Farbwünschen
+            handgefertigt werden, besteht für diese Waren kein Widerrufsrecht. Mit Beginn der
+            Produktion erlischt ein etwaiges Widerrufsrecht vollständig.
+          </p>
+        </div>
+      </section>
+
+      <!-- Muster-Widerrufsformular -->
+      <section>
+        <h2 class="text-xl font-bold">Muster-Widerrufsformular</h2>
+        <p class="mt-2 text-content-secondary">
+          (Wenn Sie den Vertrag widerrufen wollen, dann füllen Sie bitte dieses Formular aus und
+          senden Sie es zurück.)
+        </p>
+        <div
+          class="mt-3 flex flex-col gap-2 rounded-lg border border-border bg-surface-subtle p-4 text-sm text-content-secondary">
+          <p>An:</p>
+          <p>
+            <!-- TODO(admin): Name/Firma + Anschrift für das Muster-Widerrufsformular -->
+            <nm-todo-admin>Vollständiger Name / Firma</nm-todo-admin>
+            ,
+            <nm-todo-admin>Anschrift</nm-todo-admin>
+            , E-Mail: neomatten.de@gmail.com
+          </p>
+          <p class="pt-2">
+            Hiermit widerrufe(n) ich/wir (*) den von mir/uns (*) abgeschlossenen Vertrag über den
+            Kauf der folgenden Waren (*) / die Erbringung der folgenden Dienstleistung (*):
+          </p>
+          <p>— Bestellt am (*) / erhalten am (*):</p>
+          <p>— Name des/der Verbraucher(s):</p>
+          <p>— Anschrift des/der Verbraucher(s):</p>
+          <p>— Datum:</p>
+          <p>— Unterschrift des/der Verbraucher(s) (nur bei Mitteilung auf Papier):</p>
+          <p class="pt-2">(*) Unzutreffendes streichen.</p>
+        </div>
       </section>
     </div>
   }
