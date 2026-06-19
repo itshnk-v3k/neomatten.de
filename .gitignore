@@ -30,6 +30,9 @@ yarn-error.log
 # Project brief (internal planning docs, not part of the app)
 _project-brief/
 
+# Generated structure doc (local reference only)
+/project_structure.md
+
 # Miscellaneous
 /.angular/cache
 .sass-cache/

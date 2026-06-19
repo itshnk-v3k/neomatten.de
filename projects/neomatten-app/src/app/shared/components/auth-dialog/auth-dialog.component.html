@@ -1,11 +1,12 @@
 <!--
   EN: Auth dialog content — the shared nm-auth-form, with its bottom switch link
-      toggling login / register in place. Success closes the dialog and emits
-      `authenticated`; an in-form navigation link (privacy policy, lockout hint)
-      also closes it.
-  RU: Содержимое диалога — общая nm-auth-form; нижняя ссылка переключает вход /
-      регистрацию на месте. Успех закрывает диалог и эмитит `authenticated`;
-      ссылка-переход внутри формы (политика, подсказка блокировки) тоже закрывает.
+      and "forgot password" link swapping login / register / forgot in place.
+      Success closes the dialog and emits `authenticated`; an in-form navigation
+      link (privacy policy, lockout hint) also closes it.
+  RU: Содержимое диалога — общая nm-auth-form; нижняя ссылка и ссылка «забыли
+      пароль» переключают вход / регистрацию / восстановление на месте. Успех
+      закрывает диалог и эмитит `authenticated`; ссылка-переход внутри формы
+      (политика, подсказка блокировки) тоже закрывает.
 -->
 <nm-dialog [(open)]="open" titleKey="auth_dialog_title">
   <nm-auth-form

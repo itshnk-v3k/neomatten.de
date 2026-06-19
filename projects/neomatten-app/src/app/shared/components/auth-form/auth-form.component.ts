@@ -28,6 +28,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import type { PasswordResetRequestDTO } from '@core/models/user.model';
 import { AuthService } from '@core/services/auth.service';
 import { LucideShieldAlert } from '@lucide/angular';
 import { ButtonDirective } from '@shared/components/button/button.directive';
@@ -41,7 +42,7 @@ import { matchFieldsValidator } from '@shared/validators/custom-validators';
 import { phoneValidator } from '@shared/validators/phone.validator';
 import { interval } from 'rxjs';
 
-export type AuthMode = 'login' | 'register';
+export type AuthMode = 'login' | 'register' | 'forgot';
 
 @Component({
   selector: 'nm-auth-form',
@@ -64,9 +65,12 @@ export class AuthFormComponent {
   private readonly auth = inject(AuthService);
   private readonly toast = inject(ToastService);
 
-  /** Active form. Two-way so a dialog host can react to in-place toggles. */
+  /** Active form (login / register / forgot). Two-way so a dialog host can react to in-place toggles. */
   readonly mode = model<AuthMode>('login');
-  /** Bottom switch link: `route` navigates between pages, `toggle` flips mode. */
+  /**
+   * Bottom switch link and the "forgot password" link: `route` navigates between
+   * the account pages, `toggle` flips mode in place (used by the auth dialog).
+   */
   readonly linkMode = input<'route' | 'toggle'>('route');
   /** Emitted after a successful login / register; carries the mode that ran. */
   readonly succeeded = output<AuthMode>();
@@ -74,6 +78,21 @@ export class AuthFormComponent {
   readonly dismiss = output<void>();
 
   protected readonly submitting = signal(false);
+
+  /** Forgot-password reset link has been sent (shows the success state). */
+  protected readonly forgotSent = signal(false);
+
+  /** Card title key for the active mode. */
+  protected readonly titleKey = computed(() => {
+    switch (this.mode()) {
+      case 'register':
+        return 'action_register';
+      case 'forgot':
+        return 'auth_forgot_title';
+      default:
+        return 'auth_login_tab';
+    }
+  });
 
   /** Remaining brute-force lockout in ms (0 = not locked); ticks every second. */
   protected readonly remainingLockoutMs = signal(this.auth.getLockoutState().remainingMs);
@@ -104,6 +123,10 @@ export class AuthFormComponent {
     },
     { validators: matchFieldsValidator('password', 'confirmPassword') }
   );
+
+  protected readonly forgotForm = this.fb.nonNullable.group({
+    email: ['', [Validators.required, Validators.email]],
+  });
 
   constructor() {
     // Tick the lockout countdown while locked; the login form reverts once the
@@ -136,6 +159,11 @@ export class AuthFormComponent {
   }
 
   protected setMode(mode: AuthMode): void {
+    // Leaving the forgot view clears its form and success state, so reopening it starts fresh.
+    if (mode !== 'forgot') {
+      this.forgotForm.reset();
+      this.forgotSent.set(false);
+    }
     this.mode.set(mode);
   }
 
@@ -186,8 +214,32 @@ export class AuthFormComponent {
     }
   }
 
+  /**
+   * Mock password reset (mirrors the forgot-password page): always resolves so
+   * account existence isn't revealed, then shows the success state in place.
+   * TODO(backend): POST /auth/forgot.
+   */
+  protected async submitForgot(): Promise<void> {
+    if (this.forgotForm.invalid) {
+      this.forgotForm.markAllAsTouched();
+      this.toast.error('form_error_required_fields');
+      return;
+    }
+    this.submitting.set(true);
+    try {
+      const body: PasswordResetRequestDTO = { email: this.forgotForm.getRawValue().email };
+      await this.auth.requestPasswordReset(body);
+      this.forgotSent.set(true);
+    } catch {
+      this.toast.error('auth_error_generic');
+    } finally {
+      this.submitting.set(false);
+    }
+  }
+
   private reset(): void {
     this.loginForm.reset();
     this.registerForm.reset();
+    this.forgotForm.reset();
   }
 }

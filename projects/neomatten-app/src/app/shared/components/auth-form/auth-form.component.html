@@ -9,9 +9,7 @@
       хост (крошки + секция или nm-dialog).
 -->
 <div class="rounded-2xl border border-border bg-surface p-6 shadow-soft sm:p-8">
-  <h2 class="text-2xl font-bold">
-    {{ (mode() === 'login' ? 'auth_login_tab' : 'action_register') | translate }}
-  </h2>
+  <h2 class="text-2xl font-bold">{{ titleKey() | translate }}</h2>
 
   @if (mode() === 'login') {
     @if (locked()) {
@@ -48,16 +46,26 @@
           [required]="true" />
         <div class="flex items-center justify-between">
           <nm-checkbox formControlName="remember" label="auth_remember_me" />
-          <a routerLink="/account/forgot-password" class="text-sm text-primary hover:underline">
-            {{ 'auth_forgot_link' | translate }}
-          </a>
+          <!-- Forgot password: navigate to the page on account routes, swap the view in place in the dialog. -->
+          @if (linkMode() === 'route') {
+            <a routerLink="/account/forgot-password" class="text-sm text-primary hover:underline">
+              {{ 'auth_forgot_link' | translate }}
+            </a>
+          } @else {
+            <button
+              type="button"
+              (click)="setMode('forgot')"
+              class="text-sm text-primary hover:underline">
+              {{ 'auth_forgot_link' | translate }}
+            </button>
+          }
         </div>
         <button nmButton type="submit" class="mt-2" [loading]="submitting()">
           {{ 'action_login' | translate }}
         </button>
       </form>
     }
-  } @else {
+  } @else if (mode() === 'register') {
     <form [formGroup]="registerForm" (ngSubmit)="submitRegister()" class="mt-6 flex flex-col gap-4">
       <nm-input
         formControlName="name"
@@ -110,9 +118,28 @@
         {{ 'action_register' | translate }}
       </button>
     </form>
+  } @else {
+    <!-- Forgot-password view: email field, or a success state after submit. -->
+    @if (forgotSent()) {
+      <p class="mt-4 text-content-secondary">{{ 'auth_forgot_success' | translate }}</p>
+    } @else {
+      <p class="mt-3 text-sm text-content-secondary">{{ 'auth_forgot_intro' | translate }}</p>
+      <form [formGroup]="forgotForm" (ngSubmit)="submitForgot()" class="mt-6 flex flex-col gap-4">
+        <nm-input
+          formControlName="email"
+          type="email"
+          label="form_email"
+          placeholder="form_email_placeholder"
+          autocomplete="email"
+          [required]="true" />
+        <button nmButton type="submit" class="mt-2" [loading]="submitting()">
+          {{ 'action_send' | translate }}
+        </button>
+      </form>
+    }
   }
 
-  @if (!locked()) {
+  @if (!locked() && mode() !== 'forgot') {
     <nm-social-login />
   }
 
@@ -132,7 +159,7 @@
           {{ 'action_register' | translate }}
         </button>
       }
-    } @else {
+    } @else if (mode() === 'register') {
       {{ 'auth_have_account' | translate }}
       @if (linkMode() === 'route') {
         <a routerLink="/account/login" class="font-semibold text-primary hover:underline">
@@ -144,6 +171,20 @@
           (click)="setMode('login')"
           class="font-semibold text-primary hover:underline">
           {{ 'action_login' | translate }}
+        </button>
+      }
+    } @else {
+      <!-- Forgot view: a way back to sign in. -->
+      @if (linkMode() === 'route') {
+        <a routerLink="/account/login" class="font-semibold text-primary hover:underline">
+          {{ 'auth_login_tab' | translate }}
+        </a>
+      } @else {
+        <button
+          type="button"
+          (click)="setMode('login')"
+          class="font-semibold text-primary hover:underline">
+          {{ 'auth_login_tab' | translate }}
         </button>
       }
     }
