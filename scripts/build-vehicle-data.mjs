@@ -20,8 +20,8 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = resolve(root, '_project-brief/instructions/neomatten_patterns.json');
-const OUT_PATTERNS = resolve(root, 'src/assets/mock-data/vehicle-patterns.json');
-const OUT_BRANDS = resolve(root, 'src/assets/mock-data/brands.json');
+const OUT_PATTERNS = resolve(root, 'projects/neomatten-app/src/assets/mock-data/vehicle-patterns.json');
+const OUT_BRANDS = resolve(root, 'projects/neomatten-app/src/assets/mock-data/brands.json');
 
 // --- normalization lookup tables -------------------------------------------
 

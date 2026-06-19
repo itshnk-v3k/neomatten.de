@@ -12,7 +12,7 @@ const plugin = require('tailwindcss/plugin');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/**/*.{html,ts,scss}'],
+  content: ['./projects/**/*.{html,ts,scss}'],
   // The default `inset` core plugin emits the `inset` shorthand for `inset-*`
   // (e.g. `inset-0 { inset: 0 }`), unsupported in Safari < 14.1 / iOS < 14.5.
   // Disable it and re-emit every inset utility as top/right/bottom/left longhand

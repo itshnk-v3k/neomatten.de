@@ -6,8 +6,8 @@
 import sharp from 'sharp';
 import { mkdirSync } from 'node:fs';
 
-const SOURCE = 'src/assets/logo/neomat_nm_transparent.png';
-const OUT_DIR = 'src/assets/icons';
+const SOURCE = 'projects/neomatten-app/src/assets/logo/neomat_nm_transparent.png';
+const OUT_DIR = 'projects/neomatten-app/src/assets/icons';
 const sizes = [16, 32, 64, 96, 128, 144, 152, 180, 310, 512];
 
 mkdirSync(OUT_DIR, { recursive: true });

@@ -2,7 +2,7 @@ import sharp from 'sharp';
 import { readdir, stat, unlink } from 'fs/promises';
 import { join, extname, basename } from 'path';
 
-const INPUT_DIR = 'src/assets/images';
+const INPUT_DIR = 'projects/neomatten-app/src/assets/images';
 const QUALITY = 85;
 
 // Exclude these folders entirely

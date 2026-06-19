@@ -2,12 +2,12 @@
   "style": "scss",
   "packageManager": "npm",
   "tailwind": {
-    "css": "src/styles.scss",
+    "css": "projects/neomatten-app/src/styles.scss",
     "baseColor": "neutral",
     "cssVariables": true
   },
   "aliases": {
-    "components": "src/app/shared/components",
-    "utils": "src/app/shared/utils"
+    "components": "projects/neomatten-app/src/app/shared/components",
+    "utils": "projects/neomatten-app/src/app/shared/utils"
   }
 }

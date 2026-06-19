@@ -49,42 +49,62 @@
           "type": "resolver"
         }
       },
-      "root": "",
-      "sourceRoot": "src",
+      "root": "projects/neomatten-app",
+      "sourceRoot": "projects/neomatten-app/src",
       "prefix": "nm",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
             "outputPath": "dist/neomatten",
-            "index": "src/index.html",
-            "browser": "src/main.ts",
+            "index": "projects/neomatten-app/src/index.html",
+            "browser": "projects/neomatten-app/src/main.ts",
             "polyfills": ["zone.js"],
-            "tsConfig": "tsconfig.app.json",
+            "tsConfig": "projects/neomatten-app/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "allowedCommonJsDependencies": ["leaflet"],
             "assets": [
-              { "glob": "**/*", "input": "src/assets/i18n", "output": "assets/i18n" },
-              { "glob": "**/*", "input": "src/assets/images", "output": "assets/images" },
-              { "glob": "**/*", "input": "src/assets/data", "output": "assets/data" },
-              { "glob": "**/*", "input": "src/assets/docs", "output": "assets/docs" },
               {
                 "glob": "**/*",
-                "input": "src/assets/configurator",
+                "input": "projects/neomatten-app/src/assets/i18n",
+                "output": "assets/i18n"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/neomatten-app/src/assets/images",
+                "output": "assets/images"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/neomatten-app/src/assets/data",
+                "output": "assets/data"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/neomatten-app/src/assets/docs",
+                "output": "assets/docs"
+              },
+              {
+                "glob": "**/*",
+                "input": "projects/neomatten-app/src/assets/configurator",
                 "output": "assets/configurator"
               },
-              { "glob": "robots.txt", "input": "src", "output": "/" },
-              { "glob": "sitemap.xml", "input": "src", "output": "/" },
-              { "glob": "manifest.webmanifest", "input": "src", "output": "/" }
+              { "glob": "robots.txt", "input": "projects/neomatten-app/src", "output": "/" },
+              { "glob": "sitemap.xml", "input": "projects/neomatten-app/src", "output": "/" },
+              {
+                "glob": "manifest.webmanifest",
+                "input": "projects/neomatten-app/src",
+                "output": "/"
+              }
             ],
-            "styles": ["src/styles.scss"]
+            "styles": ["projects/neomatten-app/src/styles.scss"]
           },
           "configurations": {
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "replace": "projects/neomatten-app/src/environments/environment.ts",
+                  "with": "projects/neomatten-app/src/environments/environment.prod.ts"
                 }
               ],
               "budgets": [
@@ -107,8 +127,8 @@
             "staging": {
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.staging.ts"
+                  "replace": "projects/neomatten-app/src/environments/environment.ts",
+                  "with": "projects/neomatten-app/src/environments/environment.staging.ts"
                 }
               ],
               "budgets": [
@@ -131,8 +151,8 @@
             "development": {
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.dev.ts"
+                  "replace": "projects/neomatten-app/src/environments/environment.ts",
+                  "with": "projects/neomatten-app/src/environments/environment.dev.ts"
                 }
               ],
               "optimization": false,
@@ -164,7 +184,112 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+            "lintFilePatterns": [
+              "projects/neomatten-app/src/**/*.ts",
+              "projects/neomatten-app/src/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "neomatten-shared": {
+      "projectType": "library",
+      "root": "projects/neomatten-shared",
+      "sourceRoot": "projects/neomatten-shared/src",
+      "prefix": "nm-shared",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/neomatten-shared/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/neomatten-shared/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/neomatten-shared/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "neomatten-admin": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/neomatten-admin",
+      "sourceRoot": "projects/neomatten-admin/src",
+      "prefix": "na",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/neomatten-admin/src/main.ts",
+            "tsConfig": "projects/neomatten-admin/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/neomatten-admin/public"
+              }
+            ],
+            "styles": ["projects/neomatten-admin/src/styles.scss"]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all",
+              "serviceWorker": "projects/neomatten-admin/ngsw-config.json"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "neomatten-admin:build:production"
+            },
+            "development": {
+              "buildTarget": "neomatten-admin:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/neomatten-admin/src/**/*.ts",
+              "projects/neomatten-admin/src/**/*.html"
+            ]
           }
         }
       }

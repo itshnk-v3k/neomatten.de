@@ -34,11 +34,11 @@ export default tseslint.config(
       'simple-import-sort/exports': 'warn',
       '@angular-eslint/directive-selector': [
         'error',
-        { type: 'attribute', prefix: 'nm', style: 'camelCase' },
+        { type: 'attribute', prefix: ['nm', 'na', 'nmShared'], style: 'camelCase' },
       ],
       '@angular-eslint/component-selector': [
         'error',
-        { type: 'element', prefix: 'nm', style: 'kebab-case' },
+        { type: 'element', prefix: ['nm', 'na', 'nm-shared'], style: 'kebab-case' },
       ],
       '@angular-eslint/no-output-on-prefix': 'off',
       '@typescript-eslint/no-unused-vars': 'off',

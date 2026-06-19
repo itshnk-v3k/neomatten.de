@@ -12,7 +12,7 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
-const ROOT = 'src';
+const ROOT = 'projects/neomatten-app/src';
 const PATTERN = /::ng-deep|\/deep\/|>>>/;
 const offenders = [];
 
