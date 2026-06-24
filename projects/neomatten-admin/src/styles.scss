@@ -1,1 +1,33 @@
-/* You can add global styles to this file, and also import other style files */
+/* =====================================================================
+   Admin global stylesheet — Tailwind layers + a few base resets. Brand
+   design tokens (primary red #8B1A1A, Montserrat) live in tailwind.config.cjs
+   (the single source of truth, scanning ./projects/**). Montserrat is loaded
+   via a non-render-blocking <link> in index.html.
+   ===================================================================== */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  *:focus-visible {
+    outline: 2px solid theme('colors.primary.DEFAULT');
+    outline-offset: 2px;
+  }
+
+  /* lucide-angular renders an inline SVG host element; center it by default. */
+  lucide-icon,
+  lucide-angular {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

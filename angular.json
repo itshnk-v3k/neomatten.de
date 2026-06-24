@@ -3,7 +3,10 @@
   "version": 1,
   "cli": {
     "analytics": false,
-    "schematicCollections": ["@schematics/angular", "@angular-eslint/schematics"],
+    "schematicCollections": [
+      "@schematics/angular",
+      "@angular-eslint/schematics"
+    ],
     "cache": {
       "enabled": false
     }
@@ -59,10 +62,14 @@
             "outputPath": "dist/neomatten",
             "index": "projects/neomatten-app/src/index.html",
             "browser": "projects/neomatten-app/src/main.ts",
-            "polyfills": ["zone.js"],
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "projects/neomatten-app/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "allowedCommonJsDependencies": ["leaflet"],
+            "allowedCommonJsDependencies": [
+              "leaflet"
+            ],
             "assets": [
               {
                 "glob": "**/*",
@@ -89,15 +96,25 @@
                 "input": "projects/neomatten-app/src/assets/configurator",
                 "output": "assets/configurator"
               },
-              { "glob": "robots.txt", "input": "projects/neomatten-app/src", "output": "/" },
-              { "glob": "sitemap.xml", "input": "projects/neomatten-app/src", "output": "/" },
+              {
+                "glob": "robots.txt",
+                "input": "projects/neomatten-app/src",
+                "output": "/"
+              },
+              {
+                "glob": "sitemap.xml",
+                "input": "projects/neomatten-app/src",
+                "output": "/"
+              },
               {
                 "glob": "manifest.webmanifest",
                 "input": "projects/neomatten-app/src",
                 "output": "/"
               }
             ],
-            "styles": ["projects/neomatten-app/src/styles.scss"]
+            "styles": [
+              "projects/neomatten-app/src/styles.scss"
+            ]
           },
           "configurations": {
             "production": {
@@ -241,7 +258,9 @@
                 "input": "projects/neomatten-admin/public"
               }
             ],
-            "styles": ["projects/neomatten-admin/src/styles.scss"]
+            "styles": [
+              "projects/neomatten-admin/src/styles.scss"
+            ]
           },
           "configurations": {
             "production": {
@@ -258,7 +277,13 @@
                 }
               ],
               "outputHashing": "all",
-              "serviceWorker": "projects/neomatten-admin/ngsw-config.json"
+              "serviceWorker": "projects/neomatten-admin/ngsw-config.json",
+              "fileReplacements": [
+                {
+                  "replace": "projects/neomatten-admin/src/environments/environment.ts",
+                  "with": "projects/neomatten-admin/src/environments/environment.prod.ts"
+                }
+              ]
             },
             "development": {
               "optimization": false,
@@ -275,7 +300,8 @@
               "buildTarget": "neomatten-admin:build:production"
             },
             "development": {
-              "buildTarget": "neomatten-admin:build:development"
+              "buildTarget": "neomatten-admin:build:development",
+              "proxyConfig": "projects/neomatten-admin/proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"
