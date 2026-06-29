@@ -27,7 +27,9 @@ async function bootstrap() {
   // Swagger / OpenAPI docs at /api/docs.
   const config = new DocumentBuilder()
     .setTitle('NEOMATTEN API')
-    .setDescription('NEOMATTEN backend API — auth, orders, products, users, settings.')
+    .setDescription(
+      'NEOMATTEN backend API — auth, orders, products, users, settings.',
+    )
     .setVersion('1.0')
     .addBearerAuth()
     .build();

@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import type { JwtSignOptions } from '@nestjs/jwt';
@@ -57,7 +61,10 @@ export class AuthService {
     let payload: JwtPayload;
     try {
       payload = await this.jwt.verifyAsync<JwtPayload>(refreshToken, {
-        secret: this.config.get<string>('JWT_REFRESH_SECRET', 'change-me-refresh'),
+        secret: this.config.get<string>(
+          'JWT_REFRESH_SECRET',
+          'change-me-refresh',
+        ),
       });
     } catch {
       throw new UnauthorizedException('Invalid or expired refresh token');
@@ -100,7 +107,10 @@ export class AuthService {
     return {
       accessToken: this.signAccessToken(payload),
       refreshToken: this.jwt.sign(payload, {
-        secret: this.config.get<string>('JWT_REFRESH_SECRET', 'change-me-refresh'),
+        secret: this.config.get<string>(
+          'JWT_REFRESH_SECRET',
+          'change-me-refresh',
+        ),
         expiresIn: this.config.get<string>(
           'JWT_REFRESH_EXPIRES_IN',
           '7d',
