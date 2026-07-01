@@ -15,6 +15,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { path: 'orders', label: 'Bestellungen' },
   { path: 'products', label: 'Produkte' },
   { path: 'customers', label: 'Kunden' },
+  { path: 'translations', label: 'Übersetzungen' },
   { path: 'settings', label: 'Einstellungen' },
 ];
 

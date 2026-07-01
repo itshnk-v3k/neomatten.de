@@ -19,7 +19,7 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () =>
           import('./features/dashboard/dashboard-page.component').then(
-            m => m.DashboardPageComponent,
+            m => m.DashboardPageComponent
           ),
       },
       {
@@ -36,7 +36,14 @@ export const routes: Routes = [
         path: 'customers',
         loadComponent: () =>
           import('./features/customers/customers-page.component').then(
-            m => m.CustomersPageComponent,
+            m => m.CustomersPageComponent
+          ),
+      },
+      {
+        path: 'translations',
+        loadComponent: () =>
+          import('./features/translations/translations-page.component').then(
+            m => m.TranslationsPageComponent
           ),
       },
       {

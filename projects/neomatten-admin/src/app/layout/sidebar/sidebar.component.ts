@@ -7,6 +7,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import {
+  LucideLanguages,
   LucideLayoutDashboard,
   LucidePackage,
   LucideSettings,
@@ -24,6 +25,7 @@ import {
     LucideShoppingBag,
     LucidePackage,
     LucideUsers,
+    LucideLanguages,
     LucideSettings,
   ],
   templateUrl: './sidebar.component.html',

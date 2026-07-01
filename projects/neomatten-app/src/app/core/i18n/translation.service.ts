@@ -77,11 +77,33 @@ export class TranslationService {
     document.documentElement.lang = language;
   }
 
-  /** Loads and merges all namespaces for a language (once). */
+  /**
+   * Loads a language dictionary (once). The live copy comes from the API
+   * (GET /api/translations/:locale, admin-editable via draft/publish). If the
+   * API is unreachable or returns nothing, we fall back to the bundled static
+   * JSON so the site never renders blank when the backend is down.
+   */
   private async loadLanguage(language: Language): Promise<void> {
     if (this.dictionaries()[language]) {
       return;
     }
+    let merged: TranslationDictionary;
+    try {
+      const live = await firstValueFrom(
+        this.http.get<TranslationDictionary>(`/api/translations/${language}`)
+      );
+      if (!live || Object.keys(live).length === 0) {
+        throw new Error('empty translation dictionary');
+      }
+      merged = live;
+    } catch {
+      merged = await this.loadStaticLanguage(language);
+    }
+    this.dictionaries.update(current => ({ ...current, [language]: merged }));
+  }
+
+  /** Fallback: loads and merges the bundled static namespace files. */
+  private async loadStaticLanguage(language: Language): Promise<TranslationDictionary> {
     const files = await Promise.all(
       TRANSLATION_NAMESPACES.map(namespace =>
         firstValueFrom(
@@ -89,8 +111,7 @@ export class TranslationService {
         )
       )
     );
-    const merged = files.reduce<TranslationDictionary>((acc, dict) => ({ ...acc, ...dict }), {});
-    this.dictionaries.update(current => ({ ...current, [language]: merged }));
+    return files.reduce<TranslationDictionary>((acc, dict) => ({ ...acc, ...dict }), {});
   }
 
   /** Picks the initial language from the cookie, falling back to the env default. */

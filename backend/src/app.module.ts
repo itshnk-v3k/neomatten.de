@@ -7,6 +7,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { ProductsModule } from './modules/products/products.module';
 import { SettingsModule } from './modules/settings/settings.module';
+import { TranslationsModule } from './modules/translations/translations.module';
 import { UsersModule } from './modules/users/users.module';
 
 @Module({
@@ -19,6 +20,7 @@ import { UsersModule } from './modules/users/users.module';
     OrdersModule,
     ProductsModule,
     SettingsModule,
+    TranslationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

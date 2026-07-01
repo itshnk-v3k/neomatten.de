@@ -1,0 +1,188 @@
+<section class="space-y-4 pb-10">
+  <!-- Sticky header: title + search + Deploy -->
+  <header
+    class="sticky z-20 -mx-4 -mt-4 flex flex-wrap items-center gap-3 border-b border-neutral-200 bg-neutral-50/95 px-4 py-3 backdrop-blur top-0 sm:-mx-6 sm:px-6">
+    <div>
+      <h2 class="flex items-center gap-2 text-xl font-semibold text-neutral-900">
+        <svg lucideLanguages class="size-5 text-primary"></svg>
+        Übersetzungen
+      </h2>
+      <p class="mt-0.5 text-sm text-neutral-500">
+        {{ rows().length }} Einträge · {{ pendingCount() }} ausstehende Änderung{{
+          pendingCount() === 1 ? '' : 'en'
+        }}
+      </p>
+    </div>
+
+    <div class="ml-auto flex items-center gap-3">
+      <div class="relative">
+        <svg
+          lucideSearch
+          class="pointer-events-none absolute size-4 -translate-y-1/2 text-neutral-400 left-3 top-1/2"></svg>
+        <input
+          type="search"
+          placeholder="Nach Schlüssel suchen…"
+          (input)="onSearch($event)"
+          class="w-56 rounded-lg border border-neutral-300 py-2 pl-9 pr-3 text-sm text-neutral-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 sm:w-64" />
+      </div>
+
+      <button
+        type="button"
+        [disabled]="pendingCount() === 0 || publishing()"
+        (click)="showConfirm.set(true)"
+        class="relative flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-bright disabled:cursor-not-allowed disabled:opacity-50">
+        <svg lucideRocket class="size-4"></svg>
+        Deploy
+        @if (pendingCount() > 0) {
+          <span
+            class="ml-1 inline-flex min-w-5 items-center justify-center rounded-full bg-white/25 px-1.5 text-xs font-bold">
+            {{ pendingCount() }}
+          </span>
+        }
+      </button>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <p class="p-10 text-center text-sm text-neutral-500">Lädt…</p>
+  } @else if (groups().length === 0) {
+    <p class="p-10 text-center text-sm text-neutral-500">Keine Einträge gefunden.</p>
+  } @else {
+    @for (group of groups(); track group.category) {
+      <section class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5">
+        <button
+          type="button"
+          (click)="toggle(group.category)"
+          class="flex w-full items-center gap-2 px-4 py-3 text-left transition hover:bg-neutral-50">
+          <svg
+            lucideChevronDown
+            class="size-4 text-neutral-400 transition-transform"
+            [class.-rotate-90]="isCollapsed(group.category)"></svg>
+          <span class="font-semibold capitalize text-neutral-900">{{ group.category }}</span>
+          <span class="text-xs text-neutral-400">{{ group.entries.length }}</span>
+          @if (group.pending > 0) {
+            <span
+              class="ml-1 inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
+              <span class="size-1.5 rounded-full bg-amber-500"></span>
+              {{ group.pending }}
+            </span>
+          }
+        </button>
+
+        @if (!isCollapsed(group.category)) {
+          <div class="border-t border-neutral-100">
+            <div
+              class="grid grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1.5fr)] gap-3 bg-neutral-50 px-4 py-2 text-xs font-medium uppercase tracking-wide text-neutral-400">
+              <span>Schlüssel</span>
+              <span>Deutsch</span>
+              <span>English</span>
+            </div>
+
+            @for (pair of group.entries; track pair.key) {
+              <div
+                class="grid grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1.5fr)] items-start gap-3 border-t border-neutral-100 px-4 py-2.5">
+                <code class="font-mono break-all pt-2 text-xs text-neutral-500" [title]="pair.key">
+                  {{ pair.key }}
+                </code>
+
+                <!-- DE cell -->
+                <div class="relative">
+                  <textarea
+                    [rows]="rowsFor(cellText(pair.de))"
+                    [value]="cellText(pair.de)"
+                    [disabled]="!pair.de"
+                    (input)="onInput(pair.de, $event)"
+                    (blur)="onBlur(pair.de)"
+                    class="w-full resize-none rounded-lg border px-3 py-2 pr-6 text-sm text-neutral-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:bg-neutral-50"
+                    [class.border-amber-300]="hasDraft(pair.de)"
+                    [class.bg-amber-50/40]="hasDraft(pair.de)"
+                    [class.border-neutral-200]="!hasDraft(pair.de)"></textarea>
+                  @if (hasDraft(pair.de)) {
+                    <span
+                      title="Nicht veröffentlichte Änderung"
+                      class="absolute size-2 rounded-full bg-amber-500 right-2 top-2"></span>
+                  }
+                  @if (isSaving(pair.de)) {
+                    <span class="absolute text-[10px] text-neutral-400 bottom-1.5 right-2">
+                      Speichert…
+                    </span>
+                  } @else if (isSaved(pair.de)) {
+                    <span
+                      class="absolute flex items-center gap-0.5 text-[10px] text-emerald-600 bottom-1.5 right-2">
+                      <svg lucideCheck class="size-3"></svg>
+                      Gespeichert
+                    </span>
+                  }
+                </div>
+
+                <!-- EN cell -->
+                <div class="relative">
+                  <textarea
+                    [rows]="rowsFor(cellText(pair.en))"
+                    [value]="cellText(pair.en)"
+                    [disabled]="!pair.en"
+                    (input)="onInput(pair.en, $event)"
+                    (blur)="onBlur(pair.en)"
+                    class="w-full resize-none rounded-lg border px-3 py-2 pr-6 text-sm text-neutral-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:bg-neutral-50"
+                    [class.border-amber-300]="hasDraft(pair.en)"
+                    [class.bg-amber-50/40]="hasDraft(pair.en)"
+                    [class.border-neutral-200]="!hasDraft(pair.en)"></textarea>
+                  @if (hasDraft(pair.en)) {
+                    <span
+                      title="Nicht veröffentlichte Änderung"
+                      class="absolute size-2 rounded-full bg-amber-500 right-2 top-2"></span>
+                  }
+                  @if (isSaving(pair.en)) {
+                    <span class="absolute text-[10px] text-neutral-400 bottom-1.5 right-2">
+                      Speichert…
+                    </span>
+                  } @else if (isSaved(pair.en)) {
+                    <span
+                      class="absolute flex items-center gap-0.5 text-[10px] text-emerald-600 bottom-1.5 right-2">
+                      <svg lucideCheck class="size-3"></svg>
+                      Gespeichert
+                    </span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </section>
+    }
+  }
+
+  <!-- Publish confirmation -->
+  @if (showConfirm()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <button
+        type="button"
+        aria-label="Dialog schließen"
+        (click)="showConfirm.set(false)"
+        class="absolute inset-0 cursor-default bg-black/40"></button>
+      <div class="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+        <h3 class="text-lg font-semibold text-neutral-900">Änderungen veröffentlichen</h3>
+        <p class="mt-2 text-sm text-neutral-600">
+          {{ pendingCount() }} Änderung{{ pendingCount() === 1 ? '' : 'en' }} werden live
+          veröffentlicht. Fortfahren?
+        </p>
+        <div class="mt-6 flex justify-end gap-3">
+          <button
+            type="button"
+            (click)="showConfirm.set(false)"
+            class="rounded-lg px-4 py-2.5 text-sm font-medium text-neutral-600 transition hover:bg-neutral-100">
+            Abbrechen
+          </button>
+          <button
+            type="button"
+            [disabled]="publishing()"
+            (click)="publish()"
+            class="flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-bright disabled:opacity-50">
+            <svg lucideRocket class="size-4"></svg>
+            {{ publishing() ? 'Veröffentlicht…' : 'Veröffentlichen' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</section>

@@ -3,14 +3,12 @@
   `open()` is true. The shell renders the backdrop and toggle button.
 -->
 <aside
-  class="fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-neutral-200 bg-white transition-transform duration-200 lg:static lg:translate-x-0"
+  class="fixed z-40 flex w-64 flex-col border-r border-neutral-200 bg-white transition-transform duration-200 inset-y-0 left-0 lg:static lg:translate-x-0"
   [class.translate-x-0]="open()"
   [class.-translate-x-full]="!open()">
   <!-- Brand -->
   <div class="flex h-16 items-center border-b border-neutral-200 px-6">
-    <span class="text-lg font-extrabold uppercase tracking-[0.2em] text-primary">
-      Neomatten
-    </span>
+    <span class="text-lg font-extrabold uppercase tracking-[0.2em] text-primary">Neomatten</span>
   </div>
 
   <!-- Nav -->
@@ -46,6 +44,14 @@
       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100">
       <svg lucideUsers class="size-5 shrink-0"></svg>
       <span>Kunden</span>
+    </a>
+    <a
+      routerLink="/translations"
+      routerLinkActive="bg-primary-50 text-primary"
+      (click)="navigate.emit()"
+      class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100">
+      <svg lucideLanguages class="size-5 shrink-0"></svg>
+      <span>Übersetzungen</span>
     </a>
     <a
       routerLink="/settings"

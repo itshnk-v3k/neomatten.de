@@ -100,6 +100,26 @@ model Setting {
   @@map("settings")
 }
 
+/// A single UI copy string, per key + locale, with a draft/publish workflow.
+/// `value` is the live/published copy served to the public site; `draftValue`
+/// holds a pending unpublished edit (null when there is no pending change).
+/// The special Setting row `translationsPublishedAt` is bumped on every publish
+/// so the public site can use it as a cache-bust signal.
+model Translation {
+  id         String   @id @default(cuid())
+  key        String
+  locale     String
+  category   String?
+  value      String   @db.Text
+  draftValue String?  @db.Text
+  updatedAt  DateTime @updatedAt
+
+  @@unique([key, locale])
+  @@index([locale])
+  @@index([category])
+  @@map("translations")
+}
+
 /// Append-only audit trail of admin / system actions.
 model AuditLog {
   id        String   @id @default(uuid())
