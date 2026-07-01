@@ -1,7 +1,9 @@
 <section class="flex flex-col gap-4 pb-10">
-  <!-- Sticky header: title + search + Undo + Deploy -->
+  <!-- Sticky toolbar: title + search + Undo + Deploy. Sticks within the shell's
+       scrollable <main>. Opaque background (no backdrop-blur — a blur filter
+       re-rasterizes every scroll/resize frame and was a mobile-jank source). -->
   <header
-    class="sticky z-20 -mx-4 -mt-4 flex flex-wrap items-center gap-3 border-b border-neutral-200 bg-neutral-50 px-4 py-3 top-0 sm:-mx-6 sm:px-6 sm:backdrop-blur">
+    class="sticky z-20 -mx-4 -mt-4 flex flex-wrap items-center gap-3 border-b border-neutral-200 bg-neutral-50 px-4 py-3 top-0 sm:-mx-6 sm:px-6">
     <div>
       <h2 class="flex items-center gap-2 text-xl font-semibold text-neutral-900">
         <svg lucideLanguages class="size-5 text-primary"></svg>
@@ -109,10 +111,9 @@
               <div
                 #rowEl
                 class="grid gap-3 border-t border-neutral-100 px-4 py-3 md:grid-cols-[minmax(0,14rem)_minmax(0,1fr)_minmax(0,1fr)] md:items-stretch">
-                <!-- Breadcrumb: Sektion / Schlüssel (+ inline rename) -->
+                <!-- Key label (+ inline rename). The section header already shows
+                     the category, so the key stands alone here, truncated. -->
                 <div class="group/key min-w-0 text-xs leading-tight">
-                  <span class="capitalize text-neutral-400">{{ group.category }}</span>
-                  <span class="text-neutral-300">/</span>
                   @if (isRenaming(pair)) {
                     <span class="mt-1 flex items-start gap-1">
                       <input
@@ -148,24 +149,28 @@
                       <span class="mt-0.5 block text-[11px] text-primary">{{ renameError() }}</span>
                     }
                   } @else {
-                    <code class="font-mono break-all text-neutral-600" [title]="pair.key">
-                      {{ pair.key }}
-                    </code>
-                    <button
-                      type="button"
-                      (click)="startRename(pair)"
-                      [attr.aria-label]="'translations.renameKeyAria' | t: { key: pair.key }"
-                      [title]="'translations.renameKeyTitle' | t"
-                      class="ml-1 inline-flex shrink-0 rounded p-0.5 align-middle text-neutral-400 opacity-0 hover:bg-neutral-100 hover:text-neutral-600 focus:opacity-100 group-hover/key:opacity-100">
-                      <svg lucidePencil class="size-3.5"></svg>
-                    </button>
-                    @if (pair.de?.oldKey || pair.en?.oldKey) {
-                      <span
-                        class="ml-1 rounded bg-amber-50 px-1 text-[10px] text-amber-700"
-                        [title]="'translations.aliasTooltip' | t">
-                        {{ 'translations.aliasBadge' | t }}
-                      </span>
-                    }
+                    <div class="flex items-center gap-1">
+                      <code
+                        class="font-mono min-w-0 flex-1 truncate text-neutral-600"
+                        [title]="pair.key">
+                        {{ pair.key }}
+                      </code>
+                      <button
+                        type="button"
+                        (click)="startRename(pair)"
+                        [attr.aria-label]="'translations.renameKeyAria' | t: { key: pair.key }"
+                        [title]="'translations.renameKeyTitle' | t"
+                        class="inline-flex shrink-0 rounded p-0.5 align-middle text-neutral-400 opacity-0 hover:bg-neutral-100 hover:text-neutral-600 focus:opacity-100 group-hover/key:opacity-100">
+                        <svg lucidePencil class="size-3.5"></svg>
+                      </button>
+                      @if (pair.de?.oldKey || pair.en?.oldKey) {
+                        <span
+                          class="shrink-0 rounded bg-amber-50 px-1 text-[10px] text-amber-700"
+                          [title]="'translations.aliasTooltip' | t">
+                          {{ 'translations.aliasBadge' | t }}
+                        </span>
+                      }
+                    </div>
                   }
                 </div>
 

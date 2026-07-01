@@ -1,4 +1,11 @@
-<div class="flex min-h-dvh bg-neutral-100">
+<!--
+  Viewport-locked shell: the root fills the dynamic viewport and never scrolls
+  itself (h-dvh + overflow-hidden). The sidebar and the content column are
+  siblings in one flex row; the header is a non-scrolling flex item and only
+  <main> scrolls. While the mobile drawer is open, <main> is locked so the
+  content behind the backdrop can't scroll.
+-->
+<div class="flex h-dvh overflow-hidden bg-neutral-100">
   <!-- Mobile backdrop (only when the drawer is open). -->
   @if (sidebarOpen()) {
     <div
@@ -7,11 +14,14 @@
       aria-hidden="true"></div>
   }
 
-  <na-sidebar [open]="sidebarOpen()" (navigate)="closeSidebar()" />
+  <na-sidebar class="shrink-0" [open]="sidebarOpen()" (navigate)="closeSidebar()" />
 
-  <div class="flex min-w-0 flex-1 flex-col">
-    <na-header (toggleSidebar)="openSidebar()" />
-    <main class="flex-1 overflow-y-auto p-4 lg:p-6">
+  <div class="flex h-full min-w-0 flex-1 flex-col overflow-hidden">
+    <na-header class="shrink-0" (toggleSidebar)="openSidebar()" />
+    <main
+      class="flex-1 p-4 lg:p-6"
+      [class.overflow-y-auto]="!sidebarOpen()"
+      [class.overflow-hidden]="sidebarOpen()">
       <router-outlet />
     </main>
   </div>

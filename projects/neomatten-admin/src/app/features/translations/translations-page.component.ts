@@ -111,7 +111,13 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
   protected readonly rows = signal<TranslationRow[]>([]);
   protected readonly loading = signal(true);
   protected readonly search = signal('');
-  protected readonly collapsed = signal<ReadonlySet<string>>(new Set());
+  /**
+   * Categories the user has explicitly expanded. Sections start COLLAPSED so the
+   * full dataset (~1.5k rows × 2 textareas) never mounts at once — only opened
+   * sections render their rows (see the `@if` in the template). This keeps the
+   * DOM small, which is the main lever for smooth viewport resizing.
+   */
+  protected readonly expanded = signal<ReadonlySet<string>>(new Set());
   protected readonly publishing = signal(false);
   protected readonly showConfirm = signal(false);
 
@@ -199,13 +205,18 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
   }
 
   protected isCollapsed(category: string): boolean {
-    return this.collapsed().has(category);
+    // An active search auto-expands every matching section so results are
+    // visible without manual toggling; otherwise sections default to collapsed.
+    if (this.search().trim() !== '') {
+      return false;
+    }
+    return !this.expanded().has(category);
   }
 
   protected toggle(category: string): void {
-    const next = new Set(this.collapsed());
+    const next = new Set(this.expanded());
     next.has(category) ? next.delete(category) : next.add(category);
-    this.collapsed.set(next);
+    this.expanded.set(next);
   }
 
   /** Current display text for a cell (uncommitted edit → draft → live value). */
@@ -432,9 +443,21 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
     }
   }
 
-  /** Re-sync every currently rendered row's textarea pair on the next frame. */
+  /** True while a sync is already scheduled, so bursts collapse to one rAF. */
+  private syncScheduled = false;
+
+  /**
+   * Re-sync every currently rendered row's textarea pair on the next frame.
+   * Only expanded sections render rows, so this loop measures a small set.
+   * Multiple calls in the same frame coalesce into a single measurement pass.
+   */
   private scheduleSyncAll(): void {
+    if (this.syncScheduled) {
+      return;
+    }
+    this.syncScheduled = true;
     requestAnimationFrame(() => {
+      this.syncScheduled = false;
       for (const ref of this.rowEls) {
         const areas = ref.nativeElement.querySelectorAll('textarea');
         this.syncHeights(areas[0] as HTMLTextAreaElement, areas[1] as HTMLTextAreaElement);
