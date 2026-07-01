@@ -16,6 +16,8 @@ export interface TranslationRow {
   readonly category: string | null;
   readonly value: string;
   readonly draftValue: string | null;
+  /** Previous key kept aliased on the public endpoint after a rename. */
+  readonly oldKey?: string | null;
   readonly updatedAt: string;
 }
 
@@ -37,6 +39,17 @@ export class TranslationsAdminService {
   /** Publish every pending draft live. Returns the number of rows published. */
   publish(): Promise<{ published: number }> {
     return firstValueFrom(this.http.post<{ published: number }>(`${this.base}/publish`, {}));
+  }
+
+  /**
+   * Rename a key (both locales). Structural + immediate (not draft/publish).
+   * The backend aliases the old key so existing frontend references keep
+   * working. Returns the updated rows. Rejects with HTTP 409 if the key exists.
+   */
+  renameKey(id: string, newKey: string): Promise<TranslationRow[]> {
+    return firstValueFrom(
+      this.http.patch<TranslationRow[]>(`${this.base}/${id}/rename-key`, { newKey })
+    );
   }
 
   /** Count of rows with a pending, unpublished draft. */

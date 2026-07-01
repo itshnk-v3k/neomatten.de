@@ -6,6 +6,13 @@
       <h2 class="flex items-center gap-2 text-xl font-semibold text-neutral-900">
         <svg lucideLanguages class="size-5 text-primary"></svg>
         Übersetzungen
+        <button
+          type="button"
+          class="text-neutral-400 hover:text-neutral-600"
+          aria-label="Info zum Umbenennen von Schlüsseln"
+          title="Beim Umbenennen eines Schlüssels bleibt der alte Schlüssel automatisch aktiv, damit der Code nicht sofort angepasst werden muss.">
+          <svg lucideInfo class="size-4"></svg>
+        </button>
       </h2>
       <p class="mt-0.5 text-sm text-neutral-500">
         {{ rows().length }} Einträge · {{ pendingCount() }} ausstehende Änderung{{
@@ -100,13 +107,61 @@
               <div
                 #rowEl
                 class="grid gap-3 border-t border-neutral-100 px-4 py-3 md:grid-cols-[minmax(0,14rem)_minmax(0,1fr)_minmax(0,1fr)] md:items-stretch">
-                <!-- Breadcrumb: Sektion / Schlüssel -->
-                <div class="min-w-0 text-xs leading-tight">
+                <!-- Breadcrumb: Sektion / Schlüssel (+ inline rename) -->
+                <div class="group/key min-w-0 text-xs leading-tight">
                   <span class="capitalize text-neutral-400">{{ group.category }}</span>
                   <span class="text-neutral-300">/</span>
-                  <code class="font-mono break-all text-neutral-600" [title]="pair.key">
-                    {{ pair.key }}
-                  </code>
+                  @if (isRenaming(pair)) {
+                    <span class="mt-1 flex items-start gap-1">
+                      <input
+                        #renameField
+                        type="text"
+                        title="Neuer Schlüssel"
+                        placeholder="neuer_schluessel"
+                        [value]="pair.key"
+                        (keydown.enter)="confirmRename(pair, renameField.value)"
+                        (keydown.escape)="cancelRename()"
+                        [attr.aria-label]="'Neuer Schlüssel für ' + pair.key"
+                        class="font-mono w-full min-w-0 rounded border border-neutral-300 px-1.5 py-1 text-xs text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+                      <button
+                        type="button"
+                        [disabled]="renaming()"
+                        (click)="confirmRename(pair, renameField.value)"
+                        title="Umbenennen bestätigen"
+                        class="shrink-0 rounded p-1 text-emerald-600 hover:bg-emerald-50 disabled:opacity-50">
+                        <svg lucideCheck class="size-3.5"></svg>
+                      </button>
+                      <button
+                        type="button"
+                        (click)="cancelRename()"
+                        title="Abbrechen"
+                        class="shrink-0 rounded p-1 text-neutral-500 hover:bg-neutral-100">
+                        <svg lucideX class="size-3.5"></svg>
+                      </button>
+                    </span>
+                    @if (renameError()) {
+                      <span class="mt-0.5 block text-[11px] text-primary">{{ renameError() }}</span>
+                    }
+                  } @else {
+                    <code class="font-mono break-all text-neutral-600" [title]="pair.key">
+                      {{ pair.key }}
+                    </code>
+                    <button
+                      type="button"
+                      (click)="startRename(pair)"
+                      [attr.aria-label]="'Schlüssel ' + pair.key + ' umbenennen'"
+                      title="Schlüssel umbenennen"
+                      class="ml-1 inline-flex shrink-0 rounded p-0.5 align-middle text-neutral-400 opacity-0 hover:bg-neutral-100 hover:text-neutral-600 focus:opacity-100 group-hover/key:opacity-100">
+                      <svg lucidePencil class="size-3.5"></svg>
+                    </button>
+                    @if (pair.de?.oldKey || pair.en?.oldKey) {
+                      <span
+                        class="ml-1 rounded bg-amber-50 px-1 text-[10px] text-amber-700"
+                        title="Alter Schlüssel bleibt als Alias aktiv">
+                        alias
+                      </span>
+                    }
+                  }
                 </div>
 
                 <!-- DE cell -->

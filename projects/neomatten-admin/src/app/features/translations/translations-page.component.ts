@@ -9,6 +9,7 @@
  * spacing (no space-x/space-y margin selectors), and paired textarea heights are
  * synced imperatively so DE/EN cells stay aligned without layout thrash.
  */
+import { HttpErrorResponse } from '@angular/common/http';
 import type { AfterViewInit, ElementRef, OnInit, QueryList } from '@angular/core';
 import {
   ChangeDetectionStrategy,
@@ -23,10 +24,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   LucideCheck,
   LucideChevronDown,
+  LucideInfo,
   LucideLanguages,
+  LucidePencil,
   LucideRocket,
   LucideSearch,
   LucideUndo2,
+  LucideX,
 } from '@lucide/angular';
 import { toast } from 'ngx-sonner';
 
@@ -74,6 +78,9 @@ const MAX_FIELD_HEIGHT = 200;
     LucideChevronDown,
     LucideCheck,
     LucideUndo2,
+    LucidePencil,
+    LucideInfo,
+    LucideX,
   ],
   templateUrl: './translations-page.component.html',
   styles: [
@@ -106,6 +113,11 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
   /** Page-scoped LIFO undo stack (resets naturally when the route is left). */
   private readonly undoStack = signal<readonly UndoEntry[]>([]);
   protected readonly undoCount = computed(() => this.undoStack().length);
+
+  /** Key currently being renamed (the pair's key), plus inline error + in-flight. */
+  protected readonly renamingKey = signal<string | null>(null);
+  protected readonly renameError = signal<string | null>(null);
+  protected readonly renaming = signal(false);
 
   /** Rows currently being saved / just saved (drive the per-cell indicators). */
   private readonly savingIds = signal<ReadonlySet<string>>(new Set());
@@ -316,6 +328,68 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
       toast.error('Rückgängig fehlgeschlagen.');
     } finally {
       this.mutate(this.savingIds, s => s.delete(id));
+    }
+  }
+
+  // ── Key renaming (structural, immediate — not part of draft/publish) ──────
+
+  protected isRenaming(pair: KeyPair): boolean {
+    return this.renamingKey() === pair.key;
+  }
+
+  protected startRename(pair: KeyPair): void {
+    this.renameError.set(null);
+    this.renamingKey.set(pair.key);
+  }
+
+  protected cancelRename(): void {
+    this.renamingKey.set(null);
+    this.renameError.set(null);
+  }
+
+  /**
+   * Confirm an inline key rename. Validates client-side, asks for confirmation
+   * (structural change), then calls the endpoint. On 409 shows an inline error.
+   */
+  protected async confirmRename(pair: KeyPair, rawKey: string): Promise<void> {
+    const newKey = rawKey.trim();
+    if (newKey === '' || newKey === pair.key) {
+      this.cancelRename();
+      return;
+    }
+    if (!/^[a-z0-9]+(_[a-z0-9]+)*$/.test(newKey)) {
+      this.renameError.set('Nur Kleinbuchstaben, Ziffern und einzelne Unterstriche.');
+      return;
+    }
+    const id = pair.de?.id ?? pair.en?.id;
+    if (!id) {
+      return;
+    }
+    const confirmed = confirm(
+      `Schlüssel "${pair.key}" in "${newKey}" umbenennen? Der alte Schlüssel bleibt vorübergehend aktiv.`
+    );
+    if (!confirmed) {
+      return;
+    }
+
+    this.renaming.set(true);
+    this.renameError.set(null);
+    try {
+      const updated = await this.service.renameKey(id, newKey);
+      // Swap the two renamed rows into place by id.
+      this.rows.update(rows => rows.map(r => updated.find(u => u.id === r.id) ?? r));
+      this.renamingKey.set(null);
+      toast.success(
+        'Schlüssel umbenannt. Der alte Schlüssel bleibt vorübergehend aktiv, bis der Code aktualisiert wurde.'
+      );
+    } catch (err) {
+      if (err instanceof HttpErrorResponse && err.status === 409) {
+        this.renameError.set(`Schlüssel "${newKey}" existiert bereits.`);
+      } else {
+        toast.error('Umbenennen fehlgeschlagen.');
+      }
+    } finally {
+      this.renaming.set(false);
     }
   }
 

@@ -112,6 +112,10 @@ model Translation {
   category   String?
   value      String   @db.Text
   draftValue String?  @db.Text
+  /// Previous key, set on rename. The public endpoint keeps serving this key
+  /// (aliased to the same value) during the transition until the codebase is
+  /// synced. Overwritten on each rename — aliases are not chained.
+  oldKey     String?
   updatedAt  DateTime @updatedAt
 
   @@unique([key, locale])
