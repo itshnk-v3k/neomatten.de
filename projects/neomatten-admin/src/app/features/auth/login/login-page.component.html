@@ -46,10 +46,10 @@
             <button
               type="button"
               (click)="showPassword.set(!showPassword())"
-              [attr.aria-label]="
-                showPassword() ? ('login.passwordHide' | t) : ('login.passwordShow' | t)
-              "
               class="absolute flex items-center rounded-r-lg px-3 text-neutral-500 outline-none transition inset-y-0 right-0 hover:text-neutral-700 focus-visible:text-primary">
+              <span class="sr-only">
+                {{ showPassword() ? ('login.passwordHide' | t) : ('login.passwordShow' | t) }}
+              </span>
               @if (showPassword()) {
                 <svg lucideEyeOff class="size-5"></svg>
               } @else {

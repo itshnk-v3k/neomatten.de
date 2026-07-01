@@ -5,8 +5,8 @@
     <button
       type="button"
       (click)="toggleSidebar.emit()"
-      class="rounded-lg p-2 text-neutral-600 transition hover:bg-neutral-100 lg:hidden"
-      [attr.aria-label]="'header.openMenu' | t">
+      class="rounded-lg p-2 text-neutral-600 transition hover:bg-neutral-100 lg:hidden">
+      <span class="sr-only">{{ 'header.openMenu' | t }}</span>
       <svg lucideMenu class="size-5"></svg>
     </button>
     <h1 class="text-lg font-semibold text-neutral-900">{{ title() }}</h1>

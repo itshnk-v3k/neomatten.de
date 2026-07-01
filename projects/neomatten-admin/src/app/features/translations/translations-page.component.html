@@ -3,7 +3,7 @@
        scrollable <main>. Opaque background (no backdrop-blur — a blur filter
        re-rasterizes every scroll/resize frame and was a mobile-jank source). -->
   <header
-    class="sticky z-20 -mx-4 -mt-4 flex flex-wrap items-center gap-3 border-b border-neutral-200 bg-neutral-50 px-4 py-3 top-0 sm:-mx-6 sm:px-6">
+    class="sticky z-20 -mx-4 -mt-4 flex flex-wrap items-center gap-3 border-b border-neutral-200 bg-neutral-50 px-4 py-3 -top-4 sm:-mx-6 sm:px-6 lg:-mt-6 lg:-top-6">
     <div>
       <h2 class="flex items-center gap-2 text-xl font-semibold text-neutral-900">
         <svg lucideLanguages class="size-5 text-primary"></svg>
@@ -11,8 +11,8 @@
         <button
           type="button"
           class="text-neutral-400 hover:text-neutral-600"
-          [attr.aria-label]="'translations.renameInfoAria' | t"
           [title]="'translations.renameInfoTooltip' | t">
+          <span class="sr-only">{{ 'translations.renameInfoAria' | t }}</span>
           <svg lucideInfo class="size-4"></svg>
         </button>
       </h2>
@@ -27,14 +27,17 @@
         <svg
           lucideSearch
           class="pointer-events-none absolute size-4 -translate-y-1/2 text-neutral-400 left-3 top-1/2"></svg>
-        <input
-          type="search"
-          id="translations-search"
-          name="translations-search"
-          autocomplete="off"
-          [placeholder]="'translations.searchPlaceholder' | t"
-          (input)="onSearch($event)"
-          class="w-full rounded-lg border border-neutral-300 py-2 pl-9 pr-3 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 sm:w-64" />
+        <label class="contents">
+          <span class="sr-only">{{ 'translations.searchPlaceholder' | t }}</span>
+          <input
+            type="search"
+            id="translations-search"
+            name="translations-search"
+            autocomplete="off"
+            [placeholder]="'translations.searchPlaceholder' | t"
+            (input)="onSearch($event)"
+            class="w-full rounded-lg border border-neutral-300 py-2 pl-9 pr-3 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 sm:w-64" />
+        </label>
       </div>
 
       <!-- Undo: page-scoped LIFO, one step per click -->
@@ -91,25 +94,30 @@
         <div class="group/key min-w-0 text-xs leading-tight">
           @if (isRenaming(pair)) {
             <span class="mt-1 flex items-start gap-1">
-              <input
-                #renameField
-                type="text"
-                [id]="'rename-key-' + pair.key"
-                [attr.name]="'rename-key-' + pair.key"
-                autocomplete="off"
-                [title]="'translations.renameNewKeyTitle' | t"
-                [placeholder]="'translations.renameNewKeyPlaceholder' | t"
-                [value]="pair.key"
-                (keydown.enter)="confirmRename(pair, renameField.value)"
-                (keydown.escape)="cancelRename()"
-                [attr.aria-label]="'translations.renameNewKeyAria' | t: { key: pair.key }"
-                class="font-mono w-full min-w-0 rounded border border-neutral-300 px-1.5 py-1 text-xs text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+              <label class="contents">
+                <span class="sr-only">
+                  {{ 'translations.renameNewKeyAria' | t: { key: pair.key } }}
+                </span>
+                <input
+                  #renameField
+                  type="text"
+                  [id]="'rename-key-' + pair.key"
+                  [attr.name]="'rename-key-' + pair.key"
+                  autocomplete="off"
+                  [title]="'translations.renameNewKeyTitle' | t"
+                  [placeholder]="'translations.renameNewKeyPlaceholder' | t"
+                  [value]="pair.key"
+                  (keydown.enter)="confirmRename(pair, renameField.value)"
+                  (keydown.escape)="cancelRename()"
+                  class="font-mono w-full min-w-0 rounded border border-neutral-300 px-1.5 py-1 text-xs text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+              </label>
               <button
                 type="button"
                 [disabled]="renaming()"
                 (click)="confirmRename(pair, renameField.value)"
                 [title]="'translations.renameConfirmTitle' | t"
                 class="shrink-0 rounded p-1 text-emerald-600 hover:bg-emerald-50 disabled:opacity-50">
+                <span class="sr-only">{{ 'translations.renameConfirmTitle' | t }}</span>
                 <svg lucideCheck class="size-3.5"></svg>
               </button>
               <button
@@ -117,6 +125,7 @@
                 (click)="cancelRename()"
                 [title]="'translations.cancel' | t"
                 class="shrink-0 rounded p-1 text-neutral-500 hover:bg-neutral-100">
+                <span class="sr-only">{{ 'translations.cancel' | t }}</span>
                 <svg lucideX class="size-3.5"></svg>
               </button>
             </span>
@@ -131,9 +140,11 @@
               <button
                 type="button"
                 (click)="startRename(pair)"
-                [attr.aria-label]="'translations.renameKeyAria' | t: { key: pair.key }"
                 [title]="'translations.renameKeyTitle' | t"
                 class="inline-flex shrink-0 rounded p-0.5 align-middle text-neutral-400 opacity-0 hover:bg-neutral-100 hover:text-neutral-600 focus:opacity-100 group-hover/key:opacity-100">
+                <span class="sr-only">
+                  {{ 'translations.renameKeyAria' | t: { key: pair.key } }}
+                </span>
                 <svg lucidePencil class="size-3.5"></svg>
               </button>
               @if (pair.de?.oldKey || pair.en?.oldKey) {
@@ -152,19 +163,21 @@
           <span class="mb-1 block text-[11px] font-medium text-neutral-400 md:hidden">
             {{ 'translations.columnDe' | t }}
           </span>
-          <textarea
-            rows="1"
-            [id]="'tr-de-' + pair.key"
-            [attr.name]="'tr-de-' + pair.key"
-            [attr.aria-label]="'translations.cellAriaDe' | t: { key: pair.key }"
-            [value]="cellText(pair.de)"
-            [disabled]="!pair.de"
-            (input)="onCellInput(pair.de, $event)"
-            (blur)="onBlur(pair.de)"
-            class="h-14 w-full resize-none overflow-y-auto rounded-md border p-2.5 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:bg-neutral-50 md:h-full"
-            [class.border-amber-300]="hasDraft(pair.de)"
-            [class.bg-amber-50]="hasDraft(pair.de)"
-            [class.border-neutral-200]="!hasDraft(pair.de)"></textarea>
+          <label class="contents">
+            <span class="sr-only">{{ 'translations.cellAriaDe' | t: { key: pair.key } }}</span>
+            <textarea
+              rows="1"
+              [id]="'tr-de-' + pair.key"
+              [attr.name]="'tr-de-' + pair.key"
+              [value]="cellText(pair.de)"
+              [disabled]="!pair.de"
+              (input)="onCellInput(pair.de, $event)"
+              (blur)="onBlur(pair.de)"
+              class="h-14 w-full resize-none overflow-y-auto rounded-md border p-2.5 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:bg-neutral-50 md:h-full"
+              [class.border-amber-300]="hasDraft(pair.de)"
+              [class.bg-amber-50]="hasDraft(pair.de)"
+              [class.border-neutral-200]="!hasDraft(pair.de)"></textarea>
+          </label>
           @if (hasDraft(pair.de)) {
             <span
               [title]="'translations.unpublishedTooltip' | t"
@@ -188,19 +201,21 @@
           <span class="mb-1 block text-[11px] font-medium text-neutral-400 md:hidden">
             {{ 'translations.columnEn' | t }}
           </span>
-          <textarea
-            rows="1"
-            [id]="'tr-en-' + pair.key"
-            [attr.name]="'tr-en-' + pair.key"
-            [attr.aria-label]="'translations.cellAriaEn' | t: { key: pair.key }"
-            [value]="cellText(pair.en)"
-            [disabled]="!pair.en"
-            (input)="onCellInput(pair.en, $event)"
-            (blur)="onBlur(pair.en)"
-            class="h-14 w-full resize-none overflow-y-auto rounded-md border p-2.5 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:bg-neutral-50 md:h-full"
-            [class.border-amber-300]="hasDraft(pair.en)"
-            [class.bg-amber-50]="hasDraft(pair.en)"
-            [class.border-neutral-200]="!hasDraft(pair.en)"></textarea>
+          <label class="contents">
+            <span class="sr-only">{{ 'translations.cellAriaEn' | t: { key: pair.key } }}</span>
+            <textarea
+              rows="1"
+              [id]="'tr-en-' + pair.key"
+              [attr.name]="'tr-en-' + pair.key"
+              [value]="cellText(pair.en)"
+              [disabled]="!pair.en"
+              (input)="onCellInput(pair.en, $event)"
+              (blur)="onBlur(pair.en)"
+              class="h-14 w-full resize-none overflow-y-auto rounded-md border p-2.5 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:bg-neutral-50 md:h-full"
+              [class.border-amber-300]="hasDraft(pair.en)"
+              [class.bg-amber-50]="hasDraft(pair.en)"
+              [class.border-neutral-200]="!hasDraft(pair.en)"></textarea>
+          </label>
           @if (hasDraft(pair.en)) {
             <span
               [title]="'translations.unpublishedTooltip' | t"
@@ -269,9 +284,10 @@
     <div class="fixed z-50 flex items-center justify-center p-4 inset-0">
       <button
         type="button"
-        [attr.aria-label]="'translations.dialogCloseAria' | t"
         (click)="showConfirm.set(false)"
-        class="absolute cursor-default bg-black/40 inset-0"></button>
+        class="absolute cursor-default bg-black/40 inset-0">
+        <span class="sr-only">{{ 'translations.dialogCloseAria' | t }}</span>
+      </button>
       <div class="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
         <h3 class="text-lg font-semibold text-neutral-900">
           {{ 'translations.publishTitle' | t }}
