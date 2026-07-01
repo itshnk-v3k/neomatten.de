@@ -11,7 +11,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import type { OnInit } from '@angular/core';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
+import {
+  FormControl,
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import {
   LucideLoaderCircle,
   LucidePencil,
@@ -25,6 +31,10 @@ import { toast } from 'ngx-sonner';
 
 import { AdminI18nService } from '../../core/i18n/admin-i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
+import {
+  SelectComponent,
+  type SelectOption,
+} from '../../shared/components/select/select.component';
 import type { AdminProduct } from './products.service';
 import { PRODUCT_TYPES, ProductsAdminService } from './products.service';
 
@@ -52,6 +62,7 @@ const TYPE_LABEL_KEY: Record<string, string> = {
     LucideX,
     LucideLoaderCircle,
     LucideWandSparkles,
+    SelectComponent,
   ],
   templateUrl: './products-page.component.html',
 })
@@ -64,7 +75,12 @@ export class ProductsPageComponent implements OnInit {
   protected readonly products = signal<AdminProduct[]>([]);
   protected readonly loading = signal(true);
   protected readonly search = signal('');
-  protected readonly typeFilter = signal<string>('all');
+
+  /** Type filter as a reactive control (drives the na-select combobox). */
+  protected readonly typeFilterControl = new FormControl<string>('all', { nonNullable: true });
+  private readonly typeFilter = toSignal(this.typeFilterControl.valueChanges, {
+    initialValue: 'all',
+  });
 
   /** The product being edited, the 'new' sentinel (create), or null (closed). */
   protected readonly editing = signal<AdminProduct | 'new' | null>(null);
@@ -127,14 +143,21 @@ export class ProductsPageComponent implements OnInit {
     this.search.set((event.target as HTMLInputElement).value);
   }
 
-  protected onFilter(event: Event): void {
-    this.typeFilter.set((event.target as HTMLSelectElement).value);
-  }
-
   /** Localized label for a product type value. */
   protected typeLabel(type: string): string {
     return this.i18n.t(TYPE_LABEL_KEY[type] ?? type);
   }
+
+  /** Combobox options for the create/edit form (localized, reactive to language). */
+  protected readonly typeOptions = computed<SelectOption[]>(() =>
+    this.types.map(type => ({ value: type, label: this.typeLabel(type) }))
+  );
+
+  /** Combobox options for the toolbar filter — "all" plus every type. */
+  protected readonly filterOptions = computed<SelectOption[]>(() => [
+    { value: 'all', label: this.i18n.t('products.filterAll') },
+    ...this.typeOptions(),
+  ]);
 
   /** EUR-formatted base price (backend-owned value, display only). */
   protected formatPrice(value: string | number): string {

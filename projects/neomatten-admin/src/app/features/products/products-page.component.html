@@ -24,18 +24,11 @@
           class="w-full rounded-lg border border-neutral-300 py-2 pl-9 pr-3 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 sm:w-56" />
       </label>
 
-      <label class="min-w-0">
-        <span class="sr-only">{{ 'products.fieldType' | t }}</span>
-        <select
-          name="products-type-filter"
-          (change)="onFilter($event)"
-          class="rounded-lg border border-neutral-300 bg-white py-2 pl-3 pr-8 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
-          <option value="all">{{ 'products.filterAll' | t }}</option>
-          @for (type of types; track type) {
-            <option [value]="type">{{ typeLabel(type) }}</option>
-          }
-        </select>
-      </label>
+      <na-select
+        class="w-full sm:w-44"
+        [formControl]="typeFilterControl"
+        [options]="filterOptions()"
+        [ariaLabel]="'products.fieldType' | t" />
 
       <button
         type="button"
@@ -243,14 +236,7 @@
               <label for="p-type" class="mb-1.5 block text-sm font-medium text-neutral-700">
                 {{ 'products.fieldType' | t }}
               </label>
-              <select
-                id="p-type"
-                formControlName="type"
-                class="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
-                @for (type of types; track type) {
-                  <option [value]="type">{{ typeLabel(type) }}</option>
-                }
-              </select>
+              <na-select formControlName="type" [inputId]="'p-type'" [options]="typeOptions()" />
             </div>
             <div>
               <label for="p-price" class="mb-1.5 block text-sm font-medium text-neutral-700">
