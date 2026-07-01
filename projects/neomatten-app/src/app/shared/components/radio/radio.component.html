@@ -13,7 +13,7 @@
     [id]="inputId()"
     type="radio"
     class="sr-only"
-    [name]="name()"
+    [name]="name() || inputId()"
     [value]="value()"
     [checked]="checked()"
     [disabled]="disabled()"

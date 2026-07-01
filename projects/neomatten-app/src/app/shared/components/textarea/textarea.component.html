@@ -15,6 +15,7 @@
 
 <textarea
   [id]="inputId()"
+  [attr.name]="nameAttr"
   [rows]="rows()"
   [value]="value()"
   [attr.placeholder]="placeholder() ? (placeholder() | translate) : null"

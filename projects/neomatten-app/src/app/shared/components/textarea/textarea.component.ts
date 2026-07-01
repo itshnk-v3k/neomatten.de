@@ -65,6 +65,11 @@ export class TextareaComponent implements ControlValueAccessor, OnInit {
       .subscribe(() => this.cdr.markForCheck());
   }
 
+  /** `name` attribute — the bound control name (formControlName), else inputId. */
+  protected get nameAttr(): string {
+    return String(this.ngControl?.name ?? this.inputId());
+  }
+
   /** Localized error message for the bound control, shown once touched. */
   protected get errorMessage(): string | null {
     const control = this.ngControl?.control;

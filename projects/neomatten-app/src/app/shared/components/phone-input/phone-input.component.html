@@ -41,8 +41,10 @@
 
   <input
     [id]="inputId()"
+    [attr.name]="nameAttr"
     type="tel"
     inputmode="tel"
+    autocomplete="tel"
     [value]="display()"
     [attr.placeholder]="placeholder() ? (placeholder() | translate) : countryPlaceholder()"
     [disabled]="disabled()"
@@ -70,6 +72,9 @@
   <div class="nm-phone-dropdown-search">
     <input
       type="text"
+      [id]="inputId() + '-country-search'"
+      [attr.name]="inputId() + '-country-search'"
+      autocomplete="off"
       [value]="searchQuery()"
       (input)="onSearch($event)"
       (click)="$event.stopPropagation()"

@@ -39,6 +39,11 @@ export class CheckboxComponent implements ControlValueAccessor {
     }
   }
 
+  /** `name` attribute — the bound control name (formControlName), else inputId. */
+  protected get nameAttr(): string {
+    return String(this.ngControl?.name ?? this.inputId());
+  }
+
   protected onToggle(event: Event): void {
     const next = (event.target as HTMLInputElement).checked;
     this.checked.set(next);

@@ -28,6 +28,9 @@
           class="pointer-events-none absolute size-4 -translate-y-1/2 text-neutral-400 left-3 top-1/2"></svg>
         <input
           type="search"
+          id="translations-search"
+          name="translations-search"
+          autocomplete="off"
           placeholder="Nach Schlüssel suchen…"
           (input)="onSearch($event)"
           class="w-full rounded-lg border border-neutral-300 py-2 pl-9 pr-3 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 sm:w-64" />
@@ -116,6 +119,9 @@
                       <input
                         #renameField
                         type="text"
+                        [id]="'rename-key-' + pair.key"
+                        [attr.name]="'rename-key-' + pair.key"
+                        autocomplete="off"
                         title="Neuer Schlüssel"
                         placeholder="neuer_schluessel"
                         [value]="pair.key"
@@ -172,6 +178,8 @@
                   <textarea
                     #deArea
                     rows="1"
+                    [id]="'tr-de-' + pair.key"
+                    [attr.name]="'tr-de-' + pair.key"
                     [attr.aria-label]="'Deutsch — ' + pair.key"
                     [value]="cellText(pair.de)"
                     [disabled]="!pair.de"
@@ -207,6 +215,8 @@
                   <textarea
                     #enArea
                     rows="1"
+                    [id]="'tr-en-' + pair.key"
+                    [attr.name]="'tr-en-' + pair.key"
                     [attr.aria-label]="'English — ' + pair.key"
                     [value]="cellText(pair.en)"
                     [disabled]="!pair.en"

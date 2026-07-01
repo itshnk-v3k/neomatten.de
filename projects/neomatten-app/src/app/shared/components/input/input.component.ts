@@ -70,6 +70,15 @@ export class InputComponent implements ControlValueAccessor, OnInit {
       .subscribe(() => this.cdr.markForCheck());
   }
 
+  /**
+   * `name` attribute for the native input — the bound control's name
+   * (formControlName) so browser autofill can identify the field, falling back
+   * to the unique inputId when there is no control name.
+   */
+  protected get nameAttr(): string {
+    return String(this.ngControl?.name ?? this.inputId());
+  }
+
   /** Localized error message for the bound control, shown once touched. */
   protected get errorMessage(): string | null {
     const control = this.ngControl?.control;
