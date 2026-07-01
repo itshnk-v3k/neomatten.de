@@ -1,0 +1,355 @@
+<section class="flex flex-col gap-4 pb-10">
+  <!-- Toolbar: title + count + search + type filter + New -->
+  <header
+    class="sticky z-20 -mx-4 -mt-4 flex flex-wrap items-center gap-3 border-b border-neutral-200 bg-neutral-50 px-4 py-3 -top-4 sm:-mx-6 sm:px-6 lg:-mt-6 lg:-top-6">
+    <div>
+      <h2 class="text-xl font-semibold text-neutral-900">{{ 'products.title' | t }}</h2>
+      <p class="mt-0.5 text-sm text-neutral-500">
+        {{ i18n.tp('products.count', products().length) }}
+      </p>
+    </div>
+
+    <div class="ml-auto flex w-full flex-wrap items-center gap-2 sm:w-auto sm:flex-nowrap sm:gap-3">
+      <label class="relative min-w-0 flex-1 sm:flex-none">
+        <span class="sr-only">{{ 'products.searchPlaceholder' | t }}</span>
+        <svg
+          lucideSearch
+          class="pointer-events-none absolute size-4 -translate-y-1/2 text-neutral-400 left-3 top-1/2"></svg>
+        <input
+          type="search"
+          name="products-search"
+          autocomplete="off"
+          [placeholder]="'products.searchPlaceholder' | t"
+          (input)="onSearch($event)"
+          class="w-full rounded-lg border border-neutral-300 py-2 pl-9 pr-3 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 sm:w-56" />
+      </label>
+
+      <label class="min-w-0">
+        <span class="sr-only">{{ 'products.fieldType' | t }}</span>
+        <select
+          name="products-type-filter"
+          (change)="onFilter($event)"
+          class="rounded-lg border border-neutral-300 bg-white py-2 pl-3 pr-8 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+          <option value="all">{{ 'products.filterAll' | t }}</option>
+          @for (type of types; track type) {
+            <option [value]="type">{{ typeLabel(type) }}</option>
+          }
+        </select>
+      </label>
+
+      <button
+        type="button"
+        (click)="openCreate()"
+        class="flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-bright">
+        <svg lucidePlus class="size-4"></svg>
+        <span class="hidden sm:inline">{{ 'products.new' | t }}</span>
+      </button>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <p class="p-10 text-center text-sm text-neutral-500">{{ 'products.loading' | t }}</p>
+  } @else if (filtered().length === 0) {
+    <p class="p-10 text-center text-sm text-neutral-500">{{ 'products.empty' | t }}</p>
+  } @else {
+    <!-- Column headers (desktop) -->
+    <div
+      class="hidden gap-3 px-4 text-xs font-medium uppercase tracking-wide text-neutral-400 md:grid md:grid-cols-[minmax(0,1fr)_9rem_7rem_5rem_minmax(0,10rem)_5rem]">
+      <span>{{ 'products.colName' | t }}</span>
+      <span>{{ 'products.colType' | t }}</span>
+      <span class="text-right">{{ 'products.colPrice' | t }}</span>
+      <span class="text-center">{{ 'products.colActive' | t }}</span>
+      <span>{{ 'products.colSlug' | t }}</span>
+      <span class="text-right">{{ 'products.colActions' | t }}</span>
+    </div>
+
+    <!--
+      Volume is expected to be a few dozen products, so a plain @for is fine
+      (see ADMIN.md). If the list can ever exceed ~100 rows, wrap this in the
+      shared <na-virtual-list> — the row markup is self-contained per product.
+    -->
+    <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5">
+      @for (product of filtered(); track product.id) {
+        <div
+          class="grid gap-3 border-t border-neutral-100 px-4 py-3 first:border-t-0 md:grid-cols-[minmax(0,1fr)_9rem_7rem_5rem_minmax(0,10rem)_5rem] md:items-center">
+          <!-- Name (DE + EN) -->
+          <div class="min-w-0">
+            <p class="truncate text-sm font-medium text-neutral-900">{{ product.nameDE }}</p>
+            <p class="truncate text-xs text-neutral-500">{{ product.nameEN }}</p>
+          </div>
+
+          <!-- Type -->
+          <div>
+            <span class="mb-1 block text-[11px] font-medium uppercase text-neutral-400 md:hidden">
+              {{ 'products.colType' | t }}
+            </span>
+            <span
+              class="inline-flex rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-700">
+              {{ typeLabel(product.type) }}
+            </span>
+          </div>
+
+          <!-- Price -->
+          <div class="text-sm text-neutral-900 md:text-right">
+            <span class="text-[11px] font-medium uppercase text-neutral-400 md:hidden">
+              {{ 'products.colPrice' | t }}:
+            </span>
+            {{ formatPrice(product.basePrice) }}
+          </div>
+
+          <!-- Active toggle (inline PATCH) -->
+          <div class="flex items-center gap-2 md:justify-center">
+            <span class="text-[11px] font-medium uppercase text-neutral-400 md:hidden">
+              {{ 'products.colActive' | t }}
+            </span>
+            <button
+              type="button"
+              role="switch"
+              [attr.aria-checked]="product.isActive"
+              [disabled]="isToggling(product.id)"
+              (click)="toggleActive(product)"
+              class="relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition disabled:opacity-50"
+              [class.bg-primary]="product.isActive"
+              [class.bg-neutral-300]="!product.isActive">
+              <span class="sr-only">{{ 'products.toggleActive' | t }}</span>
+              <span
+                class="inline-block size-4 rounded-full bg-white transition"
+                [class.translate-x-4]="product.isActive"
+                [class.translate-x-0.5]="!product.isActive"></span>
+            </button>
+          </div>
+
+          <!-- Slug -->
+          <div class="min-w-0">
+            <span class="text-[11px] font-medium uppercase text-neutral-400 md:hidden">
+              {{ 'products.colSlug' | t }}:
+            </span>
+            <code class="font-mono break-all text-xs text-neutral-500">{{ product.slug }}</code>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-1 md:justify-end">
+            <button
+              type="button"
+              (click)="openEdit(product)"
+              [title]="'products.edit' | t"
+              class="rounded p-1.5 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-800">
+              <span class="sr-only">{{ 'products.edit' | t }}</span>
+              <svg lucidePencil class="size-4"></svg>
+            </button>
+            <button
+              type="button"
+              (click)="openDelete(product)"
+              [title]="'products.delete' | t"
+              class="rounded p-1.5 text-neutral-500 hover:bg-primary-50 hover:text-primary">
+              <span class="sr-only">{{ 'products.delete' | t }}</span>
+              <svg lucideTrash2 class="size-4"></svg>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Create / edit form (modal) -->
+  @if (editing(); as editingState) {
+    <div class="fixed z-50 flex items-center justify-center p-4 inset-0">
+      <button
+        type="button"
+        (click)="closeForm()"
+        class="absolute cursor-default bg-black/40 inset-0">
+        <span class="sr-only">{{ 'products.cancel' | t }}</span>
+      </button>
+      <div
+        class="relative max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
+        <div class="mb-4 flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-neutral-900">
+            {{ (isEditTitle() ? 'products.editTitle' : 'products.createTitle') | t }}
+          </h3>
+          <button
+            type="button"
+            (click)="closeForm()"
+            [title]="'products.cancel' | t"
+            class="rounded p-1 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700">
+            <span class="sr-only">{{ 'products.cancel' | t }}</span>
+            <svg lucideX class="size-5"></svg>
+          </button>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="flex flex-col gap-4">
+          <!-- nameDE -->
+          <div>
+            <label for="p-nameDE" class="mb-1.5 block text-sm font-medium text-neutral-700">
+              {{ 'products.fieldNameDe' | t }}
+            </label>
+            <input
+              id="p-nameDE"
+              type="text"
+              formControlName="nameDE"
+              class="w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+            @if (form.controls.nameDE.touched && form.controls.nameDE.invalid) {
+              <p class="mt-1 text-xs text-primary">{{ 'products.errRequired' | t }}</p>
+            }
+          </div>
+
+          <!-- nameEN -->
+          <div>
+            <label for="p-nameEN" class="mb-1.5 block text-sm font-medium text-neutral-700">
+              {{ 'products.fieldNameEn' | t }}
+            </label>
+            <input
+              id="p-nameEN"
+              type="text"
+              formControlName="nameEN"
+              class="w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+            @if (form.controls.nameEN.touched && form.controls.nameEN.invalid) {
+              <p class="mt-1 text-xs text-primary">{{ 'products.errRequired' | t }}</p>
+            }
+          </div>
+
+          <!-- slug + generate -->
+          <div>
+            <label for="p-slug" class="mb-1.5 block text-sm font-medium text-neutral-700">
+              {{ 'products.fieldSlug' | t }}
+            </label>
+            <div class="flex items-center gap-2">
+              <input
+                id="p-slug"
+                type="text"
+                formControlName="slug"
+                autocomplete="off"
+                class="font-mono w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+              <button
+                type="button"
+                (click)="generateSlug()"
+                [title]="'products.generateSlug' | t"
+                class="flex shrink-0 items-center gap-1 rounded-lg border border-neutral-300 px-3 py-2.5 text-xs font-medium text-neutral-600 hover:bg-neutral-100">
+                <svg lucideWandSparkles class="size-4"></svg>
+                <span class="hidden sm:inline">{{ 'products.generateSlug' | t }}</span>
+              </button>
+            </div>
+            @if (form.controls.slug.touched && form.controls.slug.hasError('required')) {
+              <p class="mt-1 text-xs text-primary">{{ 'products.errRequired' | t }}</p>
+            } @else if (form.controls.slug.touched && form.controls.slug.hasError('pattern')) {
+              <p class="mt-1 text-xs text-primary">{{ 'products.errSlugFormat' | t }}</p>
+            } @else if (slugError(); as err) {
+              <p class="mt-1 text-xs text-primary">{{ err }}</p>
+            }
+          </div>
+
+          <!-- type + basePrice -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="p-type" class="mb-1.5 block text-sm font-medium text-neutral-700">
+                {{ 'products.fieldType' | t }}
+              </label>
+              <select
+                id="p-type"
+                formControlName="type"
+                class="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2.5 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20">
+                @for (type of types; track type) {
+                  <option [value]="type">{{ typeLabel(type) }}</option>
+                }
+              </select>
+            </div>
+            <div>
+              <label for="p-price" class="mb-1.5 block text-sm font-medium text-neutral-700">
+                {{ 'products.fieldBasePrice' | t }}
+              </label>
+              <div class="relative">
+                <input
+                  id="p-price"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  formControlName="basePrice"
+                  class="w-full rounded-lg border border-neutral-300 py-2.5 pl-3 pr-9 text-sm text-neutral-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+                <span
+                  class="pointer-events-none absolute -translate-y-1/2 text-sm text-neutral-400 right-3 top-1/2">
+                  €
+                </span>
+              </div>
+              @if (form.controls.basePrice.touched && form.controls.basePrice.invalid) {
+                <p class="mt-1 text-xs text-primary">{{ 'products.errPriceMin' | t }}</p>
+              }
+            </div>
+          </div>
+
+          <!-- isActive -->
+          <label class="flex items-center gap-2 text-sm font-medium text-neutral-700">
+            <input
+              type="checkbox"
+              formControlName="isActive"
+              class="size-4 rounded border-neutral-300 text-primary focus:ring-primary/20" />
+            {{ 'products.fieldActive' | t }}
+          </label>
+
+          <!-- Images placeholder (read-only; blocked on the future media task) -->
+          <div>
+            <span class="mb-1.5 block text-sm font-medium text-neutral-700">
+              {{ 'products.images' | t }}
+            </span>
+            <div
+              class="rounded-lg border border-dashed border-neutral-300 px-3 py-4 text-center text-xs text-neutral-400">
+              {{ 'products.imagesEmpty' | t }}
+            </div>
+          </div>
+
+          <div class="mt-2 flex justify-end gap-3">
+            <button
+              type="button"
+              (click)="closeForm()"
+              class="rounded-lg px-4 py-2.5 text-sm font-medium text-neutral-600 hover:bg-neutral-100">
+              {{ 'products.cancel' | t }}
+            </button>
+            <button
+              type="submit"
+              [disabled]="submitting()"
+              class="flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-bright disabled:opacity-50">
+              @if (submitting()) {
+                <svg lucideLoaderCircle class="size-4 animate-spin"></svg>
+              }
+              {{ (submitting() ? 'products.saving' : 'products.save') | t }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- Delete confirmation -->
+  @if (deleting(); as target) {
+    <div class="fixed z-50 flex items-center justify-center p-4 inset-0">
+      <button
+        type="button"
+        (click)="closeDelete()"
+        class="absolute cursor-default bg-black/40 inset-0">
+        <span class="sr-only">{{ 'products.cancel' | t }}</span>
+      </button>
+      <div class="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+        <h3 class="text-lg font-semibold text-neutral-900">{{ 'products.deleteTitle' | t }}</h3>
+        <p class="mt-2 text-sm text-neutral-600">
+          {{ 'products.deleteBody' | t: { name: target.nameDE } }}
+        </p>
+        <div class="mt-6 flex justify-end gap-3">
+          <button
+            type="button"
+            (click)="closeDelete()"
+            class="rounded-lg px-4 py-2.5 text-sm font-medium text-neutral-600 hover:bg-neutral-100">
+            {{ 'products.cancel' | t }}
+          </button>
+          <button
+            type="button"
+            [disabled]="removingActive()"
+            (click)="confirmDelete()"
+            class="flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-bright disabled:opacity-50">
+            @if (removingActive()) {
+              <svg lucideLoaderCircle class="size-4 animate-spin"></svg>
+            }
+            {{ 'products.deleteConfirm' | t }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</section>
