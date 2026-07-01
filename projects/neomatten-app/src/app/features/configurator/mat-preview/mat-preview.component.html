@@ -48,7 +48,7 @@
              texture, masked by the mat photo's alpha so only the mat body (and its
              blend mode) is set via matMaskStyle. -->
         <div
-          class="pointer-events-none absolute inset-0 opacity-70"
+          class="pointer-events-none absolute opacity-70 inset-0"
           [style]="matMaskStyle()"
           [style.background-color]="materialHex()"></div>
 
@@ -57,12 +57,12 @@
           src="assets/images/mats/edging.webp"
           alt=""
           aria-hidden="true"
-          class="pointer-events-none absolute inset-0 size-full object-contain" />
+          class="pointer-events-none absolute size-full object-contain inset-0" />
 
         <!-- Edge colour: a coloured layer masked to the edging outline so only the
              trim is tinted (a full-rect overlay would tint the whole mat). -->
         <div
-          class="mat-edge-mask pointer-events-none absolute inset-0 opacity-[0.85]"
+          class="mat-edge-mask pointer-events-none absolute opacity-[0.85] inset-0"
           [style.background-color]="edgeHex()"></div>
 
         <!-- Clips overlay — rendered as-is (no blend, no tint). -->
@@ -70,7 +70,7 @@
           src="assets/images/mats/mat-clips.webp"
           alt=""
           aria-hidden="true"
-          class="pointer-events-none absolute inset-0 size-full object-contain" />
+          class="pointer-events-none absolute size-full object-contain inset-0" />
 
         <!-- Heel-rest overlay — topmost layer, same size/position as the clips
              (2077×2077, transparency baked in), rendered as-is (no blend/tint). -->
@@ -79,14 +79,14 @@
             [src]="heelRestSrc"
             alt=""
             aria-hidden="true"
-            class="pointer-events-none absolute inset-0 size-full object-contain" />
+            class="pointer-events-none absolute size-full object-contain inset-0" />
         }
       </div>
     }
 
     <div class="pointer-events-none absolute inset-0">
       <!-- badges -->
-      <div class="absolute right-3 top-3 flex flex-col items-end gap-2">
+      <div class="absolute flex flex-col items-end gap-2 right-3 top-3">
         @if (mounting() === '3d') {
           <span class="rounded-full bg-ink/85 px-3 py-1 text-xs font-semibold text-white shadow">
             {{ 'configurator_mount_3d_badge' | translate }}

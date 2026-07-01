@@ -22,7 +22,7 @@
           class="size-full object-cover transition-opacity"
           [class.opacity-0]="!imageLoaded()" />
         @if (!imageLoaded()) {
-          <nm-skeleton variant="image" class="absolute inset-0 rounded-none" />
+          <nm-skeleton variant="image" class="absolute rounded-none inset-0" />
         }
       } @else {
         <nm-image-placeholder class="size-full rounded-none" />

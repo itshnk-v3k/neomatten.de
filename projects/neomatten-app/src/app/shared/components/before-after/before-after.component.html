@@ -26,7 +26,7 @@
       <nm-image-placeholder class="size-full" />
     }
     <span
-      class="pointer-events-none absolute bottom-4 left-4 rounded-full bg-black/60 px-3.5 py-1 text-xs font-semibold text-white">
+      class="pointer-events-none absolute rounded-full bg-black/60 px-3.5 py-1 text-xs font-semibold text-white bottom-4 left-4">
       {{ beforeLabelKey() | translate }}
     </span>
   </div>
@@ -49,14 +49,14 @@
       <nm-image-placeholder class="size-full" />
     }
     <span
-      class="pointer-events-none absolute bottom-4 right-4 rounded-full bg-black/60 px-3.5 py-1 text-xs font-semibold text-white">
+      class="pointer-events-none absolute rounded-full bg-black/60 px-3.5 py-1 text-xs font-semibold text-white bottom-4 right-4">
       {{ afterLabelKey() | translate }}
     </span>
   </div>
 
   <!-- Divider + handle -->
   <div
-    class="pointer-events-none absolute top-0 h-full w-1 -translate-x-1/2 bg-white will-change-transform"
+    class="pointer-events-none absolute h-full w-1 -translate-x-1/2 bg-white will-change-transform top-0"
     [style.left.%]="position()">
     <button
       type="button"
@@ -67,7 +67,7 @@
       aria-valuemax="100"
       [attr.aria-valuenow]="position()"
       [attr.aria-label]="handleLabelKey() | translate"
-      class="pointer-events-auto absolute left-1/2 top-1/2 grid size-12 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize touch-none place-items-center rounded-full bg-primary text-white shadow-[0_2px_12px_rgba(0,0,0,0.35)] will-change-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+      class="pointer-events-auto absolute grid size-12 -translate-x-1/2 -translate-y-1/2 cursor-ew-resize touch-none place-items-center rounded-full bg-primary text-white shadow-[0_2px_12px_rgba(0,0,0,0.35)] will-change-transform left-1/2 top-1/2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
       (pointerdown)="onPointerDown($event)"
       (pointermove)="onPointerMove($event)"
       (keydown)="onKeydown($event)">

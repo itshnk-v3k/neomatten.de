@@ -69,6 +69,15 @@ export const routes: Routes = [
         data: { seo: { titleKey: 'seo_cart_title', descriptionKey: 'seo_cart_description' } },
       },
       {
+        // OAuth landing route: the backend redirects here with a one-time code
+        // after a Google/Facebook sign-in (see AuthCallbackPageComponent).
+        path: 'auth/callback',
+        loadComponent: () =>
+          import('@features/account/auth-callback-page/auth-callback-page.component').then(
+            m => m.AuthCallbackPageComponent
+          ),
+      },
+      {
         path: 'account',
         children: [
           // Public auth pages (no account shell) — listed before the empty-path

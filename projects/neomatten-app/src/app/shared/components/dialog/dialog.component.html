@@ -8,9 +8,9 @@
 -->
 @if (open()) {
   <div
-    class="fixed inset-0 z-popup flex items-stretch justify-center bg-ink/60 animate-in fade-in md:items-center md:p-4">
+    class="fixed z-popup flex items-stretch justify-center bg-ink/60 animate-in fade-in inset-0 md:items-center md:p-4">
     @if (dismissible()) {
-      <button type="button" class="absolute inset-0 size-full cursor-default" (click)="close()">
+      <button type="button" class="absolute size-full cursor-default inset-0" (click)="close()">
         <span class="sr-only">{{ 'action_close' | translate }}</span>
       </button>
     }

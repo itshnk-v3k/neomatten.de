@@ -22,15 +22,24 @@ enum OrderStatus {
   CANCELLED
 }
 
-/// Account / auth profile.
+/// Account / auth profile. Supports both local (email + password) accounts and
+/// OAuth accounts (Google / Facebook). OAuth-created accounts have no password
+/// (`passwordHash` null); a single account can link multiple provider ids after
+/// email-match linking. `authProvider` records the primary signup method.
 model User {
   id           String   @id @default(uuid())
   email        String   @unique
-  passwordHash String
+  passwordHash String?
   firstName    String
   lastName     String
   phone        String?
   isAdmin      Boolean  @default(false)
+  /// Google OAuth subject id (set when a Google account is linked).
+  googleId     String?  @unique
+  /// Facebook OAuth user id (set when a Facebook account is linked).
+  facebookId   String?  @unique
+  /// Primary signup method: "local" | "google" | "facebook".
+  authProvider String   @default("local")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

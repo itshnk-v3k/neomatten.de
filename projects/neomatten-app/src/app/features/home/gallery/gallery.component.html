@@ -36,14 +36,14 @@
             }
             <!-- Hover overlay with an expand icon hinting the album is clickable. -->
             <span
-              class="absolute inset-0 flex items-center justify-center bg-ink/0 opacity-0 transition-all duration-200 group-hover:bg-ink/30 group-hover:opacity-100 group-focus-visible:bg-ink/30 group-focus-visible:opacity-100">
+              class="absolute flex items-center justify-center bg-ink/0 opacity-0 transition-all duration-200 inset-0 group-hover:bg-ink/30 group-hover:opacity-100 group-focus-visible:bg-ink/30 group-focus-visible:opacity-100">
               <span
                 class="grid size-12 place-items-center rounded-full bg-white/90 text-content shadow-soft">
                 <svg lucideExpand class="size-6"></svg>
               </span>
             </span>
             <span
-              class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-5 text-left">
+              class="pointer-events-none absolute bg-gradient-to-t from-black/70 to-transparent p-5 text-left inset-x-0 bottom-0">
               <span class="text-sm font-semibold text-white">{{ album.title }}</span>
             </span>
           </button>
@@ -55,14 +55,14 @@
   <button
     type="button"
     [attr.aria-label]="'home_gallery_prev' | translate"
-    class="absolute left-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-content shadow-soft transition-colors hover:bg-white hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+    class="absolute grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-content shadow-soft transition-colors left-3 top-1/2 hover:bg-white hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
     (click)="prev()">
     <svg lucideChevronLeft class="size-5"></svg>
   </button>
   <button
     type="button"
     [attr.aria-label]="'home_gallery_next' | translate"
-    class="absolute right-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-content shadow-soft transition-colors hover:bg-white hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+    class="absolute grid size-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-content shadow-soft transition-colors right-3 top-1/2 hover:bg-white hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
     (click)="next()">
     <svg lucideChevronRight class="size-5"></svg>
   </button>

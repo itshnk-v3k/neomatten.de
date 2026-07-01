@@ -25,6 +25,24 @@ import type {
   UserDTO,
 } from '@core/models/user.model';
 import { EmailService } from '@core/services/email.service';
+import { firstValueFrom } from 'rxjs';
+
+/** Safe user shape returned by the real backend (POST /api/auth/exchange). */
+interface OAuthBackendUser {
+  readonly id: string;
+  readonly email: string;
+  readonly firstName: string;
+  readonly lastName: string;
+  readonly phone: string | null;
+  readonly createdAt: string;
+}
+
+/** Response of POST /api/auth/exchange — the real JWT pair + backend user. */
+interface OAuthExchangeResponse {
+  readonly user: OAuthBackendUser;
+  readonly accessToken: string;
+  readonly refreshToken: string;
+}
 
 const SESSION_STORAGE_KEY = 'neomatten_auth';
 /** localStorage key holding the mock user registry (email → {user,password}). */
@@ -100,11 +118,43 @@ export class AuthService {
     return session;
   }
 
-  // Social login (Google/Facebook) is intentionally NOT mocked here: real OAuth
-  // needs a backend + provider credentials, so the SocialLoginComponent only
-  // surfaces an informational toast for now (no session is created).
-  // TODO(backend): add `loginWithGoogle()/loginWithFacebook()` that exchange the
-  // OAuth code server-side, then `this.api.post<AuthSession>('/auth/social/:provider', …)`.
+  /**
+   * Completes an OAuth (Google/Facebook) sign-in. The SocialLoginComponent
+   * redirects to the backend, which handles the provider handshake and bounces
+   * back to /auth/callback with a one-time `code`. This swaps that code for the
+   * REAL backend JWT pair + user (POST /api/auth/exchange) and stores it via the
+   * SAME session mechanism as email/password login (`setSession` → localStorage).
+   * Unlike the mock email flow, this yields real backend tokens the API accepts.
+   */
+  async exchangeOAuthCode(code: string): Promise<AuthSession> {
+    const res = await firstValueFrom(
+      this.api.post<OAuthExchangeResponse>('/api/auth/exchange', { code })
+    );
+    const session: AuthSession = {
+      user: this.mapBackendUser(res.user),
+      token: {
+        accessToken: res.accessToken,
+        refreshToken: res.refreshToken,
+        expiresIn: 3600,
+      },
+    };
+    this.setSession(session);
+    return session;
+  }
+
+  /** Maps the backend's user shape to the site's UserDTO (name = first + last). */
+  private mapBackendUser(user: OAuthBackendUser): UserDTO {
+    const name = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim() || user.email;
+    return {
+      id: user.id,
+      name,
+      email: user.email,
+      phone: user.phone ?? '',
+      createdAt: user.createdAt,
+      // firstOrderDiscount is a mock-only concept; the backend doesn't track it.
+      firstOrderDiscount: false,
+    };
+  }
 
   // --- Login brute-force protection (client-side) ---------------------------
   // Frontend-only guard against rapid repeated failed logins. Real rate limiting

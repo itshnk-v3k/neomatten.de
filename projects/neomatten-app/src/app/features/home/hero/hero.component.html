@@ -5,7 +5,7 @@
   <!-- Background video on md+; static poster on mobile to save bandwidth. -->
   @if (!isMobile()) {
     <video
-      class="absolute inset-0 size-full object-cover"
+      class="absolute size-full object-cover inset-0"
       autoplay
       [muted]="true"
       loop
@@ -26,7 +26,7 @@
       class="object-cover" />
   }
   <!-- Dark overlay so the hero text stays readable over the video. -->
-  <div class="absolute inset-0 bg-black/50" aria-hidden="true"></div>
+  <div class="absolute bg-black/50 inset-0" aria-hidden="true"></div>
 
   <div class="relative mx-auto w-full max-w-container px-6 py-28">
     <!-- No nmReveal here: this hero copy is above the fold, so an opacity-0 entrance

@@ -11,6 +11,7 @@ import * as bcrypt from 'bcryptjs';
 import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { OAuthCodeStore } from './oauth-code.store';
 
 /** Shape of the signed JWT payload (both access + refresh tokens). */
 interface JwtPayload {
@@ -22,12 +23,31 @@ interface JwtPayload {
 /** User record with the password hash stripped — safe to return to clients. */
 type SafeUser = Omit<User, 'passwordHash'>;
 
+/** Normalized OAuth profile produced by the Google / Facebook strategies. */
+export interface OAuthProfile {
+  email: string;
+  firstName: string;
+  lastName: string;
+  providerId: string;
+}
+
+/** Supported OAuth providers. */
+export type OAuthProviderName = 'google' | 'facebook';
+
+/** Standard auth payload: the safe user plus a fresh JWT pair. */
+export interface AuthResponse {
+  user: SafeUser;
+  accessToken: string;
+  refreshToken: string;
+}
+
 @Injectable()
 export class AuthService {
   constructor(
     private readonly users: UsersService,
     private readonly jwt: JwtService,
     private readonly config: ConfigService,
+    private readonly oauthCodes: OAuthCodeStore<AuthResponse>,
   ) {}
 
   /** Hash the password, create the user, and return it (sans hash) with fresh tokens. */
@@ -50,10 +70,62 @@ export class AuthService {
   /** Verify credentials and return the user (sans hash) with fresh tokens. */
   async login(dto: LoginDto) {
     const user = await this.users.findByEmail(dto.email);
-    if (!user || !(await bcrypt.compare(dto.password, user.passwordHash))) {
+    // OAuth-only accounts have no passwordHash and cannot log in with a password.
+    if (
+      !user ||
+      !user.passwordHash ||
+      !(await bcrypt.compare(dto.password, user.passwordHash))
+    ) {
       throw new UnauthorizedException('Invalid credentials');
     }
     return this.buildAuthResponse(user);
+  }
+
+  /**
+   * Resolve an OAuth sign-in to a User and issue the standard JWT pair:
+   *  1. matching provider id → that user;
+   *  2. else matching EMAIL → link this provider id onto the existing account
+   *     (never creates a duplicate);
+   *  3. else → create a new passwordless account for this provider.
+   */
+  async validateOAuthLogin(profile: OAuthProfile, provider: OAuthProviderName) {
+    let user =
+      provider === 'google'
+        ? await this.users.findByGoogleId(profile.providerId)
+        : await this.users.findByFacebookId(profile.providerId);
+
+    if (!user) {
+      const link =
+        provider === 'google'
+          ? { googleId: profile.providerId }
+          : { facebookId: profile.providerId };
+      const byEmail = await this.users.findByEmail(profile.email);
+      user = byEmail
+        ? await this.users.update(byEmail.id, link)
+        : await this.users.create({
+            email: profile.email,
+            passwordHash: null,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            authProvider: provider,
+            ...link,
+          });
+    }
+    return this.buildAuthResponse(user);
+  }
+
+  /** Issue a one-time exchange code for a completed OAuth auth response. */
+  issueOAuthExchangeCode(response: AuthResponse): string {
+    return this.oauthCodes.issue(response);
+  }
+
+  /** Swap a one-time OAuth exchange code for the real tokens (single use). */
+  exchangeOAuthCode(code: string): AuthResponse {
+    const response = this.oauthCodes.consume(code);
+    if (!response) {
+      throw new UnauthorizedException('Invalid or expired exchange code');
+    }
+    return response;
   }
 
   /** Verify a refresh token and issue a new access token (refresh token unchanged). */

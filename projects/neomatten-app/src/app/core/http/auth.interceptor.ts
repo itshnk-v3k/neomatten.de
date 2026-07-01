@@ -13,7 +13,7 @@ import { inject } from '@angular/core';
 import { AuthService } from '@core/services/auth.service';
 
 /** Endpoint suffixes that must NOT carry a Bearer token. */
-const PUBLIC_PATHS = ['/auth/login', '/auth/register', '/auth/refresh'];
+const PUBLIC_PATHS = ['/auth/login', '/auth/register', '/auth/refresh', '/auth/exchange'];
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const isPublic = PUBLIC_PATHS.some(p => req.url.includes(p));

@@ -15,7 +15,7 @@ import { inject } from '@angular/core';
 import { AuthService } from '@core/services/auth.service';
 import { catchError, from, switchMap, throwError } from 'rxjs';
 
-const REFRESH_OR_LOGIN = ['/auth/refresh', '/auth/login', '/auth/register'];
+const REFRESH_OR_LOGIN = ['/auth/refresh', '/auth/login', '/auth/register', '/auth/exchange'];
 
 export const tokenRefreshInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(AuthService);
