@@ -1,28 +1,36 @@
 /*
  * Übersetzungen — database-backed i18n editor with a draft/publish workflow.
  * Loads the full translation list, groups it by category into collapsible
- * sections, allows inline (debounced) editing of each locale's draft value, and
- * publishes all pending drafts live via a confirmed "Deploy" action.
+ * sections, allows inline (debounced) editing of each locale's draft value,
+ * supports a page-scoped LIFO undo, and publishes all pending drafts live via a
+ * confirmed "Deploy" action.
+ *
+ * Perf notes (internal admin tool): no CSS transitions/animations, gap-based
+ * spacing (no space-x/space-y margin selectors), and paired textarea heights are
+ * synced imperatively so DE/EN cells stay aligned without layout thrash.
  */
-import type {
-  OnInit} from '@angular/core';
+import type { AfterViewInit, ElementRef, OnInit, QueryList } from '@angular/core';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   inject,
   signal,
+  ViewChildren,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   LucideCheck,
   LucideChevronDown,
   LucideLanguages,
   LucideRocket,
   LucideSearch,
+  LucideUndo2,
 } from '@lucide/angular';
 import { toast } from 'ngx-sonner';
 
-import type { TranslationRow} from './translations.service';
+import type { TranslationRow } from './translations.service';
 import { TranslationsAdminService } from './translations.service';
 
 /** A key with its two locale rows side by side (table row). */
@@ -40,14 +48,53 @@ interface CategoryGroup {
   readonly pending: number;
 }
 
+/**
+ * One reversible draft edit. Captures the field's state *before* the edit so
+ * undo can restore it. `previousValue` is kept for the case where the previous
+ * draft was null (reverted to the live value → PATCH the value so the backend
+ * normalises draftValue back to null).
+ */
+interface UndoEntry {
+  readonly translationId: string;
+  readonly previousDraftValue: string | null;
+  readonly previousValue: string;
+  readonly timestamp: number;
+}
+
+/** Textarea max render height (px) before an inner scrollbar appears. */
+const MAX_FIELD_HEIGHT = 200;
+
 @Component({
   selector: 'na-translations-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LucideLanguages, LucideSearch, LucideRocket, LucideChevronDown, LucideCheck],
+  imports: [
+    LucideLanguages,
+    LucideSearch,
+    LucideRocket,
+    LucideChevronDown,
+    LucideCheck,
+    LucideUndo2,
+  ],
   templateUrl: './translations-page.component.html',
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+      /* Reserve the scrollbar gutter so a long field's scrollbar never clips
+         under the rounded border or the focus ring. */
+      textarea {
+        scrollbar-gutter: stable;
+      }
+    `,
+  ],
 })
-export class TranslationsPageComponent implements OnInit {
+export class TranslationsPageComponent implements OnInit, AfterViewInit {
   private readonly service = inject(TranslationsAdminService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  /** Row wrappers, used to re-sync paired textarea heights after re-renders. */
+  @ViewChildren('rowEl') private rowEls!: QueryList<ElementRef<HTMLElement>>;
 
   protected readonly rows = signal<TranslationRow[]>([]);
   protected readonly loading = signal(true);
@@ -56,11 +103,15 @@ export class TranslationsPageComponent implements OnInit {
   protected readonly publishing = signal(false);
   protected readonly showConfirm = signal(false);
 
+  /** Page-scoped LIFO undo stack (resets naturally when the route is left). */
+  private readonly undoStack = signal<readonly UndoEntry[]>([]);
+  protected readonly undoCount = computed(() => this.undoStack().length);
+
   /** Rows currently being saved / just saved (drive the per-cell indicators). */
   private readonly savingIds = signal<ReadonlySet<string>>(new Set());
   private readonly savedIds = signal<ReadonlySet<string>>(new Set());
 
-  /** Raw in-flight edit text per row id (uncommitted keystrokes). */
+  /** Raw in-flight edit text per row id (uncommitted keystrokes, non-reactive). */
   private readonly edits = new Map<string, string>();
   /** Debounce timers per row id. */
   private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();
@@ -106,6 +157,15 @@ export class TranslationsPageComponent implements OnInit {
     await this.reload();
   }
 
+  ngAfterViewInit(): void {
+    // Re-sync paired heights whenever the rendered row set changes (data load,
+    // search filter, collapse/expand).
+    this.rowEls.changes
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.scheduleSyncAll());
+    this.scheduleSyncAll();
+  }
+
   private async reload(): Promise<void> {
     this.loading.set(true);
     try {
@@ -139,13 +199,6 @@ export class TranslationsPageComponent implements OnInit {
     return this.edits.get(row.id) ?? row.draftValue ?? row.value;
   }
 
-  /** Rough initial line count so long copy is not clipped to one row. */
-  protected rowsFor(text: string): number {
-    const byLength = Math.ceil(text.length / 48);
-    const byLines = text.split('\n').length;
-    return Math.min(10, Math.max(1, byLength, byLines));
-  }
-
   protected isSaving(row: TranslationRow | undefined): boolean {
     return row ? this.savingIds().has(row.id) : false;
   }
@@ -158,23 +211,19 @@ export class TranslationsPageComponent implements OnInit {
     return row?.draftValue != null;
   }
 
-  /** On each keystroke: auto-grow, remember the text, and debounce a save. */
-  protected onInput(row: TranslationRow | undefined, event: Event): void {
+  /** On each keystroke: remember the text, sync the pair height, debounce save. */
+  protected onCellInput(
+    row: TranslationRow | undefined,
+    event: Event,
+    deEl: HTMLTextAreaElement,
+    enEl: HTMLTextAreaElement
+  ): void {
     if (!row) {
       return;
     }
-    const el = event.target as HTMLTextAreaElement;
-    this.autoGrow(el);
-    this.edits.set(row.id, el.value);
-
-    const existing = this.timers.get(row.id);
-    if (existing) {
-      clearTimeout(existing);
-    }
-    this.timers.set(
-      row.id,
-      setTimeout(() => void this.commit(row.id), 500)
-    );
+    this.edits.set(row.id, (event.target as HTMLTextAreaElement).value);
+    this.syncHeights(deEl, enEl);
+    this.scheduleSave(row.id);
   }
 
   /** Flush a pending debounced save immediately on blur. */
@@ -190,6 +239,17 @@ export class TranslationsPageComponent implements OnInit {
     }
   }
 
+  private scheduleSave(id: string): void {
+    const existing = this.timers.get(id);
+    if (existing) {
+      clearTimeout(existing);
+    }
+    this.timers.set(
+      id,
+      setTimeout(() => void this.commit(id), 500)
+    );
+  }
+
   private async commit(id: string): Promise<void> {
     this.timers.delete(id);
     const text = this.edits.get(id);
@@ -197,15 +257,63 @@ export class TranslationsPageComponent implements OnInit {
       return;
     }
 
+    const before = this.rows().find(r => r.id === id);
     this.mutate(this.savingIds, s => s.add(id));
     try {
       const updated = await this.service.updateDraft(id, text);
       this.rows.update(rows => rows.map(r => (r.id === id ? updated : r)));
       this.edits.delete(id);
-      this.mutate(this.savedIds, s => s.add(id));
-      setTimeout(() => this.mutate(this.savedIds, s => s.delete(id)), 1500);
+
+      // Record an undo step only when the draft actually changed.
+      if (before && before.draftValue !== updated.draftValue) {
+        this.undoStack.update(stack => [
+          ...stack,
+          {
+            translationId: id,
+            previousDraftValue: before.draftValue,
+            previousValue: before.value,
+            timestamp: Date.now(),
+          },
+        ]);
+      }
+      this.flashSaved(id);
+      this.scheduleSyncAll();
     } catch {
       toast.error('Speichern fehlgeschlagen.');
+    } finally {
+      this.mutate(this.savingIds, s => s.delete(id));
+    }
+  }
+
+  /** Undo the single most recent edit (LIFO), restoring that one field. */
+  protected async undo(): Promise<void> {
+    const stack = this.undoStack();
+    const entry = stack[stack.length - 1];
+    if (!entry) {
+      return;
+    }
+    const { translationId: id, previousDraftValue, previousValue } = entry;
+
+    // Drop any in-flight edit on this field so it can't clobber the restore.
+    const timer = this.timers.get(id);
+    if (timer) {
+      clearTimeout(timer);
+      this.timers.delete(id);
+    }
+    this.edits.delete(id);
+
+    // If the previous draft was null, PATCH the live value → backend normalises
+    // draftValue back to null (removing the pending change from the field).
+    const restore = previousDraftValue ?? previousValue;
+    this.mutate(this.savingIds, s => s.add(id));
+    try {
+      const updated = await this.service.updateDraft(id, restore);
+      this.rows.update(rows => rows.map(r => (r.id === id ? updated : r)));
+      this.undoStack.update(s => s.slice(0, -1));
+      this.flashSaved(id);
+      this.scheduleSyncAll();
+    } catch {
+      toast.error('Rückgängig fehlgeschlagen.');
     } finally {
       this.mutate(this.savingIds, s => s.delete(id));
     }
@@ -216,6 +324,8 @@ export class TranslationsPageComponent implements OnInit {
     try {
       const { published } = await this.service.publish();
       await this.reload();
+      // Published drafts are now live; page-scoped undo history no longer applies.
+      this.undoStack.set([]);
       toast.success(`${published} Änderung${published === 1 ? '' : 'en'} veröffentlicht.`);
     } catch {
       toast.error('Veröffentlichen fehlgeschlagen.');
@@ -225,9 +335,34 @@ export class TranslationsPageComponent implements OnInit {
     }
   }
 
-  private autoGrow(el: HTMLTextAreaElement): void {
-    el.style.height = 'auto';
-    el.style.height = `${el.scrollHeight}px`;
+  private flashSaved(id: string): void {
+    this.mutate(this.savedIds, s => s.add(id));
+    setTimeout(() => this.mutate(this.savedIds, s => s.delete(id)), 1500);
+  }
+
+  /** Sync a DE/EN pair to the taller content height (capped by CSS max-height). */
+  private syncHeights(...els: (HTMLTextAreaElement | undefined)[]): void {
+    const present = els.filter((el): el is HTMLTextAreaElement => !!el);
+    if (present.length === 0) {
+      return;
+    }
+    for (const el of present) {
+      el.style.height = 'auto';
+    }
+    const tallest = Math.min(MAX_FIELD_HEIGHT, Math.max(...present.map(el => el.scrollHeight)));
+    for (const el of present) {
+      el.style.height = `${tallest}px`;
+    }
+  }
+
+  /** Re-sync every currently rendered row's textarea pair on the next frame. */
+  private scheduleSyncAll(): void {
+    requestAnimationFrame(() => {
+      for (const ref of this.rowEls) {
+        const areas = ref.nativeElement.querySelectorAll('textarea');
+        this.syncHeights(areas[0] as HTMLTextAreaElement, areas[1] as HTMLTextAreaElement);
+      }
+    });
   }
 
   /** Immutable update of a Set signal (keeps OnPush change detection honest). */
