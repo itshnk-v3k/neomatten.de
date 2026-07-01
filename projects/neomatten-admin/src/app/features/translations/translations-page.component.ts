@@ -5,22 +5,16 @@
  * supports a page-scoped LIFO undo, and publishes all pending drafts live via a
  * confirmed "Deploy" action.
  *
- * Perf notes (internal admin tool): no CSS transitions/animations, gap-based
- * spacing (no space-x/space-y margin selectors), and paired textarea heights are
- * synced imperatively so DE/EN cells stay aligned without layout thrash.
+ * Perf notes (internal admin tool): no CSS transitions/animations and gap-based
+ * spacing (no space-x/space-y margin selectors). Rows render at a FIXED height so
+ * they can be virtualized with CDK's fixed-size strategy (see <na-virtual-list>);
+ * only the on-screen slice of each expanded section is ever in the DOM.
  */
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { HttpErrorResponse } from '@angular/common/http';
-import type { AfterViewInit, ElementRef, OnInit, QueryList } from '@angular/core';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  inject,
-  signal,
-  ViewChildren,
-} from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import type { OnInit, TrackByFunction } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   LucideCheck,
   LucideChevronDown,
@@ -33,9 +27,11 @@ import {
   LucideX,
 } from '@lucide/angular';
 import { toast } from 'ngx-sonner';
+import { map } from 'rxjs';
 
 import { AdminI18nService } from '../../core/i18n/admin-i18n.service';
 import { TranslatePipe } from '../../core/i18n/translate.pipe';
+import { VirtualListComponent } from '../../shared/components/virtual-list/virtual-list.component';
 import type { TranslationRow } from './translations.service';
 import { TranslationsAdminService } from './translations.service';
 
@@ -67,8 +63,15 @@ interface UndoEntry {
   readonly timestamp: number;
 }
 
-/** Textarea max render height (px) before an inner scrollbar appears. */
-const MAX_FIELD_HEIGHT = 200;
+/**
+ * Fixed virtualized row heights (px), matched exactly by the row's height in the
+ * template. Mobile stacks key + DE + EN vertically so it needs more room than the
+ * desktop 3-column layout; the value is chosen via BreakpointObserver at runtime.
+ */
+const ROW_HEIGHT_DESKTOP = 76;
+const ROW_HEIGHT_MOBILE = 232;
+/** Tailwind `md` breakpoint — the width at which the row grid goes 3-column. */
+const MD_BREAKPOINT = '(min-width: 768px)';
 
 @Component({
   selector: 'na-translations-page',
@@ -84,6 +87,7 @@ const MAX_FIELD_HEIGHT = 200;
     LucideInfo,
     LucideX,
     TranslatePipe,
+    VirtualListComponent,
   ],
   templateUrl: './translations-page.component.html',
   styles: [
@@ -99,14 +103,25 @@ const MAX_FIELD_HEIGHT = 200;
     `,
   ],
 })
-export class TranslationsPageComponent implements OnInit, AfterViewInit {
+export class TranslationsPageComponent implements OnInit {
   private readonly service = inject(TranslationsAdminService);
-  private readonly destroyRef = inject(DestroyRef);
+  private readonly breakpoints = inject(BreakpointObserver);
   /** Exposed to the template for pluralized lookups (tp). */
   protected readonly i18n = inject(AdminI18nService);
 
-  /** Row wrappers, used to re-sync paired textarea heights after re-renders. */
-  @ViewChildren('rowEl') private rowEls!: QueryList<ElementRef<HTMLElement>>;
+  /** True at ≥768px; drives the responsive fixed row height for virtual scroll. */
+  private readonly isWide = toSignal(
+    this.breakpoints.observe(MD_BREAKPOINT).pipe(map(state => state.matches)),
+    { initialValue: true }
+  );
+
+  /** Fixed row height passed to <na-virtual-list> as itemSize (must match CSS). */
+  protected readonly itemSize = computed(() =>
+    this.isWide() ? ROW_HEIGHT_DESKTOP : ROW_HEIGHT_MOBILE
+  );
+
+  /** trackBy for the virtualized rows — stable identity keeps DOM recycling correct. */
+  protected readonly trackByKey: TrackByFunction<KeyPair> = (_, pair) => pair.key;
 
   protected readonly rows = signal<TranslationRow[]>([]);
   protected readonly loading = signal(true);
@@ -180,15 +195,6 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
     await this.reload();
   }
 
-  ngAfterViewInit(): void {
-    // Re-sync paired heights whenever the rendered row set changes (data load,
-    // search filter, collapse/expand).
-    this.rowEls.changes
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.scheduleSyncAll());
-    this.scheduleSyncAll();
-  }
-
   private async reload(): Promise<void> {
     this.loading.set(true);
     try {
@@ -239,18 +245,12 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
     return row?.draftValue != null;
   }
 
-  /** On each keystroke: remember the text, sync the pair height, debounce save. */
-  protected onCellInput(
-    row: TranslationRow | undefined,
-    event: Event,
-    deEl: HTMLTextAreaElement,
-    enEl: HTMLTextAreaElement
-  ): void {
+  /** On each keystroke: remember the text and debounce the save. */
+  protected onCellInput(row: TranslationRow | undefined, event: Event): void {
     if (!row) {
       return;
     }
     this.edits.set(row.id, (event.target as HTMLTextAreaElement).value);
-    this.syncHeights(deEl, enEl);
     this.scheduleSave(row.id);
   }
 
@@ -305,7 +305,6 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
         ]);
       }
       this.flashSaved(id);
-      this.scheduleSyncAll();
     } catch {
       toast.error(this.i18n.t('translations.saveError'));
     } finally {
@@ -339,7 +338,6 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
       this.rows.update(rows => rows.map(r => (r.id === id ? updated : r)));
       this.undoStack.update(s => s.slice(0, -1));
       this.flashSaved(id);
-      this.scheduleSyncAll();
     } catch {
       toast.error(this.i18n.t('translations.undoError'));
     } finally {
@@ -426,43 +424,6 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
   private flashSaved(id: string): void {
     this.mutate(this.savedIds, s => s.add(id));
     setTimeout(() => this.mutate(this.savedIds, s => s.delete(id)), 1500);
-  }
-
-  /** Sync a DE/EN pair to the taller content height (capped by CSS max-height). */
-  private syncHeights(...els: (HTMLTextAreaElement | undefined)[]): void {
-    const present = els.filter((el): el is HTMLTextAreaElement => !!el);
-    if (present.length === 0) {
-      return;
-    }
-    for (const el of present) {
-      el.style.height = 'auto';
-    }
-    const tallest = Math.min(MAX_FIELD_HEIGHT, Math.max(...present.map(el => el.scrollHeight)));
-    for (const el of present) {
-      el.style.height = `${tallest}px`;
-    }
-  }
-
-  /** True while a sync is already scheduled, so bursts collapse to one rAF. */
-  private syncScheduled = false;
-
-  /**
-   * Re-sync every currently rendered row's textarea pair on the next frame.
-   * Only expanded sections render rows, so this loop measures a small set.
-   * Multiple calls in the same frame coalesce into a single measurement pass.
-   */
-  private scheduleSyncAll(): void {
-    if (this.syncScheduled) {
-      return;
-    }
-    this.syncScheduled = true;
-    requestAnimationFrame(() => {
-      this.syncScheduled = false;
-      for (const ref of this.rowEls) {
-        const areas = ref.nativeElement.querySelectorAll('textarea');
-        this.syncHeights(areas[0] as HTMLTextAreaElement, areas[1] as HTMLTextAreaElement);
-      }
-    });
   }
 
   /** Immutable update of a Set signal (keeps OnPush change detection honest). */
