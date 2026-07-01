@@ -7,14 +7,14 @@ import { type HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LucideLoaderCircle } from '@lucide/angular';
+import { LucideEye, LucideEyeOff, LucideLoaderCircle } from '@lucide/angular';
 
 import { AdminAuthService } from '../../../core/auth/admin-auth.service';
 
 @Component({
   selector: 'na-login-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, LucideLoaderCircle],
+  imports: [ReactiveFormsModule, LucideLoaderCircle, LucideEye, LucideEyeOff],
   templateUrl: './login-page.component.html',
 })
 export class LoginPageComponent {
@@ -26,6 +26,8 @@ export class LoginPageComponent {
   readonly loading = signal(false);
   /** Inline error message shown under the form, or null when there is none. */
   readonly errorMessage = signal<string | null>(null);
+  /** Toggles the password field between masked and plain text. */
+  readonly showPassword = signal(false);
 
   readonly form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],

@@ -6,6 +6,13 @@ import {
 } from '@nestjs/common';
 import type { Request } from 'express';
 
+/** Principal attached to the request by JwtStrategy.validate(). */
+interface AuthenticatedUser {
+  userId: string;
+  email: string;
+  isAdmin: boolean;
+}
+
 /**
  * Allows the request only when the authenticated principal is an admin.
  * Must run after JwtAuthGuard, which populates `request.user`.
@@ -14,7 +21,7 @@ import type { Request } from 'express';
 export class AdminGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<Request>();
-    const user = request.user;
+    const user = request.user as AuthenticatedUser | undefined;
     if (user?.isAdmin === true) {
       return true;
     }
