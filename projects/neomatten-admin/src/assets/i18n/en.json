@@ -1,0 +1,119 @@
+{
+  "app": {
+    "title": "Neomatten Admin",
+    "language": "Language"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "orders": "Orders",
+    "products": "Products",
+    "customers": "Customers",
+    "translations": "Translations",
+    "settings": "Settings"
+  },
+  "header": {
+    "openMenu": "Open menu",
+    "logout": "Sign out"
+  },
+  "login": {
+    "subtitle": "Admin",
+    "heading": "Sign in",
+    "emailLabel": "Email",
+    "emailInvalid": "Please enter a valid email address.",
+    "passwordLabel": "Password",
+    "passwordShow": "Show password",
+    "passwordHide": "Hide password",
+    "passwordInvalid": "The password must be at least 8 characters long.",
+    "submit": "Sign in",
+    "errorInvalidCredentials": "Incorrect email or password.",
+    "errorServerUnreachable": "Server unreachable. Please try again later.",
+    "errorGeneric": "Sign-in failed. Please try again."
+  },
+  "pages": {
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Overview and key metrics are coming in a later phase."
+    },
+    "orders": {
+      "title": "Orders",
+      "description": "Order management is coming in a later phase."
+    },
+    "products": {
+      "title": "Products",
+      "description": "Product management is coming in a later phase."
+    },
+    "customers": {
+      "title": "Customers",
+      "description": "Customer management is coming in a later phase."
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Settings are coming in a later phase."
+    }
+  },
+  "translations": {
+    "title": "Translations",
+    "renameInfoAria": "Info about renaming keys",
+    "renameInfoTooltip": "When a key is renamed, the old key stays active automatically so the code does not have to be adjusted right away.",
+    "entriesCount": {
+      "one": "{count} entry",
+      "few": "{count} entries",
+      "many": "{count} entries",
+      "other": "{count} entries"
+    },
+    "pendingCount": {
+      "one": "{count} pending change",
+      "few": "{count} pending changes",
+      "many": "{count} pending changes",
+      "other": "{count} pending changes"
+    },
+    "searchPlaceholder": "Search by key…",
+    "undoScopeHint": "Only changes on this page",
+    "undo": "Undo",
+    "deploy": "Deploy",
+    "columnKey": "Key",
+    "columnDe": "German",
+    "columnEn": "English",
+    "renameNewKeyTitle": "New key",
+    "renameNewKeyPlaceholder": "new_key",
+    "renameNewKeyAria": "New key for {key}",
+    "renameConfirmTitle": "Confirm rename",
+    "cancel": "Cancel",
+    "renameKeyAria": "Rename key {key}",
+    "renameKeyTitle": "Rename key",
+    "aliasBadge": "alias",
+    "aliasTooltip": "The old key stays active as an alias",
+    "cellAriaDe": "German — {key}",
+    "cellAriaEn": "English — {key}",
+    "unpublishedTooltip": "Unpublished change",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "loading": "Loading…",
+    "empty": "No entries found.",
+    "dialogCloseAria": "Close dialog",
+    "publishTitle": "Publish changes",
+    "publishBody": {
+      "one": "{count} change will be published live. Continue?",
+      "few": "{count} changes will be published live. Continue?",
+      "many": "{count} changes will be published live. Continue?",
+      "other": "{count} changes will be published live. Continue?"
+    },
+    "publishing": "Publishing…",
+    "publishConfirm": "Publish",
+    "loadError": "Failed to load translations.",
+    "saveError": "Failed to save.",
+    "undoError": "Failed to undo.",
+    "renameValidation": "Only lowercase letters, digits and single underscores.",
+    "renameConfirmPrompt": "Rename key \"{key}\" to \"{newKey}\"? The old key stays active temporarily.",
+    "renameSuccess": "Key renamed. The old key stays active temporarily until the code is updated.",
+    "renameConflict": "Key \"{key}\" already exists.",
+    "renameError": "Failed to rename.",
+    "publishSuccess": {
+      "one": "{count} change published.",
+      "few": "{count} changes published.",
+      "many": "{count} changes published.",
+      "other": "{count} changes published."
+    },
+    "publishError": "Failed to publish."
+  }
+}

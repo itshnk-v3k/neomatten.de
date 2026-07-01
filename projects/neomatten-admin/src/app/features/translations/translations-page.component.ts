@@ -34,6 +34,8 @@ import {
 } from '@lucide/angular';
 import { toast } from 'ngx-sonner';
 
+import { AdminI18nService } from '../../core/i18n/admin-i18n.service';
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
 import type { TranslationRow } from './translations.service';
 import { TranslationsAdminService } from './translations.service';
 
@@ -81,6 +83,7 @@ const MAX_FIELD_HEIGHT = 200;
     LucidePencil,
     LucideInfo,
     LucideX,
+    TranslatePipe,
   ],
   templateUrl: './translations-page.component.html',
   styles: [
@@ -99,6 +102,8 @@ const MAX_FIELD_HEIGHT = 200;
 export class TranslationsPageComponent implements OnInit, AfterViewInit {
   private readonly service = inject(TranslationsAdminService);
   private readonly destroyRef = inject(DestroyRef);
+  /** Exposed to the template for pluralized lookups (tp). */
+  protected readonly i18n = inject(AdminI18nService);
 
   /** Row wrappers, used to re-sync paired textarea heights after re-renders. */
   @ViewChildren('rowEl') private rowEls!: QueryList<ElementRef<HTMLElement>>;
@@ -183,7 +188,7 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
     try {
       this.rows.set(await this.service.list());
     } catch {
-      toast.error('Übersetzungen konnten nicht geladen werden.');
+      toast.error(this.i18n.t('translations.loadError'));
     } finally {
       this.loading.set(false);
     }
@@ -291,7 +296,7 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
       this.flashSaved(id);
       this.scheduleSyncAll();
     } catch {
-      toast.error('Speichern fehlgeschlagen.');
+      toast.error(this.i18n.t('translations.saveError'));
     } finally {
       this.mutate(this.savingIds, s => s.delete(id));
     }
@@ -325,7 +330,7 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
       this.flashSaved(id);
       this.scheduleSyncAll();
     } catch {
-      toast.error('Rückgängig fehlgeschlagen.');
+      toast.error(this.i18n.t('translations.undoError'));
     } finally {
       this.mutate(this.savingIds, s => s.delete(id));
     }
@@ -358,7 +363,7 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
       return;
     }
     if (!/^[a-z0-9]+(_[a-z0-9]+)*$/.test(newKey)) {
-      this.renameError.set('Nur Kleinbuchstaben, Ziffern und einzelne Unterstriche.');
+      this.renameError.set(this.i18n.t('translations.renameValidation'));
       return;
     }
     const id = pair.de?.id ?? pair.en?.id;
@@ -366,7 +371,7 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
       return;
     }
     const confirmed = confirm(
-      `Schlüssel "${pair.key}" in "${newKey}" umbenennen? Der alte Schlüssel bleibt vorübergehend aktiv.`
+      this.i18n.t('translations.renameConfirmPrompt', { key: pair.key, newKey })
     );
     if (!confirmed) {
       return;
@@ -379,14 +384,12 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
       // Swap the two renamed rows into place by id.
       this.rows.update(rows => rows.map(r => updated.find(u => u.id === r.id) ?? r));
       this.renamingKey.set(null);
-      toast.success(
-        'Schlüssel umbenannt. Der alte Schlüssel bleibt vorübergehend aktiv, bis der Code aktualisiert wurde.'
-      );
+      toast.success(this.i18n.t('translations.renameSuccess'));
     } catch (err) {
       if (err instanceof HttpErrorResponse && err.status === 409) {
-        this.renameError.set(`Schlüssel "${newKey}" existiert bereits.`);
+        this.renameError.set(this.i18n.t('translations.renameConflict', { key: newKey }));
       } else {
-        toast.error('Umbenennen fehlgeschlagen.');
+        toast.error(this.i18n.t('translations.renameError'));
       }
     } finally {
       this.renaming.set(false);
@@ -400,9 +403,9 @@ export class TranslationsPageComponent implements OnInit, AfterViewInit {
       await this.reload();
       // Published drafts are now live; page-scoped undo history no longer applies.
       this.undoStack.set([]);
-      toast.success(`${published} Änderung${published === 1 ? '' : 'en'} veröffentlicht.`);
+      toast.success(this.i18n.tp('translations.publishSuccess', published));
     } catch {
-      toast.error('Veröffentlichen fehlgeschlagen.');
+      toast.error(this.i18n.t('translations.publishError'));
     } finally {
       this.publishing.set(false);
       this.showConfirm.set(false);

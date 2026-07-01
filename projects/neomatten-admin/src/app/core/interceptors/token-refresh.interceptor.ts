@@ -35,8 +35,8 @@ export const tokenRefreshInterceptor: HttpInterceptorFn = (req, next) => {
         catchError(() => {
           auth.logout();
           return throwError(() => error);
-        }),
+        })
       );
-    }),
+    })
   );
 };

@@ -19,7 +19,7 @@
       (click)="navigate.emit()"
       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100">
       <svg lucideLayoutDashboard class="size-5 shrink-0"></svg>
-      <span>Dashboard</span>
+      <span>{{ 'nav.dashboard' | t }}</span>
     </a>
     <a
       routerLink="/orders"
@@ -27,7 +27,7 @@
       (click)="navigate.emit()"
       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100">
       <svg lucideShoppingBag class="size-5 shrink-0"></svg>
-      <span>Bestellungen</span>
+      <span>{{ 'nav.orders' | t }}</span>
     </a>
     <a
       routerLink="/products"
@@ -35,7 +35,7 @@
       (click)="navigate.emit()"
       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100">
       <svg lucidePackage class="size-5 shrink-0"></svg>
-      <span>Produkte</span>
+      <span>{{ 'nav.products' | t }}</span>
     </a>
     <a
       routerLink="/customers"
@@ -43,7 +43,7 @@
       (click)="navigate.emit()"
       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100">
       <svg lucideUsers class="size-5 shrink-0"></svg>
-      <span>Kunden</span>
+      <span>{{ 'nav.customers' | t }}</span>
     </a>
     <a
       routerLink="/translations"
@@ -51,7 +51,7 @@
       (click)="navigate.emit()"
       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100">
       <svg lucideLanguages class="size-5 shrink-0"></svg>
-      <span>Übersetzungen</span>
+      <span>{{ 'nav.translations' | t }}</span>
     </a>
     <a
       routerLink="/settings"
@@ -59,7 +59,7 @@
       (click)="navigate.emit()"
       class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100">
       <svg lucideSettings class="size-5 shrink-0"></svg>
-      <span>Einstellungen</span>
+      <span>{{ 'nav.settings' | t }}</span>
     </a>
   </nav>
 </aside>

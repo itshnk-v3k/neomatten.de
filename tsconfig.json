@@ -13,6 +13,7 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "importHelpers": true,
+    "resolveJsonModule": true,
     "target": "ES2022",
     "module": "preserve",
     "moduleResolution": "bundler",

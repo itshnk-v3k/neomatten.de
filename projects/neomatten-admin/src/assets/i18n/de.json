@@ -1,0 +1,119 @@
+{
+  "app": {
+    "title": "Neomatten Admin",
+    "language": "Sprache"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "orders": "Bestellungen",
+    "products": "Produkte",
+    "customers": "Kunden",
+    "translations": "Übersetzungen",
+    "settings": "Einstellungen"
+  },
+  "header": {
+    "openMenu": "Menü öffnen",
+    "logout": "Abmelden"
+  },
+  "login": {
+    "subtitle": "Admin",
+    "heading": "Anmelden",
+    "emailLabel": "E-Mail",
+    "emailInvalid": "Bitte eine gültige E-Mail-Adresse eingeben.",
+    "passwordLabel": "Passwort",
+    "passwordShow": "Passwort anzeigen",
+    "passwordHide": "Passwort verbergen",
+    "passwordInvalid": "Das Passwort muss mindestens 8 Zeichen lang sein.",
+    "submit": "Anmelden",
+    "errorInvalidCredentials": "Falsche E-Mail-Adresse oder Passwort.",
+    "errorServerUnreachable": "Server nicht erreichbar. Bitte später erneut versuchen.",
+    "errorGeneric": "Anmeldung fehlgeschlagen. Bitte erneut versuchen."
+  },
+  "pages": {
+    "dashboard": {
+      "title": "Dashboard",
+      "description": "Übersicht und Kennzahlen folgen in einer späteren Phase."
+    },
+    "orders": {
+      "title": "Bestellungen",
+      "description": "Bestellverwaltung folgt in einer späteren Phase."
+    },
+    "products": {
+      "title": "Produkte",
+      "description": "Produktverwaltung folgt in einer späteren Phase."
+    },
+    "customers": {
+      "title": "Kunden",
+      "description": "Kundenverwaltung folgt in einer späteren Phase."
+    },
+    "settings": {
+      "title": "Einstellungen",
+      "description": "Einstellungen folgen in einer späteren Phase."
+    }
+  },
+  "translations": {
+    "title": "Übersetzungen",
+    "renameInfoAria": "Info zum Umbenennen von Schlüsseln",
+    "renameInfoTooltip": "Beim Umbenennen eines Schlüssels bleibt der alte Schlüssel automatisch aktiv, damit der Code nicht sofort angepasst werden muss.",
+    "entriesCount": {
+      "one": "{count} Eintrag",
+      "few": "{count} Einträge",
+      "many": "{count} Einträge",
+      "other": "{count} Einträge"
+    },
+    "pendingCount": {
+      "one": "{count} ausstehende Änderung",
+      "few": "{count} ausstehende Änderungen",
+      "many": "{count} ausstehende Änderungen",
+      "other": "{count} ausstehende Änderungen"
+    },
+    "searchPlaceholder": "Nach Schlüssel suchen…",
+    "undoScopeHint": "Nur Änderungen auf dieser Seite",
+    "undo": "Rückgängig",
+    "deploy": "Deploy",
+    "columnKey": "Schlüssel",
+    "columnDe": "Deutsch",
+    "columnEn": "English",
+    "renameNewKeyTitle": "Neuer Schlüssel",
+    "renameNewKeyPlaceholder": "neuer_schluessel",
+    "renameNewKeyAria": "Neuer Schlüssel für {key}",
+    "renameConfirmTitle": "Umbenennen bestätigen",
+    "cancel": "Abbrechen",
+    "renameKeyAria": "Schlüssel {key} umbenennen",
+    "renameKeyTitle": "Schlüssel umbenennen",
+    "aliasBadge": "alias",
+    "aliasTooltip": "Alter Schlüssel bleibt als Alias aktiv",
+    "cellAriaDe": "Deutsch — {key}",
+    "cellAriaEn": "English — {key}",
+    "unpublishedTooltip": "Nicht veröffentlichte Änderung",
+    "saving": "Speichert…",
+    "saved": "Gespeichert",
+    "loading": "Lädt…",
+    "empty": "Keine Einträge gefunden.",
+    "dialogCloseAria": "Dialog schließen",
+    "publishTitle": "Änderungen veröffentlichen",
+    "publishBody": {
+      "one": "{count} Änderung wird live veröffentlicht. Fortfahren?",
+      "few": "{count} Änderungen werden live veröffentlicht. Fortfahren?",
+      "many": "{count} Änderungen werden live veröffentlicht. Fortfahren?",
+      "other": "{count} Änderungen werden live veröffentlicht. Fortfahren?"
+    },
+    "publishing": "Veröffentlicht…",
+    "publishConfirm": "Veröffentlichen",
+    "loadError": "Übersetzungen konnten nicht geladen werden.",
+    "saveError": "Speichern fehlgeschlagen.",
+    "undoError": "Rückgängig fehlgeschlagen.",
+    "renameValidation": "Nur Kleinbuchstaben, Ziffern und einzelne Unterstriche.",
+    "renameConfirmPrompt": "Schlüssel \"{key}\" in \"{newKey}\" umbenennen? Der alte Schlüssel bleibt vorübergehend aktiv.",
+    "renameSuccess": "Schlüssel umbenannt. Der alte Schlüssel bleibt vorübergehend aktiv, bis der Code aktualisiert wurde.",
+    "renameConflict": "Schlüssel \"{key}\" existiert bereits.",
+    "renameError": "Umbenennen fehlgeschlagen.",
+    "publishSuccess": {
+      "one": "{count} Änderung veröffentlicht.",
+      "few": "{count} Änderungen veröffentlicht.",
+      "many": "{count} Änderungen veröffentlicht.",
+      "other": "{count} Änderungen veröffentlicht."
+    },
+    "publishError": "Veröffentlichen fehlgeschlagen."
+  }
+}

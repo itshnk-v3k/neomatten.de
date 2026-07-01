@@ -63,7 +63,7 @@ export class AdminAuthService {
   /** Signs in with email + password; stores tokens and the returned user. */
   async login(email: string, password: string): Promise<UserDTO> {
     const res = await firstValueFrom(
-      this.http.post<AuthResponse>(`${this.base}/auth/login`, { email, password }),
+      this.http.post<AuthResponse>(`${this.base}/auth/login`, { email, password })
     );
     this.setTokens({ accessToken: res.accessToken, refreshToken: res.refreshToken });
     this.currentUserSignal.set(res.user);
@@ -101,7 +101,7 @@ export class AdminAuthService {
     }
 
     this.refreshInFlight = firstValueFrom(
-      this.http.post<RefreshResponse>(`${this.base}/auth/refresh`, { refreshToken }),
+      this.http.post<RefreshResponse>(`${this.base}/auth/refresh`, { refreshToken })
     )
       .then(res => {
         this.accessTokenSignal.set(res.accessToken);
@@ -144,7 +144,7 @@ export class AdminAuthService {
     try {
       localStorage.setItem(
         TOKEN_STORAGE_KEY,
-        JSON.stringify({ accessToken: access, refreshToken: refresh } satisfies TokenPair),
+        JSON.stringify({ accessToken: access, refreshToken: refresh } satisfies TokenPair)
       );
     } catch {
       // ignore storage errors

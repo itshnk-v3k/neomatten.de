@@ -4,17 +4,19 @@
     <!-- Brand wordmark -->
     <div class="mb-8 text-center">
       <span class="text-3xl font-extrabold uppercase tracking-[0.2em] text-primary">Neomatten</span>
-      <p class="mt-2 text-sm font-medium uppercase tracking-widest text-neutral-500">Admin</p>
+      <p class="mt-2 text-sm font-medium uppercase tracking-widest text-neutral-500">
+        {{ 'login.subtitle' | t }}
+      </p>
     </div>
 
     <div class="rounded-2xl bg-white p-8 shadow-xl ring-1 ring-black/5">
-      <h1 class="mb-6 text-xl font-semibold text-neutral-900">Anmelden</h1>
+      <h1 class="mb-6 text-xl font-semibold text-neutral-900">{{ 'login.heading' | t }}</h1>
 
       <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
         <!-- Email -->
         <div class="mb-4">
           <label for="email" class="mb-1.5 block text-sm font-medium text-neutral-700">
-            E-Mail
+            {{ 'login.emailLabel' | t }}
           </label>
           <input
             id="email"
@@ -24,14 +26,14 @@
             class="w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-sm text-neutral-900 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
             placeholder="admin@neomatten.de" />
           @if (form.controls.email.touched && form.controls.email.invalid) {
-            <p class="mt-1.5 text-xs text-primary">Bitte eine gültige E-Mail-Adresse eingeben.</p>
+            <p class="mt-1.5 text-xs text-primary">{{ 'login.emailInvalid' | t }}</p>
           }
         </div>
 
         <!-- Password -->
         <div class="mb-4">
           <label for="password" class="mb-1.5 block text-sm font-medium text-neutral-700">
-            Passwort
+            {{ 'login.passwordLabel' | t }}
           </label>
           <div class="relative">
             <input
@@ -44,7 +46,9 @@
             <button
               type="button"
               (click)="showPassword.set(!showPassword())"
-              [attr.aria-label]="showPassword() ? 'Passwort verbergen' : 'Passwort anzeigen'"
+              [attr.aria-label]="
+                showPassword() ? ('login.passwordHide' | t) : ('login.passwordShow' | t)
+              "
               class="absolute flex items-center rounded-r-lg px-3 text-neutral-500 outline-none transition inset-y-0 right-0 hover:text-neutral-700 focus-visible:text-primary">
               @if (showPassword()) {
                 <svg lucideEyeOff class="size-5"></svg>
@@ -54,9 +58,7 @@
             </button>
           </div>
           @if (form.controls.password.touched && form.controls.password.invalid) {
-            <p class="mt-1.5 text-xs text-primary">
-              Das Passwort muss mindestens 8 Zeichen lang sein.
-            </p>
+            <p class="mt-1.5 text-xs text-primary">{{ 'login.passwordInvalid' | t }}</p>
           }
         </div>
 
@@ -74,7 +76,7 @@
           @if (loading()) {
             <svg lucideLoaderCircle class="size-4 animate-spin"></svg>
           }
-          <span>Anmelden</span>
+          <span>{{ 'login.submit' | t }}</span>
         </button>
       </form>
     </div>

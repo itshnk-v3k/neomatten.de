@@ -15,6 +15,8 @@ import {
   LucideUsers,
 } from '@lucide/angular';
 
+import { TranslatePipe } from '../../core/i18n/translate.pipe';
+
 @Component({
   selector: 'na-sidebar',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,6 +29,7 @@ import {
     LucideUsers,
     LucideLanguages,
     LucideSettings,
+    TranslatePipe,
   ],
   templateUrl: './sidebar.component.html',
 })

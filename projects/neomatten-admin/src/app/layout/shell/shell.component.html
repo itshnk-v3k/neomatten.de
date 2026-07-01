@@ -2,7 +2,7 @@
   <!-- Mobile backdrop (only when the drawer is open). -->
   @if (sidebarOpen()) {
     <div
-      class="fixed inset-0 z-30 bg-black/40 lg:hidden"
+      class="fixed z-30 bg-black/40 inset-0 lg:hidden"
       (click)="closeSidebar()"
       aria-hidden="true"></div>
   }

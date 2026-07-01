@@ -1,0 +1,119 @@
+{
+  "app": {
+    "title": "Neomatten Admin",
+    "language": "Язык"
+  },
+  "nav": {
+    "dashboard": "Панель",
+    "orders": "Заказы",
+    "products": "Товары",
+    "customers": "Клиенты",
+    "translations": "Переводы",
+    "settings": "Настройки"
+  },
+  "header": {
+    "openMenu": "Открыть меню",
+    "logout": "Выйти"
+  },
+  "login": {
+    "subtitle": "Админ",
+    "heading": "Вход",
+    "emailLabel": "Эл. почта",
+    "emailInvalid": "Введите корректный адрес эл. почты.",
+    "passwordLabel": "Пароль",
+    "passwordShow": "Показать пароль",
+    "passwordHide": "Скрыть пароль",
+    "passwordInvalid": "Пароль должен содержать не менее 8 символов.",
+    "submit": "Войти",
+    "errorInvalidCredentials": "Неверный адрес эл. почты или пароль.",
+    "errorServerUnreachable": "Сервер недоступен. Повторите попытку позже.",
+    "errorGeneric": "Не удалось войти. Повторите попытку."
+  },
+  "pages": {
+    "dashboard": {
+      "title": "Панель",
+      "description": "Обзор и показатели появятся на более позднем этапе."
+    },
+    "orders": {
+      "title": "Заказы",
+      "description": "Управление заказами появится на более позднем этапе."
+    },
+    "products": {
+      "title": "Товары",
+      "description": "Управление товарами появится на более позднем этапе."
+    },
+    "customers": {
+      "title": "Клиенты",
+      "description": "Управление клиентами появится на более позднем этапе."
+    },
+    "settings": {
+      "title": "Настройки",
+      "description": "Настройки появятся на более позднем этапе."
+    }
+  },
+  "translations": {
+    "title": "Переводы",
+    "renameInfoAria": "Справка о переименовании ключей",
+    "renameInfoTooltip": "При переименовании ключа старый ключ автоматически остаётся активным, чтобы код не пришлось сразу править.",
+    "entriesCount": {
+      "one": "{count} запись",
+      "few": "{count} записи",
+      "many": "{count} записей",
+      "other": "{count} записей"
+    },
+    "pendingCount": {
+      "one": "{count} ожидающее изменение",
+      "few": "{count} ожидающих изменения",
+      "many": "{count} ожидающих изменений",
+      "other": "{count} ожидающих изменений"
+    },
+    "searchPlaceholder": "Поиск по ключу…",
+    "undoScopeHint": "Только изменения на этой странице",
+    "undo": "Отменить",
+    "deploy": "Deploy",
+    "columnKey": "Ключ",
+    "columnDe": "Немецкий",
+    "columnEn": "Английский",
+    "renameNewKeyTitle": "Новый ключ",
+    "renameNewKeyPlaceholder": "novyy_klyuch",
+    "renameNewKeyAria": "Новый ключ для {key}",
+    "renameConfirmTitle": "Подтвердить переименование",
+    "cancel": "Отмена",
+    "renameKeyAria": "Переименовать ключ {key}",
+    "renameKeyTitle": "Переименовать ключ",
+    "aliasBadge": "alias",
+    "aliasTooltip": "Старый ключ остаётся активным как алиас",
+    "cellAriaDe": "Немецкий — {key}",
+    "cellAriaEn": "Английский — {key}",
+    "unpublishedTooltip": "Неопубликованное изменение",
+    "saving": "Сохранение…",
+    "saved": "Сохранено",
+    "loading": "Загрузка…",
+    "empty": "Записи не найдены.",
+    "dialogCloseAria": "Закрыть диалог",
+    "publishTitle": "Опубликовать изменения",
+    "publishBody": {
+      "one": "{count} изменение будет опубликовано. Продолжить?",
+      "few": "{count} изменения будут опубликованы. Продолжить?",
+      "many": "{count} изменений будут опубликованы. Продолжить?",
+      "other": "{count} изменений будут опубликованы. Продолжить?"
+    },
+    "publishing": "Публикация…",
+    "publishConfirm": "Опубликовать",
+    "loadError": "Не удалось загрузить переводы.",
+    "saveError": "Не удалось сохранить.",
+    "undoError": "Не удалось отменить.",
+    "renameValidation": "Только строчные буквы, цифры и одиночные подчёркивания.",
+    "renameConfirmPrompt": "Переименовать ключ «{key}» в «{newKey}»? Старый ключ временно останется активным.",
+    "renameSuccess": "Ключ переименован. Старый ключ временно останется активным, пока не обновится код.",
+    "renameConflict": "Ключ «{key}» уже существует.",
+    "renameError": "Не удалось переименовать.",
+    "publishSuccess": {
+      "one": "{count} изменение опубликовано.",
+      "few": "{count} изменения опубликованы.",
+      "many": "{count} изменений опубликовано.",
+      "other": "{count} изменений опубликовано."
+    },
+    "publishError": "Не удалось опубликовать."
+  }
+}

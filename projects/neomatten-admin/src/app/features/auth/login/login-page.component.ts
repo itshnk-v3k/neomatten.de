@@ -10,17 +10,20 @@ import { Router } from '@angular/router';
 import { LucideEye, LucideEyeOff, LucideLoaderCircle } from '@lucide/angular';
 
 import { AdminAuthService } from '../../../core/auth/admin-auth.service';
+import { AdminI18nService } from '../../../core/i18n/admin-i18n.service';
+import { TranslatePipe } from '../../../core/i18n/translate.pipe';
 
 @Component({
   selector: 'na-login-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, LucideLoaderCircle, LucideEye, LucideEyeOff],
+  imports: [ReactiveFormsModule, LucideLoaderCircle, LucideEye, LucideEyeOff, TranslatePipe],
   templateUrl: './login-page.component.html',
 })
 export class LoginPageComponent {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly auth = inject(AdminAuthService);
   private readonly router = inject(Router);
+  private readonly i18n = inject(AdminI18nService);
 
   /** True while the login request is in flight (disables the submit button). */
   readonly loading = signal(false);
@@ -59,11 +62,11 @@ export class LoginPageComponent {
 
   private toMessage(error: HttpErrorResponse): string {
     if (error?.status === 401) {
-      return 'Falsche E-Mail-Adresse oder Passwort.';
+      return this.i18n.t('login.errorInvalidCredentials');
     }
     if (error?.status === 0) {
-      return 'Server nicht erreichbar. Bitte später erneut versuchen.';
+      return this.i18n.t('login.errorServerUnreachable');
     }
-    return 'Anmeldung fehlgeschlagen. Bitte erneut versuchen.';
+    return this.i18n.t('login.errorGeneric');
   }
 }
