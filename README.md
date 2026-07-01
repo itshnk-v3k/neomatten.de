@@ -38,21 +38,28 @@ the Angular migration of the original static HTML/CSS/JS prototype.
 
 ## Available scripts
 
-| Script                  | What it does                                                        |
-| ----------------------- | ------------------------------------------------------------------- |
-| `npm start`             | Dev server (`development` config) on `http://localhost:4200`.       |
-| `npm run start:staging` | Dev server using the `staging` configuration.                       |
-| `npm run start:prod`    | Production build, then serves it locally with `npx serve`.          |
-| `npm run build`         | Production build → `dist/neomatten/`.                               |
-| `npm run build:dev`     | Development build.                                                   |
-| `npm run build:staging` | Staging build.                                                      |
-| `npm run watch`         | Development build in watch mode.                                    |
-| `npm run build:data`    | Regenerate vehicle mock data (see [Vehicle data](#vehicle-data)).   |
-| `npm test`              | Unit tests (Vitest via `@angular/build:unit-test`).                 |
-| `npm run lint`          | ESLint over `src/**/*.{ts,html}`.                                   |
-| `npm run lint:fix`      | ESLint with autofix.                                                |
-| `npm run format`        | Prettier write over `src`.                                          |
-| `npm run format:check`  | Prettier check (CI-friendly).                                       |
+A full, categorized reference lives in [SCRIPTS.md](SCRIPTS.md). The most common:
+
+| Script                      | What it does                                                      |
+| --------------------------- | ----------------------------------------------------------------- |
+| `npm run dev`               | App + admin + backend together, labeled/colored in one terminal.  |
+| `npm run dev:app`           | App dev server (`development` config) on `http://localhost:4200`. |
+| `npm run dev:app:staging`   | App dev server using the `staging` configuration.                 |
+| `npm run dev:admin`         | Admin dev server on `http://localhost:4300`.                      |
+| `npm run dev:backend`       | Backend (NestJS) in watch mode.                                   |
+| `npm run preview:prod`      | Production build, then serves it locally with `npx serve`.        |
+| `npm run build:app`         | Production build → `dist/neomatten/`.                             |
+| `npm run build:app:dev`     | Development build.                                                |
+| `npm run build:app:staging` | Staging build.                                                    |
+| `npm run build:app:watch`   | Development build in watch mode.                                  |
+| `npm run build:admin`       | Admin production build.                                           |
+| `npm run build:backend`     | Backend production build.                                         |
+| `npm run build:data`        | Regenerate vehicle mock data (see [Vehicle data](#vehicle-data)). |
+| `npm test`                  | Unit tests (Vitest via `@angular/build:unit-test`).               |
+| `npm run lint`              | ESLint over `src/**/*.{ts,html}` + custom style check.            |
+| `npm run lint:fix`          | ESLint with autofix.                                              |
+| `npm run format`            | Prettier write over `projects`.                                   |
+| `npm run format:check`      | Prettier check (CI-friendly).                                     |
 
 ---
 
@@ -101,26 +108,26 @@ English URL slugs; old German slugs redirect (so existing links don't 404). UI
 copy still switches DE/EN. Every page sets its title + meta via `SeoService`
 from the route's `data.seo` (`titleKey` / `descriptionKey`), not a static title.
 
-| Path                       | Page                              | Notes                                              |
-| -------------------------- | --------------------------------- | -------------------------------------------------- |
-| `/`                        | Home                              |                                                    |
-| `/catalog`                 | Catalogue (brand grid)            | search filters brands → configurator               |
-| `/configurator`            | Brand selection                   | circular brand cards                               |
-| `/configurator/:brand`     | 12-step configurator              | preview + clickable car diagram + checkout         |
-| `/cart`                    | Cart                              | quantity, shipping, 10% discount, checkout         |
-| `/account`                 | Account dashboard                 | `authGuard` — orders + profile                     |
-| `/account/login`           | Sign in                           | `guestGuard`                                       |
-| `/account/register`        | Register                          | `guestGuard` — sets `firstOrderDiscount`           |
-| `/account/forgot-password` | Reset password                    | mock                                               |
-| `/contact`                 | Contact                           | company info + Leaflet map + form                  |
-| `/faq`                     | FAQ                               | accordion (7 Q&A)                                  |
-| `/eva-material`            | EVA material info                 | reasons, ISO cert, CTA                             |
-| `/cushions`                | Headrest cushions (listing)       | `/cushions/:id` → product detail                   |
-| `/eva-bags`                | EVA bags landing                  | with-lid / without-lid category cards              |
-| `/eva-bags/with-lid`       | EVA bags (with lid)               | listing                                            |
-| `/eva-bags/without-lid`    | EVA bags (without lid)            | listing; `/eva-bags/:id` → product detail          |
-| `/leather-bags`            | EVA-leather bags (listing)        | `/leather-bags/:id` → product detail               |
-| `**`                       | Not found (404)                   |                                                    |
+| Path                       | Page                        | Notes                                      |
+| -------------------------- | --------------------------- | ------------------------------------------ |
+| `/`                        | Home                        |                                            |
+| `/catalog`                 | Catalogue (brand grid)      | search filters brands → configurator       |
+| `/configurator`            | Brand selection             | circular brand cards                       |
+| `/configurator/:brand`     | 12-step configurator        | preview + clickable car diagram + checkout |
+| `/cart`                    | Cart                        | quantity, shipping, 10% discount, checkout |
+| `/account`                 | Account dashboard           | `authGuard` — orders + profile             |
+| `/account/login`           | Sign in                     | `guestGuard`                               |
+| `/account/register`        | Register                    | `guestGuard` — sets `firstOrderDiscount`   |
+| `/account/forgot-password` | Reset password              | mock                                       |
+| `/contact`                 | Contact                     | company info + Leaflet map + form          |
+| `/faq`                     | FAQ                         | accordion (7 Q&A)                          |
+| `/eva-material`            | EVA material info           | reasons, ISO cert, CTA                     |
+| `/cushions`                | Headrest cushions (listing) | `/cushions/:id` → product detail           |
+| `/eva-bags`                | EVA bags landing            | with-lid / without-lid category cards      |
+| `/eva-bags/with-lid`       | EVA bags (with lid)         | listing                                    |
+| `/eva-bags/without-lid`    | EVA bags (without lid)      | listing; `/eva-bags/:id` → product detail  |
+| `/leather-bags`            | EVA-leather bags (listing)  | `/leather-bags/:id` → product detail       |
+| `**`                       | Not found (404)             |                                            |
 
 Redirects: `/katalog`→`/catalog`, `/konfigurator`→`/configurator`,
 `/warenkorb`→`/cart`, `/konto`→`/account`, `/kontakt`→`/contact`,
@@ -174,11 +181,11 @@ The site UI is bilingual **German / English** (the codebase itself is English).
 
 Three build configurations, each backed by a file in `src/environments/`:
 
-| Config        | File                       | `apiBaseUrl`                      | Notes                          |
-| ------------- | -------------------------- | --------------------------------- | ------------------------------ |
-| `development` | `environment.dev.ts`       | `''` (mock data / same origin)    | default for `npm start`        |
-| `staging`     | `environment.staging.ts`   | `https://staging-api.neomatten.de`| prod-like, source maps on      |
-| `production`  | `environment.prod.ts`      | `https://api.neomatten.de`        | optimized build                |
+| Config        | File                     | `apiBaseUrl`                       | Notes                     |
+| ------------- | ------------------------ | ---------------------------------- | ------------------------- |
+| `development` | `environment.dev.ts`     | `''` (mock data / same origin)     | default for `npm start`   |
+| `staging`     | `environment.staging.ts` | `https://staging-api.neomatten.de` | prod-like, source maps on |
+| `production`  | `environment.prod.ts`    | `https://api.neomatten.de`         | optimized build           |
 
 `environment.ts` is the type-checked default (mirrors development) and is
 swapped per build via `fileReplacements` in `angular.json`. All environments
